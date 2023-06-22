@@ -8,8 +8,8 @@ typedef struct PlayerObject {
     PLAYERSTATE state;
     UINT8 spriteId;
     UINT8 animFrame;
-    WORD xSpr;  // Assumes 4 left shifted bits of subpixels
-    WORD ySpr;
+    UWORD xSpr;  // Assumes 4 left shifted bits of subpixels
+    UWORD ySpr;
     UINT16 xMap;
     UINT16 yMap;
     UINT8 xTile;

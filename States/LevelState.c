@@ -153,16 +153,13 @@ static void phaseInit()
     player.xSpr = 88U;
     player.ySpr = 88U;
 
-
-
     commonInit();
 
     substate = SUB_LOOP;
 
-
-        player.moveSpeed = 22U;
-        set_bkg_tile_xy(18U,17U,player.moveSpeed/10U);
-        set_bkg_tile_xy(19U,17U,player.moveSpeed%10U);
+    player.moveSpeed = 21U;
+    set_bkg_tile_xy(18U,17U,player.moveSpeed/10U);
+    set_bkg_tile_xy(19U,17U,player.moveSpeed%10U);
 
     // fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -273,41 +270,22 @@ static void calcPhysics()
     INT16 x = player.xSpr + player.xVel;
     INT16 y = player.ySpr + player.yVel;
 
-    // // Clamp to screen borders
-    // if (x < LEFT_BOUND)
-    //     x = LEFT_BOUND;
-    // if (x > RIGHT_BOUND)
-    //     x = RIGHT_BOUND;
-
-    // INT8 playerTopBoundNew = (y - 32U + player.topOffset) >> 5U;
-    // INT8 playerTopBoundOld = (player.y - 32U + player.topOffset) >> 5U;
-    // INT8 playerLeftBound = (x - 32U - player.leftOffset) >> 5U;
-    // INT8 playerRightBound = (x - 32U + player.rightOffset) >> 5U;
-
-    // INT8 playerUpperBound = (y >> 4U) + player.topOffsetInPx;
-    // INT8 playerUpperBound = (y >> 4U) + 16U;
-
-
     UINT8 topOffset = 8U;
-    UINT8 bottomOffset = 0U;
+    UINT8 bottomOffset = 1U;
     UINT8 leftOffset = 4U;
     UINT8 rightOffset = 5U;
 
-
     UINT8 playerTopMetatileIndex = pxToMetatile(subPxToPx(y) - 16U + topOffset);
-    UINT8 playerBottomMetatileIndex = pxToMetatile(subPxToPx(y) - bottomOffset);
+    UINT8 playerBottomMetatileIndex = pxToMetatile(subPxToPx(y));
+    k = playerBottomMetatileIndex;
     UINT8 playerLeftMetatileIndex = pxToMetatile(subPxToPx(x) - 8U + leftOffset);
     UINT8 playerRightMetatileIndex = pxToMetatile(subPxToPx(x) + 8U - rightOffset);
 
-
-    // UINT8 cornerTopLeft = 
-    // UINT8 cornerTopRight = 
-    // UINT8 cornerBottomLeft = 
-    // UINT8 cornerBottomRight = 
-
+// set_bkg_tile_xy(8,8,subPxToPx(y));
+// set_bkg_tile_xy(8,9,pxToMetatile(subPxToPx(y)));
+// set_bkg_tile_xy(8,10,pxToMetatile(subPxToPx(y) - bottomOffset));
 
     UINT8 collided = TRUE;
-
     switch (player.dir)
     {
         case DIR_UP:
@@ -338,15 +316,12 @@ static void calcPhysics()
     j = pxToMetatile(subPxToPx(y) - 16U);
     set_bkg_tile_xy(0,0,i);
     set_bkg_tile_xy(1,0,j);
-    // if (playGrid[j][i] < walkableTileCount)
-    // {
-    //     collided = FALSE;
-    // }
 
-    // INT8 playerTopBoundNew = (y - 32U + player.topOffset) >> 5U;
-    // INT8 playerTopBoundOld = (player.y - 32U + player.topOffset) >> 5U;
-    // INT8 playerLeftBound = (x - 32U - player.leftOffset) >> 5U;
-    // INT8 playerRightBound = (x - 32U + player.rightOffset) >> 5U;
+
+set_bkg_tile_xy(1,5, playerTopMetatileIndex);
+set_bkg_tile_xy(1,7, playerBottomMetatileIndex);
+set_bkg_tile_xy(0,6, playerLeftMetatileIndex);
+set_bkg_tile_xy(2,6, playerRightMetatileIndex);
 
     if (collided == FALSE)
     {
@@ -355,6 +330,15 @@ static void calcPhysics()
     }
     else
     {
+        switch (player.dir)
+        {
+            case DIR_UP:    player.ySpr = pxToSubpx(metatileToPx(playerTopMetatileIndex + 1U) + topOffset);   break;
+            case DIR_DOWN:  player.ySpr = pxToSubpx(metatileToPx(k) - bottomOffset);  break;
+            case DIR_LEFT:  player.xSpr = pxToSubpx(metatileToPx(playerLeftMetatileIndex + 1U) + leftOffset); break;
+            case DIR_RIGHT: player.xSpr = pxToSubpx(metatileToPx(playerRightMetatileIndex) - leftOffset);     break;
+            default: break;
+        }
+
         player.xVel = 0U;
         player.yVel = 0U;
     }
