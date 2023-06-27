@@ -47,11 +47,14 @@ UINT16 camera_y = 0U;
 
 PlayerObject player;
 UINT8 handyDandyString[19U];
+UINT8 (*playGridPtr)[32U][32U];
 UINT8 playGrid[32U][32U];
+UINT8 mirrorPlayGrid[32U][32U];
+
 
 void initRAM(UINT8);
 
-void main()
+void main(void)
 {
  	// initRAM(0U);
 

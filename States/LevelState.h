@@ -3,6 +3,6 @@
 
 #include <gb/gb.h>
 
-void LevelStateMain();
+void LevelStateMain(void);
 
 #endif
