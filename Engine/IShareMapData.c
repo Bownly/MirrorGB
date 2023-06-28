@@ -9,13 +9,13 @@ extern UINT8 i;  // Used mostly for loops
 extern UINT8 j;  // Used mostly for loops
 extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
-extern UINT8 mirrorPlayGrid[32U][32U];
+extern UINT8 playGridM[32U][32U];
 
 #define OWTILES_BKG_INDEX  0x60U
 
 #define MAP_BANK 3U
 
-void loadMapDataFromDatabase(UINT8* playGridPtr, UINT8 mapId, UINT8 w, UINT8 h)
+void loadMapDataFromDatabase(UINT8 (*playGridPtr)[32U], UINT8 mapId, UINT8 w, UINT8 h)
 {
     UINT8 nextBank = CURRENT_BANK;
 
@@ -24,18 +24,9 @@ void loadMapDataFromDatabase(UINT8* playGridPtr, UINT8 mapId, UINT8 w, UINT8 h)
     UINT16 c = 0U;
     for (j = 0U; j != h; j++)
     {
-        // memcpy(playGridPtr+c, levelDex[mapId].map + c, w);
-        memcpy(playGrid[j], levelDex[mapId].map + c, w);
+        memcpy(playGridPtr[j], levelDex[mapId].map + c, w);
         c += w;
     }
-
-    // for (j = 0U; j != h; j++)
-    //     for (i = 0U; i != w; i++)
-    //     {
-    //         // playGrid[j][i] = *(levelDex[mapId].map +c);
-    //         *(playGridPtr + c) = *(levelDex[mapId].map + c);
-    //         c ++;
-    //     }
 
     SWITCH_ROM(nextBank);
 }

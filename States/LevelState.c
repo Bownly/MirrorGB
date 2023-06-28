@@ -47,7 +47,7 @@ extern UINT8 substate;
 // extern UINT8 currentLevel;
 extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
-extern UINT8 mirrorPlayGrid[32U][32U];
+extern UINT8 playGridM[32U][32U];
 
 // static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[24U];
@@ -115,7 +115,7 @@ static void calcPhysics(void);
 static void commonInit(void);
 static void checkUnderfootTile(void);
 static void loadLevel(void);
-static void loadRoom(void);
+static void loadRoom(UINT8);
 static void walkPlayer(void);
 
 /* DISPLAY METHODS */
@@ -166,9 +166,8 @@ static void phaseInit(void)
     player.xSpr = 88U;
     player.ySpr = 88U;
 
-    commonInit();
-
     playGridPtr = &playGrid;
+    commonInit();
 
     substate = SUB_LOOP;
 
@@ -211,11 +210,30 @@ static void inputs(void)
 {    
     if (playerstate == PLAYER_IDLE)
     {
+        if (curJoypad & J_A && !(prevJoypad & J_A))
+        {
+            player.xTile = 31U - player.xTile;
+            if (roomId % 2U == 0U)  // Normal world
+            {
+                ++roomId;
+                playGridPtr = &playGridM;
+            }
+            else  // Mirror world
+            {
+                --roomId;
+                playGridPtr = &playGrid;
+            }
+            loadRoom(roomId);
+
+            return;
+        }
+
+
         if (curJoypad & J_UP)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && playGrid[player.yTile-1U][player.xTile] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < walkableTileCount)
             {
                 // Move sprite, not camera
                 if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
@@ -237,7 +255,7 @@ static void inputs(void)
         {
             player.dir = DIR_DOWN;
 
-            if (player.ySpr != 0U && playGrid[player.yTile+1U][player.xTile] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < walkableTileCount)
             {
                 // Move sprite, not camera
                 if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
@@ -259,7 +277,7 @@ static void inputs(void)
         {
             player.dir = DIR_LEFT;
 
-            if (player.ySpr != 0U && playGrid[player.yTile][player.xTile-1U] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < walkableTileCount)
             {
                 // Move sprite, not camera
                 if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
@@ -281,7 +299,7 @@ static void inputs(void)
         {
             player.dir = DIR_RIGHT;
 
-            if (player.ySpr != 0U && playGrid[player.yTile][player.xTile+1U] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < walkableTileCount)
             {
                 // Move sprite, not camera
                 if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
@@ -477,29 +495,19 @@ static void commonInit(void)
     headCount = 8U;
 
     // Check levelId, pull appropriate level
-    loadRoom();
+    loadRoom(0U);
 
     // Check player coords/dir, draw player appropriately
     SCX_REG = camera_x; SCY_REG = camera_y;
     oldTileX = player.xTile;
     oldTileY = player.yTile;
 
-    // Load room map into playGrid
-    loadMapDataFromDatabase(&playGridPtr, roomId, gridW, gridH);
-
-    // Draw grid
-    for (i = 0U; i != 10U; i++)
-        for (j = 0U; j != 9U; j++)
-            // drawBkgTile(((i<<1U))%32U, ((j<<1U))%32U, playGrid[j][i]);
-            drawBkgTile((map_pos_x+(i<<1U))%32U, (map_pos_y+(j<<1U))%32U, playGrid[(map_pos_y>>1U)+j][(map_pos_x>>1U)+i]);    
-
     animatePlayer();
 }
 
-static void loadRoom(void)
+static void loadRoom(UINT8 id)
 {
-    // roomId = ???;
-    roomId = 0U;
+    roomId = id;
 
     gridW = getOwMapWidth(roomId);
     gridH = getOwMapHeight(roomId);
@@ -564,6 +572,17 @@ static void loadRoom(void)
         // player.ySpr = player.yTile % 18U * 64U + 128U;  // Classic annoying padding
         player.ySpr = metatileToPx(player.yTile) + 16U;
     }
+
+    // Load room map into playGrid
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
+
+    // Draw grid
+    for (i = 0U; i != 10U; i++)
+        for (j = 0U; j != 9U; j++)
+            // drawBkgTile(((i<<1U))%32U, ((j<<1U))%32U, playGrid[j][i]);
+            drawBkgTile((map_pos_x+(i<<1U))%32U, (map_pos_y+(j<<1U))%32U, (*playGridPtr)[(map_pos_y>>1U)+j][(map_pos_x>>1U)+i]);
+
+    SCX_REG = camera_x; SCY_REG = camera_y;
 }
 
 static void walkPlayer(void)
@@ -740,13 +759,13 @@ static void drawNewBkg(void)
         {
             for (k = 0U; k != 10U; ++k)
             {
-                drawBkgTile((map_pos_x+(k<<1U))%32U, new_map_pos_y%32U, playGrid[new_map_pos_y>>1U][(map_pos_x>>1U)+k]);
+                drawBkgTile((map_pos_x+(k<<1U))%32U, new_map_pos_y%32U, (*playGridPtr)[new_map_pos_y>>1U][(map_pos_x>>1U)+k]);
             }
         } else
         {
             for (UINT8 k = 0U; k != 10U; ++k)
             {
-                drawBkgTile((map_pos_x+(k<<1U))%32U, (new_map_pos_y+16U)%32U, playGrid[((new_map_pos_y+16U)>>1U)][(map_pos_x>>1U)+k]);
+                drawBkgTile((map_pos_x+(k<<1U))%32U, (new_map_pos_y+16U)%32U, (*playGridPtr)[((new_map_pos_y+16U)>>1U)][(map_pos_x>>1U)+k]);
             }
         }
         map_pos_y = new_map_pos_y; 
@@ -759,13 +778,13 @@ static void drawNewBkg(void)
         {
             for (UINT8 k = 0U; k != 9U; ++k)
             {
-                drawBkgTile(new_map_pos_x%32U, (map_pos_y+(k<<1U))%32U, playGrid[(map_pos_y>>1U)+k][new_map_pos_x>>1U]);
+                drawBkgTile(new_map_pos_x%32U, (map_pos_y+(k<<1U))%32U, (*playGridPtr)[(map_pos_y>>1U)+k][new_map_pos_x>>1U]);
             }
         } else 
         {
             for (UINT8 k = 0U; k != 9U; ++k)
             {
-                drawBkgTile((new_map_pos_x + 18U)%32U, (map_pos_y+(k<<1U))%32U, playGrid[(map_pos_y>>1U)+k][(new_map_pos_x+18U)>>1U]);
+                drawBkgTile((new_map_pos_x + 18U)%32U, (map_pos_y+(k<<1U))%32U, (*playGridPtr)[(map_pos_y>>1U)+k][(new_map_pos_x+18U)>>1U]);
             }
         }
         map_pos_x = new_map_pos_x;

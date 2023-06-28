@@ -4,6 +4,7 @@ del o\*.asm
 del o\*.sym
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1Map.o Assets/Maps/Levels/Level1Map.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1MMap.o Assets/Maps/Levels/Level1MMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/CrosshairTiles.o Assets/Tiles/CrosshairTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/GhostTiles.o Assets/Tiles/GhostTiles.c
