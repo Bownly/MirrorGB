@@ -166,14 +166,12 @@ static void phaseInit(void)
     player.xSpr = 88U;
     player.ySpr = 88U;
 
-    playGridPtr = &playGrid;
+    playGridPtr = &playGridM;
     commonInit();
 
     substate = SUB_LOOP;
 
     player.moveSpeed = PLAYER_SPEED;
-    set_bkg_tile_xy(18U,17U,player.moveSpeed/10U);
-    set_bkg_tile_xy(19U,17U,player.moveSpeed%10U);
 
     // fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -202,6 +200,11 @@ static void phaseLoop(void)
     }
     // else
     //     wait_vbl_done();
+
+    // set_win_tile_xy(18,0,player.xTile/10U);
+    // set_win_tile_xy(19,0,player.xTile%10U);
+    // set_win_tile_xy(18,1,player.yTile/10U);
+    // set_win_tile_xy(19,1,player.yTile%10U);
 }
 
 
@@ -224,10 +227,12 @@ static void inputs(void)
                 playGridPtr = &playGrid;
             }
             loadRoom(roomId);
-
+            if (player.dir == DIR_RIGHT)
+                player.dir = DIR_LEFT;
+            else if (player.dir == DIR_LEFT)
+                player.dir = DIR_RIGHT;
             return;
         }
-
 
         if (curJoypad & J_UP)
         {
@@ -322,140 +327,6 @@ static void inputs(void)
 
 
 /******************************** HELPER METHODS *********************************/
-static void fillerFn1(void)
-{
-    // static void calcPhysics(void)
-    // {
-    //     UINT8 x = player.xSpr;
-    //     UINT8 y = player.ySpr;
-
-    //     if (player.state == PLAYER_WALKING)
-    //     {
-    //         // Compare movement to animation frames...
-    //         if (player.animFrame == 3U || player.animFrame == 6U || player.animFrame == 9U || player.animFrame == 12U)
-    //         {
-    //             // Don't move during this frame
-    //         }
-    //         else
-    //         {
-    //             x += player.xVel;
-    //             y += player.yVel;
-    //         }
-
-    //         // Increment frame count
-    //         player.animFrame++;
-            
-    //         // Roll around after max frame
-    //         player.animFrame %= 8U;
-    //     }
-
-
-    //     UINT8 topOffset = 8;
-    //     UINT8 bottomOffset = 1;
-    //     UINT8 leftOffset = 4;
-    //     UINT8 rightOffset = 5;
-
-    //     UINT8 playerTopMetatileIndex = pxToMetatile(y - 16U + topOffset);
-    //     UINT8 playerBottomMetatileIndex = pxToMetatile(y - bottomOffset);
-    //     UINT8 playerLeftMetatileIndex = pxToMetatile(x - 8U + leftOffset);
-    //     UINT8 playerRightMetatileIndex = pxToMetatile(x + 8U - rightOffset);
-
-    //     UINT8 collided = TRUE;
-    //     switch (player.dir)
-    //     {
-    //         case DIR_UP:
-    //             if ((playGrid[playerTopMetatileIndex][playerLeftMetatileIndex] < walkableTileCount)
-    //             && (playGrid[playerTopMetatileIndex][playerRightMetatileIndex] < walkableTileCount))
-    //                 collided = FALSE;
-    //             break;
-    //         case DIR_DOWN:
-    //             if ((playGrid[playerBottomMetatileIndex][playerLeftMetatileIndex] < walkableTileCount)
-    //             && (playGrid[playerBottomMetatileIndex][playerRightMetatileIndex] < walkableTileCount))
-    //                 collided = FALSE;
-    //             break;
-    //         case DIR_LEFT:
-    //             if ((playGrid[playerTopMetatileIndex][playerLeftMetatileIndex] < walkableTileCount)
-    //             && (playGrid[playerBottomMetatileIndex][playerLeftMetatileIndex] < walkableTileCount))
-    //                 collided = FALSE;
-    //             break;
-    //         case DIR_RIGHT:
-    //             if ((playGrid[playerTopMetatileIndex][playerRightMetatileIndex] < walkableTileCount)
-    //             && (playGrid[playerBottomMetatileIndex][playerRightMetatileIndex] < walkableTileCount))
-    //                 collided = FALSE;
-    //             break;
-    //     }
-
-    //     if (collided == FALSE)
-    //     {
-    //         UINT8 shouldMoveSprite = TRUE;  // TRUE = sprite move; FALSE = screen scroll
-
-    //             set_bkg_tile_xy(2,2,player.ySpr%10);
-    //             set_bkg_tile_xy(1,2,player.ySpr/10);
-    //         if (player.dir == DIR_DOWN)
-    //         {
-    //             set_bkg_tile_xy(2,2,0x09);
-    //             // Move sprite, not camera
-    //             if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER_BOUND_PX)
-    //             {
-    //             set_bkg_tile_xy(2,2,0x0A);
-    //                 if (player.ySpr != PLAYER_Y_LOWER_BOUND_PX)
-    //                 {
-
-    //                     shouldMoveSprite = TRUE;
-    //             set_bkg_tile_xy(2,2,0x0F);
-    //                 }
-    //             }
-    //             else  // Move camera
-    //             {
-    //             set_bkg_tile_xy(2,2,0x0B);
-
-    //                 shouldMoveSprite = FALSE;
-    //             }
-
-    //         }
-
-    //         if (shouldMoveSprite == TRUE)
-    //         {
-    //             set_bkg_tile_xy(2,2,0x0C);
-    //             player.xSpr = x;
-    //             player.ySpr = y;
-    //         }
-    //         else
-    //         {
-    //             set_bkg_tile_xy(2,2,0x0D);
-    //             // new_camera_x = subPxToPx(player.xSpr);
-    //             // camera_x += player.xVel;
-    //             // camera_y += player.yVel;
-    //             new_camera_x += player.xVel;
-    //             new_camera_y += player.yVel;
-    //             redraw = TRUE;
-    //             if ((new_camera_y % 16U) == 0U)
-    //             {
-    //                 set_bkg_tile_xy(2,2,new_camera_y%16);
-    //             }
-    //         }
-    //         player.xMapPos += player.xVel;
-    //         player.yMapPos += player.yVel;
-    //         player.xTile = player.xMapPos >> 4U;
-    //         player.yTile = player.yMapPos >> 4U;
-    //     }
-    //     else
-    //     {
-    //         // switch (player.dir)
-    //         // {
-    //         //     case DIR_UP:    player.ySpr = pxToSubpx(metatileToPx(playerTopMetatileIndex + 1U) + topOffset);   break;
-    //         //     case DIR_DOWN:  player.ySpr = pxToSubpx(metatileToPx(playerBottomMetatileIndex) - bottomOffset);  break;
-    //         //     case DIR_LEFT:  player.xSpr = pxToSubpx(metatileToPx(playerLeftMetatileIndex + 1U) + leftOffset); break;
-    //         //     case DIR_RIGHT: player.xSpr = pxToSubpx(metatileToPx(playerRightMetatileIndex) - leftOffset);     break;
-    //         //     default: break;
-    //         // }
-
-    //         player.xVel = 0U;
-    //         player.yVel = 0U;
-    //     }
-    // }
-}
-
 static void checkUnderfootTile(void)
 {
     playerstate = PLAYER_IDLE;
@@ -483,7 +354,7 @@ static void commonInit(void)
     set_sprite_data(OBAKE_BKG_INDEX, 16U, GhostTiles); 
     set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0x00U, 40U, fontTiles);
-    set_bkg_data(0xF0U, HUD_tileset_size-1, HUD_tileset + 16U);
+    set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
     set_sprite_data(0U, 48U, owTadTiles);
 
     // HUD
@@ -495,12 +366,21 @@ static void commonInit(void)
     headCount = 8U;
 
     // Check levelId, pull appropriate level
-    loadRoom(0U);
+    camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
+    camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
 
-    // Check player coords/dir, draw player appropriately
-    SCX_REG = camera_x; SCY_REG = camera_y;
-    oldTileX = player.xTile;
-    oldTileY = player.yTile;
+    roomId = 1U;
+    gridW = getOwMapWidth(1U);
+    gridH = getOwMapHeight(1U);
+    playGridPtr = &playGridM;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
+    roomId = 0U;
+    gridW = getOwMapWidth(0U);
+    gridH = getOwMapHeight(0U);
+    playGridPtr = &playGrid;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
+
+    loadRoom(0U);
 
     animatePlayer();
 }
@@ -509,13 +389,11 @@ static void loadRoom(UINT8 id)
 {
     roomId = id;
 
-    gridW = getOwMapWidth(roomId);
-    gridH = getOwMapHeight(roomId);
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
   
     // Reset camera and player position
-    if (player.xTile > 5U)  // 5 is the x offset from left to center
+    if (player.xTile > 5)  // 5 is the x offset from left to center
     {
         // If on the far right side
         if (player.xTile > (gridW - 5U))  // 5 is the x offset from right to center
@@ -523,7 +401,7 @@ static void loadRoom(UINT8 id)
             camera_x = camera_max_x;
             new_camera_x = camera_x;
             map_pos_x = (BYTE)(camera_x >> 3U);
-            player.xSpr = PLAYER_X_RIGHT_BOUND_PX - metatileToPx(gridW - player.xTile) + 8U;
+            player.xSpr = PLAYER_X_RIGHT - ((gridW - player.xTile) * 16U) + 8U;  // Classic annoying padding
         }
         else
         {
@@ -532,7 +410,7 @@ static void loadRoom(UINT8 id)
                 camera_x = camera_max_x;
             new_camera_x = camera_x;
             map_pos_x = (BYTE)(camera_x >> 3U);
-            player.xSpr = PLAYER_X_CENTER_BOUND_PX;
+            player.xSpr = PLAYER_X_CENTER;
         }
     }
     else
@@ -540,8 +418,7 @@ static void loadRoom(UINT8 id)
         map_pos_x = 0U;
         camera_x = 0U;
         new_camera_x = camera_x;
-        // player.xSpr = player.xTile % 20U * 64U + 64U;  // Classic annoying padding
-        player.xSpr = metatileToPx(player.xTile) + 8U;
+        player.xSpr = player.xTile % 20U * 16U + 8U;  // Classic annoying padding
     }
     if (player.yTile > 4)  // 4 is the y offset from top to center
     {
@@ -551,8 +428,7 @@ static void loadRoom(UINT8 id)
             camera_y = camera_max_y;
             new_camera_y = camera_y;
             map_pos_y = (BYTE)(camera_y >> 3U);
-            // player.ySpr = PLAYER_Y_DOWN - ((gridH - player.yTile) * 64U) + 128U;  // Classic annoying padding
-            player.ySpr = PLAYER_Y_LOWER_BOUND_PX - metatileToPx(gridH - player.yTile) + 16U;
+            player.ySpr = PLAYER_Y_DOWN - ((gridH - player.yTile) * 16U) + 8U;  // Classic annoying padding
         }
         else
         {
@@ -561,7 +437,7 @@ static void loadRoom(UINT8 id)
                 camera_y = camera_max_y;
             new_camera_y = camera_y;
             map_pos_y = (BYTE)(camera_y >> 3U);
-            player.ySpr = PLAYER_Y_CENTER_BOUND_PX;
+            player.ySpr = PLAYER_Y_CENTER;
         }
     }
     else
@@ -569,20 +445,19 @@ static void loadRoom(UINT8 id)
         map_pos_y = 0U;
         camera_y = 0U;
         new_camera_y = camera_y;
-        // player.ySpr = player.yTile % 18U * 64U + 128U;  // Classic annoying padding
-        player.ySpr = metatileToPx(player.yTile) + 16U;
+        player.ySpr = player.yTile % 18U * 16U + 16U;  // Classic annoying padding
     }
 
-    // Load room map into playGrid
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
     // Draw grid
     for (i = 0U; i != 10U; i++)
         for (j = 0U; j != 9U; j++)
-            // drawBkgTile(((i<<1U))%32U, ((j<<1U))%32U, playGrid[j][i]);
             drawBkgTile((map_pos_x+(i<<1U))%32U, (map_pos_y+(j<<1U))%32U, (*playGridPtr)[(map_pos_y>>1U)+j][(map_pos_x>>1U)+i]);
 
+    // Check player coords/dir, draw player appropriately
     SCX_REG = camera_x; SCY_REG = camera_y;
+    oldTileX = player.xTile;
+    oldTileY = player.yTile;
 }
 
 static void walkPlayer(void)
@@ -789,69 +664,6 @@ static void drawNewBkg(void)
         }
         map_pos_x = new_map_pos_x;
     }
-}
-
-static void fillerFn2(void)
-{
-// static void drawNewBkg(void)
-// {
-//     SCX_REG = camera_x; SCY_REG = camera_y;
-
-//     // Vertical
-//     // set_bkg_tile_xy(8,8,map_pos_y);
-//     // set_bkg_tile_xy(8,9,new_map_pos_y);
-//     // set_bkg_tile_xy(8,10,new_camera_y >> 3U);
-//     set_bkg_tile_xy(8,8,player.yTile);
-//     set_bkg_tile_xy(8,9,oldTileY);
-//     set_bkg_tile_xy(8,10,new_camera_y >> 3U);
-
-//     new_map_pos_y = (BYTE)(new_camera_y >> 3U);
-//     // if (map_pos_y != new_map_pos_y) {
-//     if (oldTileY != player.yTile) {
-//         // if (new_camera_y < camera_y)
-//         if (player.yTile < oldTileY)
-//         {
-//             set_bkg_tile_xy(3,3,0x0A);
-//             for (k = 0U; k != 10U; ++k)
-//             {
-//                 drawBkgTile((map_pos_x+(k<<1U))%32U, new_map_pos_y%32U, playGrid[player.yTile>>1U][(player.xTile>>1U)+k]);
-//             }
-//         // } else if (new_camera_y > camera_y) 
-//         } else if (player.yTile > oldTileY) 
-//         {
-//             set_bkg_tile_xy(3,3,0x0B);
-//             for (UINT8 k = 0U; k != 10U; ++k)
-//             {
-//                 drawBkgTile((map_pos_x+(k<<1U))%32U, (new_map_pos_y+16U)%32U, playGrid[(player.yTile+16U)>>1U][(player.xTile>>1U)+k]);
-//                 // drawBkgTile((map_pos_x+(k<<1U))%32U, (new_map_pos_y+16U)%32U, playGrid[((new_map_pos_y+16U)>>1U)][(map_pos_x>>1U)+k]);
-//             }
-//         }
-
-//         map_pos_y = new_map_pos_y;
-//         oldTileY = player.yTile; 
-//     }
-
-//     // Horizontal
-//     new_map_pos_x = (BYTE)(new_camera_x >> 4U);
-//     if (map_pos_x != new_map_pos_x) {
-//         if (new_camera_x < camera_x) 
-//         {
-//             for (k = 0U; k != 9U; ++k)
-//             {
-//                 drawBkgTile(new_map_pos_x%32U, (map_pos_y+(k<<1U))%32U, playGrid[(map_pos_y>>1U)+k][new_map_pos_x>>1U]);
-//             }
-//         } else 
-//         {
-//             for (k = 0U; k != 9U; ++k)
-//             {
-//                 drawBkgTile((new_map_pos_x + 18U)%32U, (map_pos_y+(k<<1U))%32U, playGrid[(map_pos_y>>1U)+k][(new_map_pos_x+18U)>>1U]);
-//             }
-//         }
-//         map_pos_x = new_map_pos_x;
-//     }
-//     // set old camera position to current camera position
-//     camera_x = new_camera_x, camera_y = new_camera_y;
-// }
 }
 
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
