@@ -13,18 +13,11 @@ typedef enum {
 } SUBSTATE;
 
 typedef enum {
-    PLAYER_IDLE,
-    PLAYER_WALKING,
-    PLAYER_DEAD,
-    PLAYER_WON
-} PLAYERSTATE;
-
-typedef enum {
-    ENEMY_IDLE,
-    ENEMY_WALKING,
-    ENEMY_DEAD,
-    ENEMY_WON
-} ENEMYSTATE;
+    ENTITY_IDLE,
+    ENTITY_WAITING,
+    ENTITY_WALKING,
+    ENTITY_DEAD
+} ENTITYSTATE;
 
 typedef enum {
     DIR_UP = 0U,
@@ -32,5 +25,12 @@ typedef enum {
     DIR_LEFT = 36U,
     DIR_RIGHT = 12U
 } DIRECTION;  // These are in increments of 12 to make the math faster when using directions for sprite frame indices
+
+typedef enum {
+    ACT_WALK,
+    ACT_TURN,
+    ACT_WAIT,
+    ACT_SWITCH_ROUTINE
+} ACTION;
 
 #endif

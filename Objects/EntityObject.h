@@ -1,22 +1,27 @@
 #include <gb/gb.h>
 #include "../Engine/enums.h"
 
-#ifndef ENEMYOBJECT_H
-#define ENEMYOBJECT_H
+#ifndef ENTITYOBJECT_H
+#define ENTITYOBJECT_H
  
-typedef struct EnemyObject {
+typedef struct EntityObject {
+    ENTITYSTATE state;
     UINT8 id;
     UINT8 speciesId;
-    ENEMYSTATE state;
     UINT8 spriteId;
     UINT8 animFrame;
     UINT16 xSpr;
     UINT16 ySpr;
-    UINT16 xMap;
-    UINT16 yMap;
-    UINT8 visible;
+    UINT8 xTile;
+    UINT8 yTile;
     DIRECTION dir;
     UINT8 moveSpeed;
+    UINT8 actionTimer;
+    UINT8 routineId;
+    UINT8 curActionIndex;
+    UINT8 isVisible;
+    INT8 xVel;
+    INT8 yVel;
     UINT8 hpMax;
     UINT8 hpCur;
 } EntityObject;

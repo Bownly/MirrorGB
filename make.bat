@@ -3,6 +3,8 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
+
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1Map.o Assets/Maps/Levels/Level1Map.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1MMap.o Assets/Maps/Levels/Level1MMap.c
 
@@ -22,7 +24,7 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareMapData.o Engine/IShareMapData.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/main.o main.c
-C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Mirror.gb o/*.o
+C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c
 
 
 @REM ######## Bank info
@@ -31,7 +33,20 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Mirror.gb o/*.o
 @REM #  2: level state
 @REM #  3: level data
 
-@REM Sloppy TODO:
-@REM Camera scrolling/level loading
-@REM Mirror world transition
+@REM Prototyping TODO:
+@REM    NPC routines
+@REM        Waiting
+@REM        Turning
+@REM        Switching routines?
+@REM        Other actions?
+@REM    Convert entities to use metasprites
+@REM    NPC animations when doing actions
+@REM    NPC spotting player
+@REM        NPC FOV checks
+@REM        NPC halt
+@REM        Reset level + remove 1 player health (temp behavior)
 
+@REM Proper code stuff:
+@REM    Level loading from different banks
+@REM    Mirror world transition
+@REM    Move routines to a different bank

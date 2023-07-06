@@ -10,7 +10,7 @@
 // #include "Assets/Tiles/borderTiles.h"
 // #include "Assets/Tiles/fontTiles.h"
 
-#include "Objects/PlayerObject.h"
+#include "Objects/EntityObject.h"
 
 #include "States/LevelState.h"
 
@@ -45,7 +45,7 @@ UINT8 animTick = 0U;
 UINT16 camera_x = 0U;
 UINT16 camera_y = 0U;
 
-PlayerObject player;
+EntityObject player;
 UINT8 handyDandyString[19U];
 UINT8 (*playGridPtr)[32U][32U];
 UINT8 playGrid[32U][32U];

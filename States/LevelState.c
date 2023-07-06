@@ -9,6 +9,8 @@
 // #include "../Engine/songPlayer.h"
 #include "../Engine/IShareMapData.h"
 
+#include "../Assets/Sprites/NPCgirl.h"
+
 #include "../Assets/Tiles/GhostTiles.h"
 #include "../Assets/Tiles/TadTiles.h"
 #include "../Assets/Tiles/HouseTiles.h"
@@ -16,11 +18,11 @@
 #include "../Assets/Tiles/fontTiles.h"
 #include "../Assets/Tiles/HUD.h"
 
-// #include "../Assets/Maps/Level1Map.h"
-
-#include "../Objects/EnemyObject.h"
+#include "../Objects/ActionObject.h"
+#include "../Objects/EntityObject.h"
 #include "../Objects/LevelObject.h"
-#include "../Objects/PlayerObject.h"
+#include "../Objects/RoutineObject.h"
+
 
 
 // extern const hUGESong_t templateTwilightDriveSong;
@@ -39,9 +41,6 @@ extern UINT8 r;  // Used for randomization stuff
 extern UINT8 animTick;
 extern UINT8 animFrame;
 
-extern PlayerObject player;
-UINT8 playerstate;
-
 extern UINT8 gamestate;
 extern UINT8 substate;
 // extern UINT8 currentLevel;
@@ -49,8 +48,11 @@ extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
 
-// static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
-static EntityObject entityList[24U];
+extern EntityObject player;
+static EntityObject* entityPtr;
+static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
+static EntityObject entityList[8U];
+#define ENTITY_MAX 8U
 static UINT8 headCount;
 
 static const UINT8 hudMouthMap[8U] = {0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7};
@@ -103,6 +105,21 @@ static UBYTE redraw;
 #define pxToMetatile(px) ((px) >> 4U)
 
 
+ActionObject routine0[] = { 
+                            {ACT_WALK, DIR_DOWN},
+                            {ACT_WALK, DIR_DOWN},
+                            {ACT_WALK, DIR_RIGHT},
+                            {ACT_WALK, DIR_RIGHT},
+                            {ACT_WALK, DIR_RIGHT},
+                            {ACT_WALK, DIR_UP},
+                            {ACT_WALK, DIR_UP},
+                            {ACT_WALK, DIR_LEFT},
+                            {ACT_WALK, DIR_LEFT},
+                            {ACT_WALK, DIR_LEFT}
+                          };
+                          #define ROUTINE_LENGTH 10U
+
+
 /* SUBSTATE METHODS */
 static void phaseInit(void);
 static void phaseLoop(void);
@@ -111,20 +128,21 @@ static void phaseLoop(void);
 static void inputs(void);
 
 /* HELPER METHODS */
-static void calcPhysics(void);
 static void commonInit(void);
 static void checkUnderfootTile(void);
+static UINT8 entityListAdd(UINT8, UINT8, UINT8);
+static void handleRoutines(void);
 static void loadLevel(void);
 static void loadRoom(UINT8);
 static void walkPlayer(void);
 
 /* DISPLAY METHODS */
+static void animateEntities(void);
 static void animatePlayer(void);
 static void displayHealthPips(void);
 static void displayHeadcount(void);
 static void drawNewBkg(void);
 static void drawBkgTile(UINT8, UINT8, UINT8);
-// static void showOrHideEntities();
 
 
 void LevelStateMain(void)
@@ -154,6 +172,13 @@ static void phaseInit(void)
     // Initializations
     animTick = 0U;
     
+    // Init entity stuff
+    for (i = 0U; i != 8U; ++i)
+        entityList[i].id = 0xFFU;
+    for (i = 0U; i != 32U; ++i)
+        for (j = 0U; j != 32U; ++j)
+            entityGrid[j][i] = 0xFFU;
+
     HIDE_WIN;
     SHOW_SPRITES;
     SPRITES_8x16;
@@ -165,13 +190,19 @@ static void phaseInit(void)
     player.yTile = 1U;
     player.xSpr = 88U;
     player.ySpr = 88U;
+    player.dir - DIR_DOWN;
 
     playGridPtr = &playGridM;
     commonInit();
 
+    set_sprite_data(0x30U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+
     substate = SUB_LOOP;
 
     player.moveSpeed = PLAYER_SPEED;
+
+    if (entityGrid[6][9] == 0xFFU)
+        entityListAdd(1, 2, 5);
 
     // fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -183,16 +214,19 @@ static void phaseLoop(void)
     ++animTick;
 
     // Player movements and inputs
-    if (playerstate == PLAYER_WALKING)
+    if (player.state == ENTITY_WALKING)
         walkPlayer();
 
-    // Need to recheck playerstate because the previous fn might have changed it
-    if (playerstate == PLAYER_IDLE)
+    handleRoutines();
+
+    // Need to recheck player.state because the previous fn might have changed it
+    if (player.state == ENTITY_IDLE)
         inputs();
 
     animatePlayer();
+    animateEntities();
 
-    if (redraw && playerstate == PLAYER_WALKING)
+    if (redraw && player.state == ENTITY_WALKING)
     {
         // wait_vbl_done();
         drawNewBkg();
@@ -211,7 +245,7 @@ static void phaseLoop(void)
 /******************************** INPUT METHODS *********************************/
 static void inputs(void)
 {    
-    if (playerstate == PLAYER_IDLE)
+    if (player.state == ENTITY_IDLE)
     {
         if (curJoypad & J_A && !(prevJoypad & J_A))
         {
@@ -245,13 +279,13 @@ static void inputs(void)
                 {
                     if (player.ySpr != PLAYER_Y_UP)
                     {
-                        playerstate = PLAYER_WALKING;
+                        player.state = ENTITY_WALKING;
                     }
                 }
                 else  // Move camera
                 {
                     new_camera_y -= 16;
-                    playerstate = PLAYER_WALKING;
+                    player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
             }
@@ -267,13 +301,13 @@ static void inputs(void)
                 {
                     if (player.ySpr != PLAYER_Y_DOWN)
                     {
-                        playerstate = PLAYER_WALKING;
+                        player.state = ENTITY_WALKING;
                     }
                 }
                 else  // Move camera
                 {
                     new_camera_y += 16;
-                    playerstate = PLAYER_WALKING;
+                    player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
             }
@@ -289,13 +323,13 @@ static void inputs(void)
                 {
                     if (player.xSpr != PLAYER_X_LEFT)
                     {
-                        playerstate = PLAYER_WALKING;
+                        player.state = ENTITY_WALKING;
                     }
                 }
                 else  // Move camera
                 {
                     new_camera_x -= 16;
-                    playerstate = PLAYER_WALKING;
+                    player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
             }
@@ -311,13 +345,13 @@ static void inputs(void)
                 {
                     if (player.xSpr != PLAYER_X_RIGHT)
                     {
-                        playerstate = PLAYER_WALKING;
+                        player.state = ENTITY_WALKING;
                     }
                 }
                 else  // Move camera
                 {
                     new_camera_x += 16;
-                    playerstate = PLAYER_WALKING;
+                    player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
             }
@@ -329,7 +363,7 @@ static void inputs(void)
 /******************************** HELPER METHODS *********************************/
 static void checkUnderfootTile(void)
 {
-    playerstate = PLAYER_IDLE;
+    player.state = ENTITY_IDLE;
 }
 
 static void commonInit(void)
@@ -341,12 +375,10 @@ static void commonInit(void)
 
     // Initializations
     animTick = 0U;
-    playerstate = PLAYER_IDLE;
+    player.state = ENTITY_IDLE;
 
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
-    player.xMapPos = player.xTile * 16U;
-    player.yMapPos = player.yTile * 16U;
     player.hpMax = 16U;
     player.hpCur = 16U;
 
@@ -384,6 +416,92 @@ static void commonInit(void)
 
     animatePlayer();
 }
+
+static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
+{
+    // Find the first open slot
+    k = 0U;
+    for (i = 0U; i != 8U; ++i)
+    {
+        if (entityList[i].id == 0xFFU)
+        {
+            k = i;
+            break;  // End loop faster
+        }
+    }
+
+    // Init the new entity
+    entityList[k].id = k;
+    entityList[k].speciesId = speciesId;
+    entityList[k].state = ENTITY_IDLE;
+    if (speciesId == 2U) entityList[k].state = ENTITY_DEAD;  // TODO: Temp line to create stationary entities
+    entityList[k].spriteId = k * 36U;
+    entityList[k].animFrame = 0U;
+    entityList[k].xSpr = (tileX * 16U) + 8U;
+    entityList[k].ySpr = (tileY * 16U) + 16U;
+    entityList[k].xTile = tileX;
+    entityList[k].yTile = tileY;
+    entityList[k].dir = DIR_DOWN;
+    entityList[k].moveSpeed = 1U;
+    entityList[k].hpMax = 0U;
+    entityList[k].hpCur = 0U;
+
+    set_sprite_tile((k*2U) + 2U, 12);
+    set_sprite_tile((k*2U) + 3U, 14);
+    move_sprite((k*2U) + 2U, entityList[k].xSpr, entityList[k].ySpr - camera_y);
+    move_sprite((k*2U) + 3U, entityList[k].xSpr + 8U, entityList[k].ySpr - camera_y);
+
+    entityGrid[tileY][tileX] = k;
+
+    return k;
+}
+
+static void handleRoutines(void)
+{
+    entityPtr = entityList;
+    for (i = 0U; i != ENTITY_MAX; ++i)
+    {
+        if (entityList[i].id != 0xFF)
+        {
+            switch (entityList[i].state)
+            {
+                case ENTITY_IDLE:
+                    // Move to next action
+                    k = (entityPtr->curActionIndex + 1U) % ROUTINE_LENGTH;  // TODO: NOTE: WARNING: ACHTUNG: Swap out ROUTINE_LENGTH for variable routine length
+                    entityPtr->curActionIndex = k;
+                    entityPtr->actionTimer = 0U;
+                    set_bkg_tile_xy(0,0,routine0[k].action);
+                    set_bkg_tile_xy(1,0,routine0[k].arg);
+
+                    switch (routine0[k].action)
+                    {
+                        case ACT_WALK:
+                            entityPtr->state = ENTITY_WALKING;
+                            entityPtr->dir = routine0[k].arg;
+                            break;
+                    }
+                    break;
+                case ENTITY_WALKING:
+                    if (entityPtr->actionTimer != 16U)
+                    {
+                        switch (entityPtr->dir)
+                        {
+                            case DIR_UP:    entityPtr->ySpr -= 1U; break;
+                            case DIR_DOWN:  entityPtr->ySpr += 1U; break;
+                            case DIR_LEFT:  entityPtr->xSpr -= 1U; break;
+                            case DIR_RIGHT: entityPtr->xSpr += 1U; break;
+                        }
+                    }
+                    else
+                        entityPtr->state = ENTITY_IDLE;
+                    entityPtr->actionTimer++;
+                    break;
+            }
+        }
+        entityPtr += sizeof(EntityObject);
+    }
+}
+
 
 static void loadRoom(UINT8 id)
 {
@@ -551,6 +669,28 @@ static void walkPlayer(void)
 
 
 /******************************** DISPLAY METHODS ********************************/
+static void animateEntities(void)
+{
+    UINT8 upperBound = camera_y - 16U;
+    UINT8 lowerBound = upperBound + 144U;
+    for (i = 0U; i != ENTITY_MAX; ++i)
+    {
+        if (entityList[i].id != 0xFF)
+        {
+            // if (entityList[i].ySpr > upperBound || entityList[i].ySpr < lowerBound)
+            //     entityList[i].isVisible = FALSE;
+            // else
+                entityList[i].isVisible = TRUE;
+        }
+
+        if (entityList[i].isVisible == TRUE)
+        {
+            move_sprite((entityList[i].id * 2U) + 2U, entityList[i].xSpr - camera_x, entityList[i].ySpr - camera_y);
+            move_sprite((entityList[i].id * 2U) + 3U, entityList[i].xSpr + 8U - camera_x, entityList[i].ySpr - camera_y);
+        }
+    }
+}
+
 static void animatePlayer(void)
 {
     // if (shouldHidePlayer == FALSE)
@@ -558,13 +698,13 @@ static void animatePlayer(void)
         animFrame = animTick % 16U;
             animFrame /= 8U;
 
-        switch (playerstate)
+        switch (player.state)
         {
             default:
                 animFrame = 1U;
                 animFrame += (player.dir >> 2U);
                 break;
-            case PLAYER_WALKING:
+            case ENTITY_WALKING:
                 animFrame = animTick % 16U;
                 animFrame /= 4U;
                 if (animFrame == 3U)
@@ -673,25 +813,3 @@ static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
     // set_bkg_tile_xy(x+1,y,y);
     // set_bkg_tile_xy(x, y, tileIndex);
 }
-
-// static void showOrHideEntities()
-// {
-//     UINT8 upperBound = camera_y - 16U;
-//     UINT8 lowerBound = upperBound + 144U;
-//     for (i = 0U; i != 24U; ++i)
-//     {
-//         if (entityList[i].id != 0xFF)
-//         {
-//             if (entityList[i].ySpr > upperBound || entityList[i].ySpr < lowerBound)
-//                 entityList[i].visible = FALSE;
-//             else
-//                 entityList[i].visible = TRUE;
-//         }
-
-//         if (entityList[i].visible == TRUE)
-//         {
-//             move_sprite((entityList[i].id * 2U) + 2U, entityList[i].x, entityList[i].ySpr - camera_y);
-//             move_sprite((entityList[i].id * 2U) + 3U, entityList[i].x + 8U, entityList[i].ySpr - camera_y);
-//         }
-//     }
-// }
