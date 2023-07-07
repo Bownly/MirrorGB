@@ -3,15 +3,14 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1Map.o Assets/Maps/Levels/Level1Map.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1MMap.o Assets/Maps/Levels/Level1MMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/CrosshairTiles.o Assets/Tiles/CrosshairTiles.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/GhostTiles.o Assets/Tiles/GhostTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HUDTiles.o Assets/Tiles/HUD.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/TadTiles.o Assets/Tiles/TadTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/YaMetaTiles.o Assets/Tiles/YaMetaTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
@@ -34,12 +33,10 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  3: level data
 
 @REM Prototyping TODO:
+@REM    Fix NPC rendering to actually work with xSpr and camera_x and stuff
 @REM    NPC routines
-@REM        Waiting
-@REM        Turning
 @REM        Switching routines?
 @REM        Other actions?
-@REM    Convert entities to use metasprites
 @REM    NPC animations when doing actions
 @REM    NPC spotting player
 @REM        NPC FOV checks

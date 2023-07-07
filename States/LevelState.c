@@ -9,10 +9,9 @@
 // #include "../Engine/songPlayer.h"
 #include "../Engine/IShareMapData.h"
 
+#include "../Assets/Sprites/MC.h"
 #include "../Assets/Sprites/NPCgirl.h"
 
-#include "../Assets/Tiles/GhostTiles.h"
-#include "../Assets/Tiles/TadTiles.h"
 #include "../Assets/Tiles/HouseTiles.h"
 #include "../Assets/Tiles/YaMetaTiles.h"
 #include "../Assets/Tiles/fontTiles.h"
@@ -106,18 +105,13 @@ static UBYTE redraw;
 
 
 ActionObject routine0[] = { 
-                            {ACT_WALK, DIR_DOWN},
-                            {ACT_WALK, DIR_DOWN},
-                            {ACT_WALK, DIR_RIGHT},
-                            {ACT_WALK, DIR_RIGHT},
-                            {ACT_WALK, DIR_RIGHT},
-                            {ACT_WALK, DIR_UP},
-                            {ACT_WALK, DIR_UP},
-                            {ACT_WALK, DIR_LEFT},
-                            {ACT_WALK, DIR_LEFT},
-                            {ACT_WALK, DIR_LEFT}
+                            {ACT_WALK, DIR_DOWN, 2U},
+                            {ACT_WALK, DIR_RIGHT, 3U},
+                            {ACT_WALK, DIR_UP, 2U},
+                            {ACT_WALK, DIR_LEFT, 3U},
+                            {ACT_WAIT, DIR_RIGHT, 16U}
                           };
-                          #define ROUTINE_LENGTH 10U
+                          #define ROUTINE_LENGTH 5U
 
 
 /* SUBSTATE METHODS */
@@ -181,7 +175,7 @@ static void phaseInit(void)
 
     HIDE_WIN;
     SHOW_SPRITES;
-    SPRITES_8x16;
+    SPRITES_8x8;
 
     // // Check levelId, pull appropriate level
     // loadLevel();
@@ -201,8 +195,8 @@ static void phaseInit(void)
 
     player.moveSpeed = PLAYER_SPEED;
 
-    if (entityGrid[6][9] == 0xFFU)
-        entityListAdd(1, 2, 5);
+    if (entityGrid[2][4] == 0xFFU)
+        entityListAdd(1, 2, 4);
 
     // fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -224,7 +218,8 @@ static void phaseLoop(void)
         inputs();
 
     animatePlayer();
-    animateEntities();
+    if (roomId % 2U == 0U)  // Don't animate entities if we're in the mirror world
+        animateEntities();
 
     if (redraw && player.state == ENTITY_WALKING)
     {
@@ -383,11 +378,10 @@ static void commonInit(void)
     player.hpCur = 16U;
 
     // Load graphics
-    set_sprite_data(OBAKE_BKG_INDEX, 16U, GhostTiles); 
     set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0x00U, 40U, fontTiles);
     set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
-    set_sprite_data(0U, 48U, owTadTiles);
+    set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
 
     // HUD
     SHOW_WIN;
@@ -435,7 +429,8 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].speciesId = speciesId;
     entityList[k].state = ENTITY_IDLE;
     if (speciesId == 2U) entityList[k].state = ENTITY_DEAD;  // TODO: Temp line to create stationary entities
-    entityList[k].spriteId = k * 36U;
+    entityList[k].spriteId = (k + 4U);
+    entityList[k].animTick = 0U;
     entityList[k].animFrame = 0U;
     entityList[k].xSpr = (tileX * 16U) + 8U;
     entityList[k].ySpr = (tileY * 16U) + 16U;
@@ -465,24 +460,13 @@ static void handleRoutines(void)
         {
             switch (entityList[i].state)
             {
-                case ENTITY_IDLE:
-                    // Move to next action
-                    k = (entityPtr->curActionIndex + 1U) % ROUTINE_LENGTH;  // TODO: NOTE: WARNING: ACHTUNG: Swap out ROUTINE_LENGTH for variable routine length
-                    entityPtr->curActionIndex = k;
-                    entityPtr->actionTimer = 0U;
-                    set_bkg_tile_xy(0,0,routine0[k].action);
-                    set_bkg_tile_xy(1,0,routine0[k].arg);
-
-                    switch (routine0[k].action)
-                    {
-                        case ACT_WALK:
-                            entityPtr->state = ENTITY_WALKING;
-                            entityPtr->dir = routine0[k].arg;
-                            break;
-                    }
+                case ENTITY_WAITING:
+                    if (entityPtr->actionTimer == 0U)
+                        entityPtr->state = ENTITY_IDLE;
+                    entityPtr->actionTimer--;
                     break;
                 case ENTITY_WALKING:
-                    if (entityPtr->actionTimer != 16U)
+                    if (entityPtr->actionTimer != 0U)
                     {
                         switch (entityPtr->dir)
                         {
@@ -494,14 +478,59 @@ static void handleRoutines(void)
                     }
                     else
                         entityPtr->state = ENTITY_IDLE;
-                    entityPtr->actionTimer++;
+                    entityPtr->actionTimer--;
+                    
+                    // entityPtr->animTick++;
+                    // entityPtr->animFrame = entityPtr->animTick % 16U;
+                    // entityPtr->animFrame /= 8U;
+                    // if (entityPtr->animFrame == 3U)
+                    //     entityPtr->animFrame = 1U;
+                    // entityPtr->animFrame += (entityPtr->dir >> 2U);
+
+                    entityPtr->animTick++;
+                    entityPtr->animFrame = entityPtr->animTick % 32U;
+                    entityPtr->animFrame /= 8U;
+                    if (entityPtr->animFrame == 3U)
+                        entityPtr->animFrame = 1U;
+                    if (entityPtr->dir == DIR_RIGHT)
+                        entityPtr->animFrame += (entityPtr->dir - 1U) * 3U;
+                    else
+                        entityPtr->animFrame += entityPtr->dir * 3U;
+
                     break;
+            }
+
+            // This goes after the switch statement to remove the 1 frame delay between completing an action and starting a new one
+            if (entityPtr->state == ENTITY_IDLE)
+            {
+                    // Move to next action
+                    k = (entityPtr->curActionIndex) % ROUTINE_LENGTH;  // TODO: NOTE: WARNING: ACHTUNG: Swap out ROUTINE_LENGTH for variable routine length
+                    entityPtr->curActionIndex = k + 1U;
+
+                    switch (routine0[k].action)
+                    {
+                        case ACT_WALK:
+                            entityPtr->state = ENTITY_WALKING;
+                            entityPtr->dir = routine0[k].direction;
+                            entityPtr->actionTimer = 16U * routine0[k].magnitude;
+                            break;
+                        case ACT_WAIT:
+                            entityPtr->state = ENTITY_WAITING;
+                            entityPtr->actionTimer = routine0[k].magnitude;
+                            entityPtr->dir = routine0[k].direction;
+
+                            if (entityPtr->dir == DIR_RIGHT)
+                                entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
+                            else
+                                entityPtr->animFrame = entityPtr->dir * 3U;
+
+                            break;
+                    }
             }
         }
         entityPtr += sizeof(EntityObject);
     }
 }
-
 
 static void loadRoom(UINT8 id)
 {
@@ -673,6 +702,7 @@ static void animateEntities(void)
 {
     UINT8 upperBound = camera_y - 16U;
     UINT8 lowerBound = upperBound + 144U;
+    entityPtr = entityList;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
         if (entityList[i].id != 0xFF)
@@ -685,9 +715,15 @@ static void animateEntities(void)
 
         if (entityList[i].isVisible == TRUE)
         {
-            move_sprite((entityList[i].id * 2U) + 2U, entityList[i].xSpr - camera_x, entityList[i].ySpr - camera_y);
-            move_sprite((entityList[i].id * 2U) + 3U, entityList[i].xSpr + 8U - camera_x, entityList[i].ySpr - camera_y);
+            if (entityPtr->dir == DIR_LEFT)
+                move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                entityList[i].xSpr - camera_x + 8U, entityList[i].ySpr - camera_y + 6U);
+            else
+                move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                entityList[i].xSpr - camera_x + 8U, entityList[i].ySpr - camera_y + 6U);
+
         }
+        entityPtr += sizeof(EntityObject);
     }
 }
 
@@ -695,35 +731,20 @@ static void animatePlayer(void)
 {
     // if (shouldHidePlayer == FALSE)
     // {
-        animFrame = animTick % 16U;
-            animFrame /= 8U;
+        player.animTick++;
+        player.animFrame = player.animTick % 32U;
+        player.animFrame /= 8U;
+        if (player.animFrame == 3U)
+            player.animFrame = 1U;
+        if (player.dir == DIR_RIGHT)
+            player.animFrame += (player.dir - 1U) * 3U;
+        else
+            player.animFrame += player.dir * 3U;
 
-        switch (player.state)
-        {
-            default:
-                animFrame = 1U;
-                animFrame += (player.dir >> 2U);
-                break;
-            case ENTITY_WALKING:
-                animFrame = animTick % 16U;
-                animFrame /= 4U;
-                if (animFrame == 3U)
-                    animFrame = 1U;
-                animFrame += (player.dir >> 2U);
-                break;
-        }
-        animFrame <<= 2U;
-
-        move_sprite(0U, player.xSpr,      player.ySpr);
-        move_sprite(1U, player.xSpr + 8U, player.ySpr);
-
-        set_sprite_tile(0U, 0U + animFrame);
-        set_sprite_tile(1U, 2U + animFrame);
-    // }
-    // else
-    // {
-    //     move_sprite(0U, 0U, 0U);
-    //     move_sprite(1U, 0U, 0U);
+        if (player.dir == DIR_LEFT)
+            move_metasprite_vflip(MC_metasprites[player.animFrame], 0U, 0U, player.xSpr + 8U, player.ySpr + 6U);
+        else
+            move_metasprite(MC_metasprites[player.animFrame], 0U, 0U, player.xSpr + 8U, player.ySpr + 6U);
     // }
 }
 

@@ -9,6 +9,7 @@ typedef struct EntityObject {
     UINT8 id;
     UINT8 speciesId;
     UINT8 spriteId;
+    UINT8 animTick;
     UINT8 animFrame;
     UINT16 xSpr;
     UINT16 ySpr;

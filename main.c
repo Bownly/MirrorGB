@@ -67,7 +67,7 @@ void main(void)
     // set_bkg_data(0xF0U, 8U, borderTiles);
     // set_bkg_data(0U, 91U, fontTiles);
 
-    SPRITES_8x16;
+    SPRITES_8x8;
 
     init_bkg(0xFFU);
     DISPLAY_ON;

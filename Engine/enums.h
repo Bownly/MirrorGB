@@ -21,10 +21,10 @@ typedef enum {
 
 typedef enum {
     DIR_UP = 0U,
-    DIR_DOWN = 24U,
-    DIR_LEFT = 36U,
-    DIR_RIGHT = 12U
-} DIRECTION;  // These are in increments of 12 to make the math faster when using directions for sprite frame indices
+    DIR_DOWN = 1U,
+    DIR_LEFT = 2U,
+    DIR_RIGHT = 3U
+} DIRECTION;
 
 typedef enum {
     ACT_WALK,
