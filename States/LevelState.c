@@ -105,13 +105,13 @@ static UBYTE redraw;
 
 
 ActionObject routine0[] = { 
+                            // {ACT_WAIT, DIR_RIGHT, 16U}
                             {ACT_WALK, DIR_DOWN, 2U},
                             {ACT_WALK, DIR_RIGHT, 3U},
                             {ACT_WALK, DIR_UP, 2U},
                             {ACT_WALK, DIR_LEFT, 3U},
-                            {ACT_WAIT, DIR_RIGHT, 16U}
                           };
-                          #define ROUTINE_LENGTH 5U
+                          #define ROUTINE_LENGTH 4U
 
 
 /* SUBSTATE METHODS */
@@ -195,7 +195,8 @@ static void phaseInit(void)
 
     player.moveSpeed = PLAYER_SPEED;
 
-    if (entityGrid[2][4] == 0xFFU)
+    // if (entityGrid[2][4] == 0xFFU)
+        entityListAdd(1, 26,28);
         entityListAdd(1, 2, 4);
 
     // fadein();
@@ -429,7 +430,7 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].speciesId = speciesId;
     entityList[k].state = ENTITY_IDLE;
     if (speciesId == 2U) entityList[k].state = ENTITY_DEAD;  // TODO: Temp line to create stationary entities
-    entityList[k].spriteId = (k + 4U);
+    entityList[k].spriteId = (k + 1U) * 4U;
     entityList[k].animTick = 0U;
     entityList[k].animFrame = 0U;
     entityList[k].xSpr = (tileX * 16U) + 8U;
@@ -441,10 +442,10 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].hpMax = 0U;
     entityList[k].hpCur = 0U;
 
-    set_sprite_tile((k*2U) + 2U, 12);
-    set_sprite_tile((k*2U) + 3U, 14);
-    move_sprite((k*2U) + 2U, entityList[k].xSpr, entityList[k].ySpr - camera_y);
-    move_sprite((k*2U) + 3U, entityList[k].xSpr + 8U, entityList[k].ySpr - camera_y);
+    // set_sprite_tile((k*2U) + 2U, 12);
+    // set_sprite_tile((k*2U) + 3U, 14);
+    // move_sprite((k*2U) + 2U, entityList[k].xSpr, entityList[k].ySpr - camera_y);
+    // move_sprite((k*2U) + 3U, entityList[k].xSpr + 8U, entityList[k].ySpr - camera_y);
 
     entityGrid[tileY][tileX] = k;
 
@@ -456,9 +457,10 @@ static void handleRoutines(void)
     entityPtr = entityList;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
-        if (entityList[i].id != 0xFF)
+        entityPtr = &entityList[i];
+        if (entityPtr->id != 0xFF)
         {
-            switch (entityList[i].state)
+            switch (entityPtr->state)
             {
                 case ENTITY_WAITING:
                     if (entityPtr->actionTimer == 0U)
@@ -528,7 +530,6 @@ static void handleRoutines(void)
                     }
             }
         }
-        entityPtr += sizeof(EntityObject);
     }
 }
 
@@ -700,30 +701,37 @@ static void walkPlayer(void)
 /******************************** DISPLAY METHODS ********************************/
 static void animateEntities(void)
 {
-    UINT8 upperBound = camera_y - 16U;
-    UINT8 lowerBound = upperBound + 144U;
+    UINT16 rightBound = camera_x + 160U;
+    UINT16 bottomBound = camera_y + 128U;
+   
     entityPtr = entityList;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
-        if (entityList[i].id != 0xFF)
+        entityPtr = &entityList[i];
+        if (entityPtr->id != 0xFF)
+        // if (entityPtr->id != 0xFF && roomId % 2U == 0U)
         {
-            // if (entityList[i].ySpr > upperBound || entityList[i].ySpr < lowerBound)
-            //     entityList[i].isVisible = FALSE;
-            // else
-                entityList[i].isVisible = TRUE;
-        }
-
-        if (entityList[i].isVisible == TRUE)
-        {
-            if (entityPtr->dir == DIR_LEFT)
-                move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                entityList[i].xSpr - camera_x + 8U, entityList[i].ySpr - camera_y + 6U);
+            if ((entityPtr->xSpr < camera_x || entityPtr->ySpr < camera_y)
+                || (entityPtr->xSpr > rightBound || entityPtr->ySpr > bottomBound))
+                entityPtr->isVisible = FALSE;
             else
-                move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                entityList[i].xSpr - camera_x + 8U, entityList[i].ySpr - camera_y + 6U);
+                entityPtr->isVisible = TRUE;
 
+            if (entityPtr->isVisible == TRUE)
+            {
+                if (entityPtr->dir == DIR_LEFT)
+                    move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                    entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                else
+                    move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                    entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+            }
+            else
+            {
+                hide_sprites_range(entityPtr->spriteId, entityPtr->spriteId + 4U);
+                // hide_metasprite(NPCgirl_metasprites[entityPtr->animFrame], entityPtr->spriteId);
+            }
         }
-        entityPtr += sizeof(EntityObject);
     }
 }
 
