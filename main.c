@@ -3,7 +3,7 @@
 
 // #include "Engine/common.h"
 #include "Engine/enums.h"
-// #include "Engine/fade.h"
+#include "Engine/fade.h"
 // #include "Engine/ram.h"
 // #include "Engine/songPlayer.h"
 
@@ -73,7 +73,7 @@ void main(void)
     DISPLAY_ON;
     SHOW_SPRITES;
     SHOW_BKG;
-    // fadeout();
+    fadeout();
 
     // // Misc inits and stuff
     // shouldSkipMusicThisFrame = FALSE;
