@@ -9,6 +9,7 @@ typedef enum {
 
 typedef enum {
     SUB_INIT,
+    SUB_REINIT,
     SUB_LOOP
 } SUBSTATE;
 

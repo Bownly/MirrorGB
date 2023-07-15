@@ -9,9 +9,11 @@
 // #include "../Engine/songPlayer.h"
 #include "../Engine/IShareMapData.h"
 
+#include "../Assets/Sprites/HUDTeeth.h"
 #include "../Assets/Sprites/MC.h"
 #include "../Assets/Sprites/NPCgirl.h"
 
+#include "../Assets/Tiles/BloodstainTiles.h"
 #include "../Assets/Tiles/HouseTiles.h"
 #include "../Assets/Tiles/HouseMirrorTiles.h"
 #include "../Assets/Tiles/YaMetaTiles.h"
@@ -49,13 +51,14 @@ extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
 
 extern EntityObject player;
+static UINT16 hungerTick;
 static EntityObject* entityPtr;
-static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
+// static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[8U];
 #define ENTITY_MAX 8U
 static UINT8 headCount;
 
-static const UINT8 hudMouthMap[8U] = {0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7};
+static const UINT8 hudMouthMap[8U] = {0xF0, 0xF2, 0xF4, 0xF6, 0xF1, 0xF3, 0xF5, 0xF7};
 
 #define STARTPOS 0U
 #define STARTCAM 0U
@@ -76,12 +79,12 @@ static UBYTE oldTileX, oldTileY;
 // redraw flag, indicates that camera position was changed
 static UBYTE redraw;
 
-#define PLAYER_X_LEFT_BOUND_PX   0U
+#define PLAYER_X_LEFT_BOUND_PX    0U
 #define PLAYER_X_CENTER_BOUND_PX 72U
-#define PLAYER_X_RIGHT_BOUND_PX  160U
-#define PLAYER_Y_UPPER_BOUND_PX     0U
+#define PLAYER_X_RIGHT_BOUND_PX 160U
+#define PLAYER_Y_UPPER_BOUND_PX   0U
 #define PLAYER_Y_CENTER_BOUND_PX 64U
-#define PLAYER_Y_LOWER_BOUND_PX   144U
+#define PLAYER_Y_LOWER_BOUND_PX 144U
 #define PLAYER_X_LEFT   16U
 #define PLAYER_X_CENTER 88U
 #define PLAYER_X_RIGHT  160U
@@ -93,7 +96,7 @@ static UBYTE redraw;
 #define RIGHT_BOUND 652
 #define TOP_BOUND 48
 #define BOTTOM_BOUND 652
-#define OBAKE_BKG_INDEX     0x08U
+#define BLOOD_SPR_INDEX 0xECU
 
 #define pxToSubpx(px) ((px) << 4U)
 #define subPxToPx(subpx) ((subpx) >> 4U)
@@ -127,6 +130,7 @@ static RoutineObject* routines[] = { &routine0, &routine1 };
 
 /* SUBSTATE METHODS */
 static void phaseInit(void);
+static void phaseReinit(void);
 static void phaseLoop(void);
 
 /* INPUT METHODS */
@@ -135,8 +139,10 @@ static void inputs(void);
 /* HELPER METHODS */
 static void commonInit(void);
 static void checkUnderfootTile(void);
+static void entityKill(UINT8);
 static UINT8 entityListAdd(UINT8, UINT8, UINT8);
 static void handleRoutines(void);
+static void killPlayer(void);
 static void loadLevel(void);
 static void loadRoom(UINT8);
 static void walkPlayer(void);
@@ -159,6 +165,9 @@ void LevelStateMain(void)
         case SUB_INIT:
             phaseInit();
             break;
+        case SUB_REINIT:
+            phaseReinit();
+            break;
         case SUB_LOOP:
             phaseLoop();
             break;
@@ -174,15 +183,33 @@ void LevelStateMain(void)
 /******************************** SUBSTATE METHODS *******************************/
 static void phaseInit(void)
 {
-    // Initializations
-    animTick = 0U;
+    // 1st time init stuff
+    // Init entityList
+    // Init player stats
+    player.lives = 3U;
+    // Init level flags
+    // Load play grids
+    // Load entity sprite data
+    // Load player sprite data
+
+
     
     // Init entity stuff
     for (i = 0U; i != 8U; ++i)
         entityList[i].id = 0xFFU;
-    for (i = 0U; i != 32U; ++i)
-        for (j = 0U; j != 32U; ++j)
-            entityGrid[j][i] = 0xFFU;
+
+
+    routine0.length = 4U;
+    routine0.actions = &actions0[0];
+    routine1.length = 4U;
+    routine1.actions = &actions1[0];
+
+entityList[0].state = ENTITY_IDLE;
+entityList[0].state = ENTITY_IDLE;
+entityListAdd(1, 26, 28);
+entityList[0].routinePtr = &routine1;
+entityListAdd(1, 2, 4);
+entityList[1].routinePtr = &routine1;
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -191,44 +218,47 @@ static void phaseInit(void)
     // // Check levelId, pull appropriate level
     // loadLevel();
 
-    player.xTile = 1U;
-    player.yTile = 1U;
-    player.xSpr = 88U;
-    player.ySpr = 88U;
-    player.dir - DIR_DOWN;
-
-    playGridPtr = &playGridM;
     commonInit();
 
-    routine0.length = 4U;
-    routine0.actions = &actions0[0];
-    routine1.length = 4U;
-    routine1.actions = &actions1[0];
+    // set_bkg_data(0xF0U, 8U, HUDTeeth_tiles);
 
-    set_sprite_data(0x30U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x41U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x50U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x60U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x70U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+}
 
-    substate = SUB_LOOP;
+static void phaseReinit(void)
+{
 
-    player.moveSpeed = PLAYER_SPEED;
+    // Reinit stuff
+    // Relocate player and entities
+    // Load appropriate teeth graphics
 
-    // if (entityGrid[2][4] == 0xFFU)
-        entityListAdd(1, 26,28);
-        entityListAdd(1, 2, 4);
-        entityList[0].routinePtr = &routine0;
-        entityList[1].routinePtr = &routine0;
+    // // Init entity stuff
+    // for (i = 0U; i != 8U; ++i)
+    //     entityList[i].id = 0xFFU;
 
-    fadein();
-    OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
+    commonInit();
+
 }
 
 static void phaseLoop(void)
 {
     // shouldHidePlayer = FALSE;
     ++animTick;
+
+    // Hunger logic
+    ++hungerTick;
+    if (hungerTick == 90U)
+    {
+        player.hpCur--;
+        displayHealthPips();
+        hungerTick = 0U;
+
+        if (player.hpCur == 0U)
+        {
+            killPlayer();
+            return;
+        }
+
+    }
 
     // Player movements and inputs
     if (player.state == ENTITY_WALKING)
@@ -284,6 +314,36 @@ static void inputs(void)
             else if (player.dir == DIR_LEFT)
                 player.dir = DIR_RIGHT;
             return;
+        }
+
+        if (curJoypad & J_B && !(prevJoypad & J_B))
+        {
+            i = player.xTile;
+            j = player.yTile;
+
+            switch (player.dir)
+            {
+                case DIR_UP: --j; break;
+                case DIR_DOWN: ++j; break;
+                case DIR_LEFT: --i; break;
+                case DIR_RIGHT: ++i; break;
+                default: break;
+            }
+
+            // Check if tile in front is wax
+            entityPtr = entityList;
+            for (k = 0U; k != ENTITY_MAX; ++k)
+            {
+                entityPtr = &entityList[k];
+                if (entityPtr->state != ENTITY_DEAD && entityPtr->xTile == i && entityPtr->yTile == j)
+                {
+                    entityKill(entityPtr->id);
+                    player.hpCur = player.hpMax;
+                    displayHealthPips();
+                    hungerTick = 0U;
+                }
+
+            }
         }
 
         if (curJoypad & J_UP)
@@ -391,21 +451,36 @@ static void commonInit(void)
     for (i = 0U; i != 39U; ++i)
         move_sprite(i, 0U, 0U);
 
+    // // Init entity grid
+    // for (i = 0U; i != 32U; ++i)
+    //     for (j = 0U; j != 32U; ++j)
+    //         entityGrid[j][i] = 0xFFU;
+
     // Initializations
     animTick = 0U;
     player.state = ENTITY_IDLE;
-
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
     player.hpMax = 16U;
     player.hpCur = 16U;
+    player.xTile = 1U;
+    player.yTile = 1U;
+    player.xSpr = 88U;
+    player.ySpr = 88U;
+    player.dir - DIR_DOWN;
+    hungerTick = 0U;
+    camera_x = STARTCAM, camera_y = STARTCAM, new_camera_x = STARTCAM, new_camera_y = STARTCAM;
+    map_pos_x = STARTPOS, map_pos_y = STARTPOS, new_map_pos_x = STARTPOS, new_map_pos_y = STARTPOS;
+    playGridPtr = &playGridM;
 
     // Load graphics
-    // set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0x00U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
     set_bkg_data(0x00U, 10U, fontTiles);
+    set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
     set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
+    set_bkg_data(0xF0U, 8U, HUDTeeth_tiles + ((3U - player.lives) * 128));
+    set_sprite_data(BLOOD_SPR_INDEX, 4U, BloodstainTiles);
 
     // HUD
     SHOW_WIN;
@@ -433,6 +508,54 @@ static void commonInit(void)
     loadRoom(0U);
 
     animatePlayer();
+
+    set_sprite_data(0x30U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+    set_sprite_data(0x41U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+    set_sprite_data(0x50U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+    set_sprite_data(0x60U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+    set_sprite_data(0x70U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
+
+    substate = SUB_LOOP;
+
+    // TODO: Need to read entity info from a list or something
+    // for (i = 0U; i != ENTITY_MAX; ++i)
+    // {
+        if (entityList[0].state == ENTITY_DEAD)
+        {
+            entityList[0].id = 0xFFU;
+            entityListAdd(1, 26, 28);
+            entityList[0].routinePtr = &routine1;
+            entityKill(0);
+        }
+
+        if (entityList[1].state == ENTITY_DEAD)
+        {
+            entityList[1].id = 0xFFU;
+            entityListAdd(1, 2, 4);
+            entityList[1].routinePtr = &routine1;
+            entityKill(1);
+        }
+
+    // }
+
+    player.moveSpeed = PLAYER_SPEED;
+
+    fadein();
+    OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
+    substate = SUB_LOOP;
+}
+
+static void entityKill(UINT8 entityId)
+{
+    entityList[entityId].state = ENTITY_DEAD;
+    set_sprite_tile(entityList[entityId].spriteId,      BLOOD_SPR_INDEX);
+    set_sprite_tile(entityList[entityId].spriteId + 1U, BLOOD_SPR_INDEX + 1U);
+    set_sprite_tile(entityList[entityId].spriteId + 2U, BLOOD_SPR_INDEX + 2U);
+    set_sprite_tile(entityList[entityId].spriteId + 3U, BLOOD_SPR_INDEX + 3U);
+    set_sprite_prop(entityList[entityId].spriteId,      0b00011000U);
+    set_sprite_prop(entityList[entityId].spriteId + 1U, 0b00011000U);
+    set_sprite_prop(entityList[entityId].spriteId + 2U, 0b00011000U);
+    set_sprite_prop(entityList[entityId].spriteId + 3U, 0b00011000U);
 }
 
 static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
@@ -449,13 +572,14 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     }
 
     // Init the new entity
-    entityList[k].id = k + 1U;
+    entityList[k].id = k;
     entityList[k].speciesId = speciesId;
     entityList[k].state = ENTITY_IDLE;
-    if (speciesId == 2U) entityList[k].state = ENTITY_DEAD;  // TODO: Temp line to create stationary entities
     entityList[k].spriteId = (k + 1U) * 4U;
     entityList[k].animTick = 0U;
     entityList[k].animFrame = 0U;
+    entityList[k].actionTimer = 0U;
+    entityList[k].curActionIndex = 0U;
     entityList[k].xSpr = (tileX * 16U) + 8U;
     entityList[k].ySpr = (tileY * 16U) + 16U;
     entityList[k].xTile = tileX;
@@ -466,7 +590,7 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].hpMax = 0U;
     entityList[k].hpCur = 0U;
 
-    entityGrid[tileY][tileX] = k;
+    // entityGrid[tileY][tileX] = k;
 
     return k;
 }
@@ -503,14 +627,6 @@ static void handleRoutines(void)
                     else
                         entityPtr->state = ENTITY_IDLE;
                     entityPtr->actionTimer--;
-                    
-                    // entityPtr->animTick++;
-                    // entityPtr->animFrame = entityPtr->animTick % 16U;
-                    // entityPtr->animFrame /= 8U;
-                    // if (entityPtr->animFrame == 3U)
-                    //     entityPtr->animFrame = 1U;
-                    // entityPtr->animFrame += (entityPtr->dir >> 2U);
-
                     entityPtr->animTick++;
                     entityPtr->animFrame = entityPtr->animTick % 32U;
                     entityPtr->animFrame /= 8U;
@@ -520,7 +636,6 @@ static void handleRoutines(void)
                         entityPtr->animFrame += (entityPtr->dir - 1U) * 3U;
                     else
                         entityPtr->animFrame += entityPtr->dir * 3U;
-
                     break;
                 default:
                     break;
@@ -573,18 +688,24 @@ static void handleRoutines(void)
                         case DIR_LEFT:  i -= 1U; break;
                         case DIR_RIGHT: i += 1U; break;
                     }
-                    if (i == player.xTile && j == player.yTile)
+                    if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
-                        entityPtr->state = ENTITY_DEAD;
+                        entityPtr->state = ENTITY_IDLE;
 
-                        fadeout();
-                        // substate = SUB_INIT;
+                        killPlayer();
                         return;
                     }
                 }
             }
         }
     }
+}
+
+static void killPlayer(void)
+{
+    fadeout();
+    player.lives--;
+    substate = SUB_REINIT;
 }
 
 static void loadRoom(UINT8 id)
@@ -773,12 +894,22 @@ static void animateEntities(void)
 
             if (entityPtr->isVisible == TRUE)
             {
-                if (entityPtr->dir == DIR_LEFT)
-                    move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                    entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                if (entityPtr->state == ENTITY_DEAD)
+                {
+                    move_sprite(entityPtr->spriteId,      entityPtr->xSpr - camera_x ,     entityPtr->ySpr - camera_y);
+                    move_sprite(entityPtr->spriteId + 1U, entityPtr->xSpr - camera_x ,     entityPtr->ySpr - camera_y + 8U);
+                    move_sprite(entityPtr->spriteId + 2U, entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y);
+                    move_sprite(entityPtr->spriteId + 3U, entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 8U);
+                }
                 else
-                    move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                    entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                {
+                    if (entityPtr->dir == DIR_LEFT)
+                        move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                        entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                    else
+                        move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
+                                        entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                }
             }
             else
             {

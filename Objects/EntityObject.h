@@ -27,6 +27,7 @@ typedef struct EntityObject {
     INT8 yVel;
     UINT8 hpMax;
     UINT8 hpCur;
+    UINT8 lives;
 } EntityObject;
 
 #endif
