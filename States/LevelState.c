@@ -303,6 +303,11 @@ static void inputs(void)
             {
                 ++roomId;
                 playGridPtr = &playGridM;
+
+                for (i = 0U; i != ENTITY_MAX; ++i)
+                    entityList[i].isVisible = FALSE;
+
+                hide_sprites_range(14U, 40U);
             }
             else  // Mirror world
             {
@@ -475,9 +480,7 @@ static void commonInit(void)
     playGridPtr = &playGridM;
 
     // Load graphics
-    set_bkg_data(0x00U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
     set_bkg_data(0x00U, 10U, fontTiles);
-    set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
     set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
     set_bkg_data(0xF0U, 8U, HUDTeeth_tiles + ((3U - player.lives) * 128));
@@ -722,6 +725,11 @@ static void killPlayer(void)
 static void loadRoom(UINT8 id)
 {
     roomId = id;
+
+    if (roomId == 0U)
+        set_bkg_data(0x10U, 128U, HouseTiles);
+    else
+       set_bkg_data(0x10U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
 
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
@@ -1030,7 +1038,10 @@ static void drawNewBkg(void)
 
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
 {
-    set_bkg_tiles(x, y, 2U, 2U, YaMetaTiles[tileIndex]);
+    if (roomId == 0U)
+        set_bkg_tiles(x, y, 2U, 2U, YaMetaTiles[tileIndex]);
+    else
+        set_bkg_tiles(x, y, 2U, 2U, YaMMetaTiles[tileIndex]);
     // set_bkg_tile_xy(x,y,x);
     // set_bkg_tile_xy(x+1,y,y);
     // set_bkg_tile_xy(x, y, tileIndex);

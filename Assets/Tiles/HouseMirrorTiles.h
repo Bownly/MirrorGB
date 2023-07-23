@@ -4,6 +4,6 @@
 #define HouseMirrorTiles_tilemap_width 0
 #define HouseMirrorTiles_tilemap_height 0
 
-#define HouseMirrorTiles_tileset_size 125
+#define HouseMirrorTiles_tileset_size 119
 
 extern const unsigned char HouseMirrorTiles_tileset[]; 
