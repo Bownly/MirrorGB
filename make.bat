@@ -42,6 +42,7 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM        Other actions?
 @REM    NPC spotting player
 @REM        Exclamation mark
+@REM    Entity collision
 
 @REM Proper code stuff:
 @REM    Level loading from different banks
