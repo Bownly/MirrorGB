@@ -52,6 +52,7 @@ extern UINT8 playGridM[32U][32U];
 
 extern EntityObject player;
 static UINT16 hungerTick;
+#define HUNGER_THRESHOLD 100U
 static EntityObject* entityPtr;
 // static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[8U];
@@ -208,8 +209,8 @@ entityList[0].state = ENTITY_IDLE;
 entityList[0].state = ENTITY_IDLE;
 entityListAdd(1, 26, 28);
 entityList[0].routinePtr = &routine1;
-entityListAdd(1, 2, 4);
-entityList[1].routinePtr = &routine1;
+entityListAdd(1, 6, 7);
+entityList[1].routinePtr = &routine0;
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -246,9 +247,9 @@ static void phaseLoop(void)
 
     // Hunger logic
     ++hungerTick;
-    if (hungerTick == 90U)
+    if (hungerTick == HUNGER_THRESHOLD)
     {
-        player.hpCur--;
+        // player.hpCur--;
         displayHealthPips();
         hungerTick = 0U;
 
@@ -302,6 +303,11 @@ static void inputs(void)
             {
                 ++roomId;
                 playGridPtr = &playGridM;
+
+                for (i = 0U; i != ENTITY_MAX; ++i)
+                    entityList[i].isVisible = FALSE;
+
+                hide_sprites_range(14U, 40U);
             }
             else  // Mirror world
             {
@@ -474,21 +480,25 @@ static void commonInit(void)
     playGridPtr = &playGridM;
 
     // Load graphics
-    set_bkg_data(0x00U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
     set_bkg_data(0x00U, 10U, fontTiles);
-    set_bkg_data(0x60U, 128U, HouseTiles);
     set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
     set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
     set_bkg_data(0xF0U, 8U, HUDTeeth_tiles + ((3U - player.lives) * 128));
     set_sprite_data(BLOOD_SPR_INDEX, 4U, BloodstainTiles);
+
+    // HUD sprites meant to hide NPCs when walking N and S
+    for (i = 4U; i != 14U; i++)
+    {
+        set_sprite_tile(i, 0xA5U);
+        move_sprite(i, 0U, 144U);
+    }
 
     // HUD
     SHOW_WIN;
     move_win(7U, 128U);
     set_win_tiles(0U, 0U, 4U, 2U, hudMouthMap);
     displayHealthPips();
-    displayHeadcount();
-    headCount = 8U;
+
 
     // Check levelId, pull appropriate level
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
@@ -515,8 +525,6 @@ static void commonInit(void)
     set_sprite_data(0x60U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
     set_sprite_data(0x70U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
 
-    substate = SUB_LOOP;
-
     // TODO: Need to read entity info from a list or something
     // for (i = 0U; i != ENTITY_MAX; ++i)
     // {
@@ -531,12 +539,15 @@ static void commonInit(void)
         if (entityList[1].state == ENTITY_DEAD)
         {
             entityList[1].id = 0xFFU;
-            entityListAdd(1, 2, 4);
-            entityList[1].routinePtr = &routine1;
+            entityListAdd(1, 6, 7);
+            entityList[1].routinePtr = &routine0;
             entityKill(1);
         }
-
     // }
+    headCount = 2U;
+    displayHeadcount();
+
+    substate = SUB_LOOP;
 
     player.moveSpeed = PLAYER_SPEED;
 
@@ -556,6 +567,9 @@ static void entityKill(UINT8 entityId)
     set_sprite_prop(entityList[entityId].spriteId + 1U, 0b00011000U);
     set_sprite_prop(entityList[entityId].spriteId + 2U, 0b00011000U);
     set_sprite_prop(entityList[entityId].spriteId + 3U, 0b00011000U);
+
+    --headCount;
+    displayHeadcount();
 }
 
 static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
@@ -575,7 +589,7 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].id = k;
     entityList[k].speciesId = speciesId;
     entityList[k].state = ENTITY_IDLE;
-    entityList[k].spriteId = (k + 1U) * 4U;
+    entityList[k].spriteId = (k + 1U) * 4U + 10U;  // The 10 padding is for the HUD sprites
     entityList[k].animTick = 0U;
     entityList[k].animFrame = 0U;
     entityList[k].actionTimer = 0U;
@@ -711,6 +725,11 @@ static void killPlayer(void)
 static void loadRoom(UINT8 id)
 {
     roomId = id;
+
+    if (roomId == 0U)
+        set_bkg_data(0x10U, 128U, HouseTiles);
+    else
+       set_bkg_data(0x10U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
 
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
@@ -877,7 +896,7 @@ static void walkPlayer(void)
 static void animateEntities(void)
 {
     UINT16 rightBound = camera_x + 160U;
-    UINT16 bottomBound = camera_y + 128U;
+    UINT16 bottomBound = camera_y + 138U;
    
     entityPtr = entityList;
     for (i = 0U; i != ENTITY_MAX; ++i)
@@ -963,8 +982,6 @@ static void displayHealthPips(void)
 
 static void displayHeadcount(void)
 {
-    headCount = 8U;
-
     k = 0U;
     for (i = 0U; i != headCount; ++i)
     {
@@ -1021,7 +1038,10 @@ static void drawNewBkg(void)
 
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
 {
-    set_bkg_tiles(x, y, 2U, 2U, YaMetaTiles[tileIndex]);
+    if (roomId == 0U)
+        set_bkg_tiles(x, y, 2U, 2U, YaMetaTiles[tileIndex]);
+    else
+        set_bkg_tiles(x, y, 2U, 2U, YaMMetaTiles[tileIndex]);
     // set_bkg_tile_xy(x,y,x);
     // set_bkg_tile_xy(x+1,y,y);
     // set_bkg_tile_xy(x, y, tileIndex);
