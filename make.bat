@@ -7,7 +7,7 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1Map.o Assets/Maps/Levels/Level1Map.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/HouseRMap.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1MMap.o Assets/Maps/Levels/Level1MMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/BloodstainTiles.o Assets/Tiles/BloodstainTiles.c

@@ -251,10 +251,11 @@ local function export_c(map)
     c_file = c_file ..
                  "// Generated using GB Export by AngelSix https://github.com/angelsix/retrosix-resources\n// Enhanced version based of original by https://github.com/gabrielcnr\n\n" -- header i suppose
     h_file = c_file
+        local image = layer.cels[1].image
 
     -- START Export tile map --
-    h_file = h_file .. "#define " .. map_name .. "_width " .. tostring(w) .. "\n"
-    h_file = h_file .. "#define " .. map_name .. "_height " .. tostring(h) .. "\n"
+    h_file = h_file .. "#define " .. map_name .. "_width " .. tostring(image.width) .. "\n"
+    h_file = h_file .. "#define " .. map_name .. "_height " .. tostring(image.height) .. "\n"
     -- END Export tile map --
 
     -- START Export tile map --

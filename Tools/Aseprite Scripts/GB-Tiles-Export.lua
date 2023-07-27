@@ -101,7 +101,7 @@ if sprite.colorMode ~= ColorMode.INDEXED then -- CHECKS IF THE COLOR MODE IS SET
         buttons = "Oh, my bad"
     }
     return
-elseif #plt ~= 4 then -- IF IT IS INDEXED, CHECKS IF IT DOES HAVE 4 COLORS 
+elseif #plt ~= 5 then -- IF IT IS INDEXED, CHECKS IF IT DOES HAVE 4 COLORS 
     app.alert {
         title = "ERROR",
         text = "Number of colors MUST BE 4",
@@ -173,7 +173,7 @@ local function tile_to_hex(tile) -- THE FUNCTION (GET PIXEL) FOR THE TILE RETURN
         local hi_bit = 0; -- resets the high bit per each y value (for each row)
 
         for x = 0, range_x do -- LOOPS X AXIS
-            local pixel = tile:getPixel(x, y)
+            local pixel = tile:getPixel(x, y) - 1
             if (pixel & 1) ~= 0 then -- 1 IN BINARY = 01 
                 lo_bit = lo_bit | (1 << range_x - x) -- THE OPERATOR (1<< n-0) would be invalid, so we add (lo_bit |) 
             end
@@ -278,11 +278,6 @@ local function export_c(tab, map)
 
     c_file = c_file .. "\n}; \n \n"
     -- END Export tile set --
-
-    -- START Export tile map --
-    c_file = c_file .. "const unsigned char " .. map_name .. "[] = {\n" .. map .. "\n};"
-    h_file = h_file .. "extern const unsigned char " .. map_name .. "[];"
-    -- END Export tile map --
 
     return c_file, h_file
 end

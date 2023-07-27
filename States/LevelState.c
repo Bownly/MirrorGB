@@ -69,7 +69,7 @@ static UINT8 gridW;
 static UINT8 gridH;
 static UINT16 camera_max_x = 10U * 128U;
 static UINT16 camera_max_y = 9U * 128U;
-static UINT8 walkableTileCount = 6U;
+static UINT8 walkableTileCount = 32U;
 
 
 // current and new positions of the camera in pixels
@@ -298,6 +298,7 @@ static void inputs(void)
     {
         if (curJoypad & J_A && !(prevJoypad & J_A))
         {
+            fadeout();
             player.xTile = 31U - player.xTile;
             if (roomId % 2U == 0U)  // Normal world
             {
@@ -319,6 +320,8 @@ static void inputs(void)
                 player.dir = DIR_LEFT;
             else if (player.dir == DIR_LEFT)
                 player.dir = DIR_RIGHT;
+        
+            fadein();
             return;
         }
 
@@ -465,12 +468,12 @@ static void commonInit(void)
     // Initializations
     animTick = 0U;
     player.state = ENTITY_IDLE;
-    player.xSpr = player.xTile * 16U + 8U;
-    player.ySpr = player.yTile * 16U + 16U;
     player.hpMax = 16U;
     player.hpCur = 16U;
-    player.xTile = 1U;
-    player.yTile = 1U;
+    player.xTile = 2U;
+    player.yTile = 9U;
+    player.xSpr = player.xTile * 16U + 8U;
+    player.ySpr = player.yTile * 16U + 16U;
     player.xSpr = 88U;
     player.ySpr = 88U;
     player.dir - DIR_DOWN;
@@ -727,7 +730,7 @@ static void loadRoom(UINT8 id)
     roomId = id;
 
     if (roomId == 0U)
-        set_bkg_data(0x10U, 128U, HouseTiles);
+        set_bkg_data(0U, HouseTiles_tileset_size, HouseTiles_tileset);
     else
        set_bkg_data(0x10U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
 
