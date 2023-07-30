@@ -15,7 +15,7 @@
 
 #include "../Assets/Tiles/BloodstainTiles.h"
 #include "../Assets/Tiles/HouseTiles.h"
-#include "../Assets/Tiles/HouseMirrorTiles.h"
+#include "../Assets/Tiles/HouseMTiles.h"
 #include "../Assets/Tiles/YaMetaTiles.h"
 #include "../Assets/Tiles/fontTiles.h"
 #include "../Assets/Tiles/HUD.h"
@@ -109,13 +109,33 @@ static UBYTE redraw;
 #define pxToMetatile(px) ((px) >> 4U)
 
 
-static ActionObject actions0[] = { 
+static ActionObject actionsRed[] = { 
                             // {ACT_WAIT, DIR_RIGHT, 16U}
-                            {ACT_WALK, DIR_DOWN, 2U},
-                            {ACT_WALK, DIR_RIGHT, 3U},
-                            {ACT_WALK, DIR_UP, 2U},
-                            {ACT_WALK, DIR_LEFT, 3U},
+                            { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
+                            { ACT_WAIT, DIR_DOWN, 1200U },
+                            { ACT_TOGGLE_HIDING, DIR_UP, 0U },
+                            { ACT_WALK, DIR_RIGHT, 6U },
+                            // { ACT_WALK, DIR_LEFT, 6U },
+                            { ACT_WALK, DIR_UP, 19U },
+                            { ACT_WALK, DIR_RIGHT, 3U },
+                            { ACT_WALK, DIR_UP, 2U },
+                            { ACT_WALK, DIR_RIGHT, 2U },
+                            { ACT_WAIT, DIR_UP, 300U },
+                            { ACT_WALK, DIR_RIGHT, 2U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_LEFT, 1U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_LEFT, 4U },
+                            { ACT_WALK, DIR_UP, 3U },
+                            { ACT_WALK, DIR_LEFT, 2U },
+                            { ACT_WALK, DIR_DOWN, 9U },
+                            { ACT_WALK, DIR_LEFT, 8U },
+                            { ACT_WALK, DIR_DOWN, 4U },
+                            { ACT_WAIT, DIR_DOWN, 600U },
+                            { ACT_WALK, DIR_RIGHT, 2U },
+                            { ACT_WALK, DIR_DOWN, 7U }
                           };
+
 
 static ActionObject actions1[] = { 
                             {ACT_WAIT, DIR_DOWN, 60U},
@@ -123,6 +143,23 @@ static ActionObject actions1[] = {
                             {ACT_WAIT, DIR_UP, 60U},
                             {ACT_WAIT, DIR_LEFT, 60U},
                           };
+
+static ActionObject actionsCyan[] = {
+                            {ACT_WALK, DIR_RIGHT, 3U},
+                            {ACT_WALK, DIR_DOWN, 5U},
+                            {ACT_WAIT, DIR_LEFT, 300U},
+                            {ACT_WALK, DIR_DOWN, 2U},
+                            {ACT_WALK, DIR_LEFT, 3U},
+                            {ACT_WALK, DIR_UP, 1U},
+                            {ACT_WALK, DIR_LEFT, 5U},
+                            {ACT_WALK, DIR_UP, 5U},
+                            {ACT_WAIT, DIR_UP, 180U},
+                            {ACT_WALK, DIR_DOWN, 2U},
+                            {ACT_WALK, DIR_RIGHT, 5U},
+                            {ACT_WALK, DIR_UP, 3U}
+};
+
+
 
 static RoutineObject routine0;
 static RoutineObject routine1;
@@ -200,16 +237,16 @@ static void phaseInit(void)
         entityList[i].id = 0xFFU;
 
 
-    routine0.length = 4U;
-    routine0.actions = &actions0[0];
-    routine1.length = 4U;
-    routine1.actions = &actions1[0];
+    routine0.length = 22U;
+    routine0.actions = &actionsRed[0];
+    routine1.length = 12U;
+    routine1.actions = &actionsCyan[0];
 
 entityList[0].state = ENTITY_IDLE;
 entityList[0].state = ENTITY_IDLE;
-entityListAdd(1, 26, 28);
+entityListAdd(1, 7, 22);
 entityList[0].routinePtr = &routine1;
-entityListAdd(1, 6, 7);
+entityListAdd(1, 16, 29);
 entityList[1].routinePtr = &routine0;
 
     HIDE_WIN;
@@ -534,7 +571,7 @@ static void commonInit(void)
         if (entityList[0].state == ENTITY_DEAD)
         {
             entityList[0].id = 0xFFU;
-            entityListAdd(1, 26, 28);
+            entityListAdd(1, 7, 22);
             entityList[0].routinePtr = &routine1;
             entityKill(0);
         }
@@ -542,7 +579,7 @@ static void commonInit(void)
         if (entityList[1].state == ENTITY_DEAD)
         {
             entityList[1].id = 0xFFU;
-            entityListAdd(1, 6, 7);
+            entityListAdd(1, 16, 29);
             entityList[1].routinePtr = &routine0;
             entityKill(1);
         }
@@ -654,6 +691,10 @@ static void handleRoutines(void)
                     else
                         entityPtr->animFrame += entityPtr->dir * 3U;
                     break;
+                case ENTITY_TOGGLING_HIDE:
+                    entityPtr->isHiding = entityPtr->isHiding == TRUE ? FALSE : TRUE; 
+                    entityPtr->state = ENTITY_IDLE;
+                    break;
                 default:
                     break;
             }
@@ -686,6 +727,10 @@ static void handleRoutines(void)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
                         else
                             entityPtr->animFrame = entityPtr->dir * 3U;
+                        break;
+                    case ACT_TOGGLE_HIDING:
+                        entityPtr->state = ENTITY_TOGGLING_HIDE;
+                        entityPtr->dir = (entityPtr->routinePtr->actions)[m].direction;
                         break;
                 }
             }
@@ -732,7 +777,7 @@ static void loadRoom(UINT8 id)
     if (roomId == 0U)
         set_bkg_data(0U, HouseTiles_tileset_size, HouseTiles_tileset);
     else
-       set_bkg_data(0x10U, HouseMirrorTiles_tileset_size, HouseMirrorTiles_tileset);
+       set_bkg_data(0U, HouseMTiles_tileset_size, HouseMTiles_tileset);
 
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
@@ -908,7 +953,9 @@ static void animateEntities(void)
         if (entityPtr->id != 0xFF)
         // if (entityPtr->id != 0xFF && roomId % 2U == 0U)
         {
-            if ((entityPtr->xSpr < camera_x || entityPtr->ySpr < camera_y)
+            if (entityPtr->isHiding == TRUE)
+                entityPtr->isVisible = FALSE;
+            else if ((entityPtr->xSpr < camera_x || entityPtr->ySpr < camera_y)
                 || (entityPtr->xSpr > rightBound || entityPtr->ySpr > bottomBound))
                 entityPtr->isVisible = FALSE;
             else

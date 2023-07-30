@@ -8,13 +8,13 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/HouseRMap.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/Level1MMap.o Assets/Maps/Levels/Level1MMap.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseMMap.o Assets/Maps/Levels/HouseMMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/BloodstainTiles.o Assets/Tiles/BloodstainTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/CrosshairTiles.o Assets/Tiles/CrosshairTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HUDTiles.o Assets/Tiles/HUD.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HouseMirrorTiles.o Assets/Tiles/HouseMirrorTiles.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HouseMTiles.o Assets/Tiles/HouseMTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/YaMetaTiles.o Assets/Tiles/YaMetaTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
 

@@ -135,73 +135,108 @@ extern const unsigned char YaMetaTiles[][4] = {
 
 
 extern const unsigned char YaMMetaTiles[][4] = {
-    { 0x38, 0x39, 0x4D, 0x4E },
-    { 0x36, 0x37, 0x4B, 0x4C },
-    { 0x34, 0x35, 0x49, 0x4A },
-    { 0x5A, 0x5B, 0x63, 0x64 },
-
-    { 0x24, 0x26, 0x25, 0x27 },
-    { 0x28, 0x1E, 0x29, 0x2B },
-    { 0x5F, 0x60, 0x68, 0x69 },
-    { 0x6D, 0x6E, 0x72, 0x73 },
-
-    // Walls
-    { 0x1D, 0x76, 0x7A, 0x70 },
-    { 0x13, 0xFE, 0x81, 0x29 },
-    { 0x76, 0x1E, 0x70, 0x7D },
-    { 0xFE, 0x14, 0x29, 0x82 },
-    { 0x76, 0x76, 0x70, 0x70 },
-    { 0xFE, 0xFE, 0x29, 0x29 },
-
-    // Dresser
-    { 0x30, 0x31, 0x2A, 0x2B },
-    { 0x3A, 0x3B, 0x4F, 0x50 },
-
-    // Table
-    { 0x5C, 0x5D, 0x65, 0x66 },
-    { 0x6A, 0x6B, 0x6F, 0x70 },
-    { 0x5D, 0x5E, 0x66, 0x67 },
-    { 0x6B, 0x6C, 0x70, 0x71 },
-
-    // Wardrobe
-    { 0x21, 0x22, 0x2C, 0x2D },
-    { 0x3F, 0x40, 0x54, 0x55 },
-    { 0x22, 0x23, 0x2E, 0x2F },
-    { 0x41, 0x42, 0x56, 0x57 },
-
-    // TV and drawers
-    { 0x19, 0x1A, 0x24, 0x25 },
-    { 0x30, 0x22, 0x43, 0x44 },
-    { 0x1B, 0x1C, 0x26, 0x27 },
-    { 0x22, 0x31, 0x45, 0x46 },
-
-    // Loveseat
-    { 0x3C, 0x3D, 0x51, 0x52 },
-    { 0x3D, 0x3E, 0x52, 0x53 },
-
-    // Couch
-    { 0x77, 0x78, 0x7E, 0x7F },
-    { 0x78, 0x78, 0x7F, 0x7F },
-    { 0x78, 0x79, 0x7F, 0x80 },
-
-    // Wall tiles
-    { 0xFE, 0xFE, 0xFE, 0xFE },  // Pitch black
-    { 0xFE, 0xFE, 0x12, 0x12 },  // White line bottom
-    { 0x13, 0x14, 0x13, 0x14 },  // | |
-    { 0x83, 0x83, 0xFE, 0xFE },  // White line top
-  
-    { 0x32, 0x33, 0x45, 0x46 },  // Sink
-
-    { 0x15, 0x16, 0x17, 0x18 },  // Window
-
-    // Wall tiles again
-    { 0x74, 0x75, 0x13, 0x14 },  // Upside down U
-    { 0x13, 0x14, 0x47, 0x48 },  // U
-
-    { 0x58, 0x59, 0x61, 0x62 },  // Swirly floor tile
-
-    // Final wall tiles
-    { 0x1D, 0x1E, 0x7A, 0x7D },
-    { 0x13, 0x14, 0x81, 0x82 }
+    { 28U, 29U, 34U, 35U },  // Floor tiles
+    { 28U, 29U, 46U, 47U },
+    { 47U, 29U, 40U, 35U },
+    { 34U, 35U, 35U, 28U },
+    { 34U, 35U, 28U, 29U },
+    { 34U, 35U, 35U, 35U },
+    { 46U, 47U, 56U, 40U },
+    { 34U, 29U, 28U, 29U },
+    { 34U, 34U, 34U, 35U },
+    { 29U, 29U, 34U, 35U },
+    { 56U, 40U, 34U, 35U },
+    { 35U, 28U, 34U, 29U },
+    { 28U, 29U, 34U, 46U },
+    { 28U, 29U, 47U, 35U },
+    { 28U, 29U, 35U, 28U },
+    { 40U, 28U, 35U, 34U },
+    { 34U, 35U, 46U, 47U },
+    { 34U, 29U, 46U, 47U },
+    { 34U, 29U, 34U, 35U },
+    { 56U, 40U, 28U, 29U },
+    { 34U, 35U, 28U, 34U },
+    { 47U, 35U, 40U, 29U },
+    { 56U, 40U, 34U, 46U },
+    { 28U, 56U, 34U, 35U },
+    { 40U, 29U, 34U, 35U },
+    { 56U, 28U, 40U, 46U },
+    { 0xFF, 0xFF, 0xFF, 0xFF },  // Unused walkable tiles
+    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 5U, 6U, 12U, 13U },  // Mirror
+    { 0xFF, 0xFF, 0xFF, 0xFF },  // Unused
+    { 44U, 45U, 54U, 55U },  // Bathtub x2 
+    { 57U, 58U, 62U, 63U },
+    { 4U, 4U, 4U, 4U },  // Window
+    { 67U, 68U, 2U, 3U },  // n, | |, U wall segments
+    { 2U, 3U, 2U, 3U },
+    { 2U, 3U, 50U, 51U },
+    { 2U, 3U, 79U, 77U },  // Floor boards
+    { 2U, 1U, 79U, 11U },
+    { 1U, 1U, 11U, 11U },
+    { 1U, 3U, 11U, 77U },
+    { 11U, 18U, 28U, 2U },
+    { 19U, 19U, 1U, 1U },
+    { 19U, 20U, 1U, 3U },
+    { 1U, 1U, 11U, 9U },
+    { 1U, 1U, 10U, 11U },
+    { 1U, 1U, 18U, 19U },
+    { 1U, 1U, 20U, 11U },
+    { 21U, 22U, 30U, 31U },  // Counters
+    { 22U, 23U, 30U, 31U },
+    { 26U, 27U, 30U, 31U },
+    { 21U, 23U, 30U, 31U },
+    { 7U, 8U, 14U, 15U },  // Fridge x2
+    { 24U, 25U, 32U, 33U },
+    { 1U, 1U, 9U, 10U },  // Dressers x5
+    { 9U, 10U, 16U, 17U },
+    { 16U, 17U, 36U, 37U },
+    { 28U, 16U, 34U, 36U },
+    { 17U, 29U, 37U, 35U },
+    { 29U, 80U, 35U, 2U },  // Beds x8
+    { 81U, 81U, 1U, 1U },
+    { 28U, 2U, 34U, 64U },
+    { 1U, 1U, 65U, 65U },
+    { 1U, 3U, 65U, 66U },
+    { 2U, 1U, 64U, 65U },
+    { 3U, 39U, 66U, 49U },
+    { 3U, 35U, 66U, 29U },
+    { 38U, 39U, 48U, 49U },  // Cinnabon swirl
+    { 42U, 43U, 1U, 3U },  // Bed?
+    { 41U, 42U, 52U, 1U },  // Table x4
+    { 42U, 43U, 1U, 53U },
+    { 52U, 1U, 59U, 60U },
+    { 1U, 53U, 60U, 61U },
+    { 80U, 81U, 2U, 1U },  // 2 more beds
+    { 82U, 29U, 3U, 35U },
+    { 34U, 34U, 35U, 41U },  // 3 more tables
+    { 34U, 35U, 42U, 43U },
+    { 28U, 52U, 34U, 59U },
+    // { 1U, 53U, 60U, 61U },
+    { 70U, 71U, 73U, 74U },  // Couch x3
+    { 71U, 71U, 74U, 74U },
+    { 71U, 72U, 74U, 75U },
+    { 78U, 69U, 2U, 3U },  // Lotta walls
+    { 69U, 69U, 2U, 1U },
+    { 69U, 69U, 1U, 3U },
+    { 69U, 69U, 1U, 1U },
+    { 69U, 69U, 2U, 3U },
+    { 69U, 76U, 1U, 3U },
+    { 78U, 69U, 2U, 1U },
+    { 2U, 1U, 9U, 10U },
+    { 67U, 22U, 2U, 1U },
+    { 22U, 22U, 1U, 1U },
+    { 22U, 68U, 1U, 3U },
+    { 2U, 1U, 2U, 1U },
+    { 1U, 3U, 1U, 3U },
+    { 3U, 49U, 3U, 39U },  // Bed edges x3
+    { 3U, 29U, 3U, 35U },
+    { 28U, 2U, 34U, 2U },
+    { 83U, 83U, 84U, 84U },  // Exit carpet thing
+    { 1U, 1U, 1U, 1U }  // Black
 };
 

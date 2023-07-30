@@ -18,10 +18,11 @@ typedef struct EntityObject {
     UINT8 yTile;
     DIRECTION dir;
     UINT8 moveSpeed;
-    UINT8 actionTimer;
+    UINT16 actionTimer;
     RoutineObject* routinePtr;
     UINT8 curActionIndex;
     UINT8 isVisible;
+    UINT8 isHiding;
     UINT8 visionDistance;
     INT8 xVel;
     INT8 yVel;

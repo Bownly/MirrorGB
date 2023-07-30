@@ -7,7 +7,7 @@
 typedef struct ActionObject {
     ACTION action;
     UINT8 direction;
-    UINT8 magnitude;
+    UINT16 magnitude;
 } ActionObject;
 
 #endif
