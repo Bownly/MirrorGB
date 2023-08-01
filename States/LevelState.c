@@ -109,13 +109,51 @@ static UBYTE redraw;
 #define pxToMetatile(px) ((px) >> 4U)
 
 
+static ActionObject actionsGreen[] = { 
+                            {ACT_WAIT, DIR_UP, 1200U},
+                            {ACT_WALK, DIR_UP, 1U},
+                            {ACT_WAIT, DIR_UP, 30U},
+                            {ACT_WAIT, DIR_LEFT, 30U},
+                            {ACT_WAIT, DIR_RIGHT, 30U},
+                            {ACT_WAIT, DIR_DOWN, 90U},
+                            {ACT_WALK, DIR_DOWN, 1U},
+                          };
+
+static ActionObject actionsYellow[] = { 
+                            {ACT_WAIT, DIR_UP, 1200U},
+                            {ACT_WALK, DIR_UP, 5U},
+                            {ACT_WALK, DIR_LEFT, 6U},
+                            {ACT_WALK, DIR_UP, 11U},
+                            {ACT_WALK, DIR_LEFT, 2U},
+                            {ACT_WALK, DIR_UP, 3U},
+                            {ACT_WALK, DIR_RIGHT, 2U},
+                            {ACT_WAIT, DIR_DOWN, 300U},
+                            {ACT_WALK, DIR_RIGHT, 1U},
+                            {ACT_WALK, DIR_DOWN, 4U},
+                            {ACT_WALK, DIR_LEFT, 2U},
+                            {ACT_WALK, DIR_DOWN, 7U},
+                            {ACT_WALK, DIR_LEFT, 10U},
+                            {ACT_WALK, DIR_UP, 8U},
+                            {ACT_WALK, DIR_LEFT, 4U},
+                            {ACT_WALK, DIR_UP, 2U},
+                            {ACT_WALK, DIR_LEFT, 3U},
+                            {ACT_WAIT, DIR_UP, 180U},
+                            {ACT_WALK, DIR_RIGHT, 4U},
+                            {ACT_WAIT, DIR_DOWN, 600U},
+                            {ACT_WALK, DIR_LEFT, 1U},
+                            {ACT_WALK, DIR_DOWN, 4U},
+                            {ACT_WALK, DIR_RIGHT, 4U},
+                            {ACT_WALK, DIR_DOWN, 7U},
+                            {ACT_WALK, DIR_RIGHT, 6U},
+                            {ACT_WALK, DIR_DOWN, 7U},
+                            {ACT_WALK, DIR_RIGHT, 11U}
+                          };
+
 static ActionObject actionsRed[] = { 
-                            // {ACT_WAIT, DIR_RIGHT, 16U}
                             { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
                             { ACT_WAIT, DIR_DOWN, 1200U },
                             { ACT_TOGGLE_HIDING, DIR_UP, 0U },
                             { ACT_WALK, DIR_RIGHT, 6U },
-                            // { ACT_WALK, DIR_LEFT, 6U },
                             { ACT_WALK, DIR_UP, 19U },
                             { ACT_WALK, DIR_RIGHT, 3U },
                             { ACT_WALK, DIR_UP, 2U },
@@ -136,34 +174,79 @@ static ActionObject actionsRed[] = {
                             { ACT_WALK, DIR_DOWN, 7U }
                           };
 
-
-static ActionObject actions1[] = { 
-                            {ACT_WAIT, DIR_DOWN, 60U},
-                            {ACT_WAIT, DIR_RIGHT, 60U},
-                            {ACT_WAIT, DIR_UP, 60U},
-                            {ACT_WAIT, DIR_LEFT, 60U},
+static ActionObject actionsBlue[] = { 
+                            { ACT_WAIT, DIR_UP, 1200U },
+                            { ACT_WALK, DIR_RIGHT, 5U },
+                            { ACT_WALK, DIR_DOWN, 4U },
+                            { ACT_WALK, DIR_RIGHT, 11U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_RIGHT, 9U },
+                            { ACT_WALK, DIR_DOWN, 5U },
+                            { ACT_WAIT, DIR_UP, 600U },
+                            { ACT_WALK, DIR_LEFT, 5U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_RIGHT, 5U },
+                            { ACT_WAIT, DIR_RIGHT, 300U },
+                            { ACT_WAIT, DIR_LEFT, 120U },
+                            { ACT_WAIT, DIR_RIGHT, 120U },
+                            { ACT_WALK, DIR_LEFT, 9U },
+                            { ACT_WALK, DIR_UP, 10U },
+                            { ACT_WALK, DIR_LEFT, 10U },
+                            { ACT_WALK, DIR_UP, 3U },
+                            { ACT_WALK, DIR_LEFT, 6U }
                           };
 
 static ActionObject actionsCyan[] = {
-                            {ACT_WALK, DIR_RIGHT, 3U},
-                            {ACT_WALK, DIR_DOWN, 5U},
-                            {ACT_WAIT, DIR_LEFT, 300U},
-                            {ACT_WALK, DIR_DOWN, 2U},
-                            {ACT_WALK, DIR_LEFT, 3U},
-                            {ACT_WALK, DIR_UP, 1U},
-                            {ACT_WALK, DIR_LEFT, 5U},
-                            {ACT_WALK, DIR_UP, 5U},
-                            {ACT_WAIT, DIR_UP, 180U},
-                            {ACT_WALK, DIR_DOWN, 2U},
-                            {ACT_WALK, DIR_RIGHT, 5U},
-                            {ACT_WALK, DIR_UP, 3U}
+                            { ACT_WALK, DIR_RIGHT, 3U },
+                            { ACT_WALK, DIR_DOWN, 5U },
+                            { ACT_WAIT, DIR_LEFT, 300U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_LEFT, 3U },
+                            { ACT_WALK, DIR_UP, 1U },
+                            { ACT_WALK, DIR_LEFT, 5U },
+                            { ACT_WALK, DIR_UP, 5U },
+                            { ACT_WAIT, DIR_UP, 180U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_RIGHT, 5U },
+                            { ACT_WALK, DIR_UP, 3U }
 };
 
+static ActionObject actionsMagenta[] = {
+                            { ACT_WAIT, DIR_UP, 1200U },
+                            { ACT_WALK, DIR_RIGHT, 8U },
+                            { ACT_WALK, DIR_UP, 1U },
+                            { ACT_WALK, DIR_RIGHT, 7U },
+                            { ACT_WAIT, DIR_LEFT, 1200U },
+                            { ACT_WALK, DIR_LEFT, 3U },
+                            { ACT_WALK, DIR_UP, 1U },
+                            { ACT_WAIT, DIR_UP, 180U },
+                            { ACT_WALK, DIR_DOWN, 1U },
+                            { ACT_WALK, DIR_LEFT, 4U },
+                            { ACT_WALK, DIR_DOWN, 2U },
+                            { ACT_WALK, DIR_LEFT, 1U },
+                            { ACT_WALK, DIR_DOWN, 8U },
+                            { ACT_WALK, DIR_RIGHT, 7U },
+                            { ACT_WALK, DIR_DOWN, 10U },
+                            { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
+                            { ACT_WAIT, DIR_DOWN, 1200U },
+                            { ACT_TOGGLE_HIDING, DIR_UP, 0U },
+                            { ACT_WALK, DIR_RIGHT, 1U },
+                            { ACT_WALK, DIR_UP, 5U },
+                            { ACT_WALK, DIR_RIGHT, 3U },
+                            { ACT_WALK, DIR_UP, 6U },
+                            { ACT_WALK, DIR_LEFT, 10U },
+                            { ACT_WALK, DIR_UP, 8U },
+                            { ACT_WALK, DIR_LEFT, 8U }
+};
 
 
 static RoutineObject routine0;
 static RoutineObject routine1;
-static RoutineObject* routines[] = { &routine0, &routine1 };
+static RoutineObject routine2;
+static RoutineObject routine3;
+static RoutineObject routine4;
+static RoutineObject routine5;
+static RoutineObject* routines[] = { &routine0, &routine1, &routine2, &routine3, &routine4, &routine5 };
 
 
 /* SUBSTATE METHODS */
@@ -241,13 +324,29 @@ static void phaseInit(void)
     routine0.actions = &actionsRed[0];
     routine1.length = 12U;
     routine1.actions = &actionsCyan[0];
+    routine2.length = 7U;
+    routine2.actions = &actionsGreen[0];
+    routine3.length = 27U;
+    routine3.actions = &actionsYellow[0];
+    routine4.length = 19U;
+    routine4.actions = &actionsBlue[0];
+    routine5.length = 25U;
+    routine5.actions = &actionsMagenta[0];
 
-entityList[0].state = ENTITY_IDLE;
-entityList[0].state = ENTITY_IDLE;
+// entityList[0].state = ENTITY_IDLE;
+// entityList[0].state = ENTITY_IDLE;
 entityListAdd(1, 7, 22);
 entityList[0].routinePtr = &routine1;
 entityListAdd(1, 16, 29);
 entityList[1].routinePtr = &routine0;
+entityListAdd(1, 16, 15);
+entityList[2].routinePtr = &routine2;
+entityListAdd(1, 27, 26);
+entityList[3].routinePtr = &routine3;
+entityListAdd(1, 4, 15);
+entityList[4].routinePtr = &routine4;
+entityListAdd(1, 2, 10);
+entityList[5].routinePtr = &routine5;
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -507,8 +606,8 @@ static void commonInit(void)
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
-    player.xTile = 2U;
-    player.yTile = 9U;
+    player.xTile = 12U;
+    player.yTile = 14U;
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
     player.xSpr = 88U;
@@ -575,13 +674,40 @@ static void commonInit(void)
             entityList[0].routinePtr = &routine1;
             entityKill(0);
         }
-
         if (entityList[1].state == ENTITY_DEAD)
         {
             entityList[1].id = 0xFFU;
             entityListAdd(1, 16, 29);
             entityList[1].routinePtr = &routine0;
             entityKill(1);
+        }
+        if (entityList[2].state == ENTITY_DEAD)
+        {
+            entityList[2].id = 0xFFU;
+            entityListAdd(2, 16, 15);
+            entityList[2].routinePtr = &routine2;
+            entityKill(2);
+        }
+        if (entityList[3].state == ENTITY_DEAD)
+        {
+            entityList[3].id = 0xFFU;
+            entityListAdd(2, 27, 26);
+            entityList[3].routinePtr = &routine3;
+            entityKill(3);
+        }
+        if (entityList[4].state == ENTITY_DEAD)
+        {
+            entityList[4].id = 0xFFU;
+            entityListAdd(2, 4, 15);
+            entityList[4].routinePtr = &routine4;
+            entityKill(4);
+        }
+        if (entityList[5].state == ENTITY_DEAD)
+        {
+            entityList[5].id = 0xFFU;
+            entityListAdd(2, 2, 10);
+            entityList[5].routinePtr = &routine5;
+            entityKill(5);
         }
     // }
     headCount = 2U;
