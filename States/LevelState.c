@@ -8,6 +8,7 @@
 // #include "../Engine/ram.h"
 // #include "../Engine/songPlayer.h"
 #include "../Engine/IShareMapData.h"
+#include "../Engine/IShareroutineData.h"
 
 #include "../Assets/Sprites/HUDTeeth.h"
 #include "../Assets/Sprites/MC.h"
@@ -49,6 +50,8 @@ extern UINT8 substate;
 extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
+
+extern ActionObject tempAction;
 
 extern EntityObject player;
 static UINT16 hungerTick;
@@ -320,33 +323,34 @@ static void phaseInit(void)
         entityList[i].id = 0xFFU;
 
 
-    routine0.length = 22U;
-    routine0.actions = &actionsRed[0];
-    routine1.length = 12U;
-    routine1.actions = &actionsCyan[0];
-    routine2.length = 7U;
-    routine2.actions = &actionsGreen[0];
-    routine3.length = 27U;
-    routine3.actions = &actionsYellow[0];
-    routine4.length = 19U;
-    routine4.actions = &actionsBlue[0];
-    routine5.length = 25U;
-    routine5.actions = &actionsMagenta[0];
+    // routine0.length = 22U;
+    // routine0.actions = &actionsRed[0];
+    // routine1.length = 12U;
+    // routine1.actions = &actionsCyan[0];
+    // routine2.length = 7U;
+    // routine2.actions = &actionsGreen[0];
+    // routine3.length = 27U;
+    // routine3.actions = &actionsYellow[0];
+    // routine4.length = 19U;
+    // routine4.actions = &actionsBlue[0];
+    // routine5.length = 25U;
+    // routine5.actions = &actionsMagenta[0];
 
-// entityList[0].state = ENTITY_IDLE;
-// entityList[0].state = ENTITY_IDLE;
-entityListAdd(1, 7, 22);
-entityList[0].routinePtr = &routine1;
-entityListAdd(1, 16, 29);
-entityList[1].routinePtr = &routine0;
 entityListAdd(1, 16, 15);
-entityList[2].routinePtr = &routine2;
+entityList[0].curRoutineIndex = 0U;
 entityListAdd(1, 27, 26);
-entityList[3].routinePtr = &routine3;
+entityList[1].curRoutineIndex = 1U;
+entityListAdd(1, 16, 29);
+entityList[2].curRoutineIndex = 2U;
+entityListAdd(1, 7, 22);
+entityList[3].curRoutineIndex = 3U;
 entityListAdd(1, 4, 15);
-entityList[4].routinePtr = &routine4;
+entityList[4].curRoutineIndex = 4U;
 entityListAdd(1, 2, 10);
-entityList[5].routinePtr = &routine5;
+entityList[5].curRoutineIndex = 5U;
+
+
+
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -670,43 +674,43 @@ static void commonInit(void)
         if (entityList[0].state == ENTITY_DEAD)
         {
             entityList[0].id = 0xFFU;
-            entityListAdd(1, 7, 22);
-            entityList[0].routinePtr = &routine1;
+            entityListAdd(1, 16, 15);
+            entityList[0].curRoutineIndex = 0U;
             entityKill(0);
         }
         if (entityList[1].state == ENTITY_DEAD)
         {
             entityList[1].id = 0xFFU;
-            entityListAdd(1, 16, 29);
-            entityList[1].routinePtr = &routine0;
+            entityListAdd(1, 27, 26);
+            entityList[1].curRoutineIndex = 1U;
             entityKill(1);
         }
         if (entityList[2].state == ENTITY_DEAD)
         {
             entityList[2].id = 0xFFU;
-            entityListAdd(2, 16, 15);
-            entityList[2].routinePtr = &routine2;
+            entityListAdd(1, 16, 29);
+            entityList[2].curRoutineIndex = 2U;
             entityKill(2);
         }
         if (entityList[3].state == ENTITY_DEAD)
         {
             entityList[3].id = 0xFFU;
-            entityListAdd(2, 27, 26);
-            entityList[3].routinePtr = &routine3;
+            entityListAdd(1, 7, 22);
+            entityList[3].curRoutineIndex = 3U;
             entityKill(3);
         }
         if (entityList[4].state == ENTITY_DEAD)
         {
             entityList[4].id = 0xFFU;
             entityListAdd(2, 4, 15);
-            entityList[4].routinePtr = &routine4;
+            entityList[4].curRoutineIndex = 4U;
             entityKill(4);
         }
         if (entityList[5].state == ENTITY_DEAD)
         {
             entityList[5].id = 0xFFU;
             entityListAdd(2, 2, 10);
-            entityList[5].routinePtr = &routine5;
+            entityList[5].curRoutineIndex = 5U;
             entityKill(5);
         }
     // }
@@ -760,6 +764,7 @@ static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
     entityList[k].animFrame = 0U;
     entityList[k].actionTimer = 0U;
     entityList[k].curActionIndex = 0U;
+    entityList[k].curRoutineIndex = 0U;
     entityList[k].xSpr = (tileX * 16U) + 8U;
     entityList[k].ySpr = (tileY * 16U) + 16U;
     entityList[k].xTile = tileX;
@@ -828,16 +833,15 @@ static void handleRoutines(void)
             // Pick up a new action if just finished an action
             if (entityPtr->state == ENTITY_IDLE)
             {
-                // Move to next action
-                m = (entityPtr->curActionIndex) % (entityPtr->routinePtr->length);
-                entityPtr->curActionIndex = m + 1U;
+                // Get next action
+                entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
 
-                switch ((entityPtr->routinePtr->actions)[m].action)
+                switch (tempAction.action)
                 {
                     case ACT_WALK:
                         entityPtr->state = ENTITY_WALKING;
-                        entityPtr->dir = (entityPtr->routinePtr->actions)[m].direction;
-                        entityPtr->actionTimer = 16U * (entityPtr->routinePtr->actions)[m].magnitude;
+                        entityPtr->dir = tempAction.direction;
+                        entityPtr->actionTimer = 16U * tempAction.magnitude;
 
                         if (entityPtr->dir == DIR_RIGHT)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
@@ -846,8 +850,8 @@ static void handleRoutines(void)
                         break;
                     case ACT_WAIT:
                         entityPtr->state = ENTITY_WAITING;
-                        entityPtr->actionTimer = (entityPtr->routinePtr->actions)[m].magnitude;
-                        entityPtr->dir = (entityPtr->routinePtr->actions)[m].direction;
+                        entityPtr->actionTimer = tempAction.magnitude;
+                        entityPtr->dir = tempAction.direction;
 
                         if (entityPtr->dir == DIR_RIGHT)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
@@ -856,7 +860,7 @@ static void handleRoutines(void)
                         break;
                     case ACT_TOGGLE_HIDING:
                         entityPtr->state = ENTITY_TOGGLING_HIDE;
-                        entityPtr->dir = (entityPtr->routinePtr->actions)[m].direction;
+                        entityPtr->dir = tempAction.direction;
                         break;
                 }
             }

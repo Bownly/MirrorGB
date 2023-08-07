@@ -1,0 +1,6 @@
+#ifndef ISHAREROUTINEDATA_H
+#define ISHAREROUTINEDATA_H
+
+UINT8 getAction(UINT8, UINT8);
+
+#endif

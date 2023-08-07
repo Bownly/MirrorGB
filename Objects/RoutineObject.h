@@ -7,7 +7,7 @@
 
 typedef struct RoutineObject {
     UINT8 length;
-    ActionObject* actions;
+    ActionObject (*actions)[];
 } RoutineObject;
 
 #endif

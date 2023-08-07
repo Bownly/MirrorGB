@@ -10,6 +10,7 @@
 // #include "Assets/Tiles/borderTiles.h"
 // #include "Assets/Tiles/fontTiles.h"
 
+#include "Objects/ActionObject.h"
 #include "Objects/EntityObject.h"
 
 #include "States/LevelState.h"
@@ -50,6 +51,7 @@ UINT8 handyDandyString[19U];
 UINT8 (*playGridPtr)[32U][32U];
 UINT8 playGrid[32U][32U];
 UINT8 playGridM[32U][32U];
+ActionObject tempAction;
 
 
 void initRAM(UINT8);

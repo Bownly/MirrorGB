@@ -19,8 +19,8 @@ typedef struct EntityObject {
     DIRECTION dir;
     UINT8 moveSpeed;
     UINT16 actionTimer;
-    RoutineObject* routinePtr;
     UINT8 curActionIndex;
+    UINT8 curRoutineIndex;
     UINT8 isVisible;
     UINT8 isHiding;
     UINT8 visionDistance;
