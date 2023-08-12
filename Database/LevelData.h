@@ -5,6 +5,6 @@
 #ifndef LEVEL_DATA_H
 #define LEVEL_DATA_H
  
-extern const LevelObject levelDex[32U];
+extern const LevelObject levelDex[8U];
 
 #endif

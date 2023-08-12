@@ -9,12 +9,14 @@
 #define DATA_BANK 4U
 
 extern ActionObject tempAction;
-UINT8 returnVal;
+static UINT8 nextBank;
+static UINT8 returnVal;
+
 
 // Returns next actionId
 UINT8 getAction(UINT8 routineId, UINT8 actionId)
 {
-    UINT8 nextBank = CURRENT_BANK;
+    nextBank = CURRENT_BANK;
     SWITCH_ROM(DATA_BANK);
     tempAction.action =    (*routineDex[routineId].actions)[actionId].action;
     tempAction.direction = (*routineDex[routineId].actions)[actionId].direction;

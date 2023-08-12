@@ -5,9 +5,10 @@
 #define LEVELOBJECT_H
 
 typedef struct LevelObject {
-    const unsigned char* map;
-    UINT8 w;
-    UINT8 h;
+    UINT8 roomRId;
+    UINT8 roomMId;
+    UINT8 npcCount;
+    UINT8 npcSpecies[6U];
 } LevelObject;
 
 #endif

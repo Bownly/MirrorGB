@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../Database/LevelData.h"
-#include "../Objects/LevelObject.h"
+#include "../Database/RoomData.h"
+#include "../Objects/RoomObject.h"
 
 extern UINT8 i;  // Used mostly for loops
 extern UINT8 j;  // Used mostly for loops
@@ -24,7 +24,7 @@ void loadMapDataFromDatabase(UINT8 (*playGridPtr)[32U], UINT8 mapId, UINT8 w, UI
     UINT16 c = 0U;
     for (j = 0U; j != h; j++)
     {
-        memcpy(playGridPtr[j], levelDex[mapId].map + c, w);
+        memcpy(playGridPtr[j], roomDex[mapId].map + c, w);
         c += w;
     }
 
@@ -112,7 +112,7 @@ UINT8 getOwMapHeight(UINT8 mapId)
     UINT8 nextBank = CURRENT_BANK;
     SWITCH_ROM(MAP_BANK);
     UINT8 returnVal;
-    returnVal = levelDex[mapId].h;
+    returnVal = roomDex[mapId].h;
     SWITCH_ROM(nextBank);
     return returnVal;
 }
@@ -122,7 +122,7 @@ UINT8 getOwMapWidth(UINT8 mapId)
     UINT8 nextBank = CURRENT_BANK;
     SWITCH_ROM(MAP_BANK);
     UINT8 returnVal;
-    returnVal = levelDex[mapId].w;
+    returnVal = roomDex[mapId].w;
     SWITCH_ROM(nextBank);
     return returnVal;
 }

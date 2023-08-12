@@ -3,12 +3,12 @@
 // #include "../Engine/enums.h"
 #include "../Objects/LevelObject.h"
 
-#include "../Assets/Maps/Levels/HouseRMap.h"
-#include "../Assets/Maps/Levels/HouseMMap.h"
-
-const LevelObject levelDex[32U] = {
-    { .map = HouseRMap_tilemap, .w = HouseRMap_tilemap_width, .h = HouseRMap_tilemap_height },
-    { .map = HouseMMap_tilemap, .w = HouseMMap_tilemap_width, .h = HouseMMap_tilemap_height },
-    { .map = HouseRMap_tilemap, .w = HouseRMap_tilemap_width, .h = HouseRMap_tilemap_height },
-    { .map = HouseRMap_tilemap, .w = HouseRMap_tilemap_width, .h = HouseRMap_tilemap_height },
+const LevelObject levelDex[8U] = {
+    // House level
+    { 
+        .roomRId = 0U,
+        .roomMId = 1U,
+        .npcCount = 8U,
+        .npcSpecies = { 0U, 0U, 0xFFU, 0xFFU, 0xFFU, 0xFFU }
+    }
 };

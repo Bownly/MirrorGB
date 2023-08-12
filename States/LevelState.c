@@ -7,7 +7,9 @@
 #include "../Engine/fade.h"
 // #include "../Engine/ram.h"
 // #include "../Engine/songPlayer.h"
+#include "../Engine/ILoadMapTileData.h"
 #include "../Engine/IShareMapData.h"
+#include "../Engine/IShareNPCData.h"
 #include "../Engine/IShareroutineData.h"
 
 #include "../Assets/Sprites/HUDTeeth.h"
@@ -15,17 +17,14 @@
 #include "../Assets/Sprites/NPCgirl.h"
 
 #include "../Assets/Tiles/BloodstainTiles.h"
-#include "../Assets/Tiles/HouseTiles.h"
-#include "../Assets/Tiles/HouseMTiles.h"
-#include "../Assets/Tiles/YaMetaTiles.h"
 #include "../Assets/Tiles/fontTiles.h"
 #include "../Assets/Tiles/HUD.h"
 
 #include "../Objects/ActionObject.h"
 #include "../Objects/EntityObject.h"
 #include "../Objects/LevelObject.h"
+#include "../Objects/NPCObject.h"
 #include "../Objects/RoutineObject.h"
-
 
 
 // extern const hUGESong_t templateTwilightDriveSong;
@@ -50,8 +49,10 @@ extern UINT8 substate;
 extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
+extern UINT8 metaTiles[256U][4U];
 
 extern ActionObject tempAction;
+extern NPCObject tempNPC;
 
 extern EntityObject player;
 static UINT16 hungerTick;
@@ -111,147 +112,6 @@ static UBYTE redraw;
 #define metatileToPx(metatile) ((metatile) << 4U)
 #define pxToMetatile(px) ((px) >> 4U)
 
-
-static ActionObject actionsGreen[] = { 
-                            {ACT_WAIT, DIR_UP, 1200U},
-                            {ACT_WALK, DIR_UP, 1U},
-                            {ACT_WAIT, DIR_UP, 30U},
-                            {ACT_WAIT, DIR_LEFT, 30U},
-                            {ACT_WAIT, DIR_RIGHT, 30U},
-                            {ACT_WAIT, DIR_DOWN, 90U},
-                            {ACT_WALK, DIR_DOWN, 1U},
-                          };
-
-static ActionObject actionsYellow[] = { 
-                            {ACT_WAIT, DIR_UP, 1200U},
-                            {ACT_WALK, DIR_UP, 5U},
-                            {ACT_WALK, DIR_LEFT, 6U},
-                            {ACT_WALK, DIR_UP, 11U},
-                            {ACT_WALK, DIR_LEFT, 2U},
-                            {ACT_WALK, DIR_UP, 3U},
-                            {ACT_WALK, DIR_RIGHT, 2U},
-                            {ACT_WAIT, DIR_DOWN, 300U},
-                            {ACT_WALK, DIR_RIGHT, 1U},
-                            {ACT_WALK, DIR_DOWN, 4U},
-                            {ACT_WALK, DIR_LEFT, 2U},
-                            {ACT_WALK, DIR_DOWN, 7U},
-                            {ACT_WALK, DIR_LEFT, 10U},
-                            {ACT_WALK, DIR_UP, 8U},
-                            {ACT_WALK, DIR_LEFT, 4U},
-                            {ACT_WALK, DIR_UP, 2U},
-                            {ACT_WALK, DIR_LEFT, 3U},
-                            {ACT_WAIT, DIR_UP, 180U},
-                            {ACT_WALK, DIR_RIGHT, 4U},
-                            {ACT_WAIT, DIR_DOWN, 600U},
-                            {ACT_WALK, DIR_LEFT, 1U},
-                            {ACT_WALK, DIR_DOWN, 4U},
-                            {ACT_WALK, DIR_RIGHT, 4U},
-                            {ACT_WALK, DIR_DOWN, 7U},
-                            {ACT_WALK, DIR_RIGHT, 6U},
-                            {ACT_WALK, DIR_DOWN, 7U},
-                            {ACT_WALK, DIR_RIGHT, 11U}
-                          };
-
-static ActionObject actionsRed[] = { 
-                            { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
-                            { ACT_WAIT, DIR_DOWN, 1200U },
-                            { ACT_TOGGLE_HIDING, DIR_UP, 0U },
-                            { ACT_WALK, DIR_RIGHT, 6U },
-                            { ACT_WALK, DIR_UP, 19U },
-                            { ACT_WALK, DIR_RIGHT, 3U },
-                            { ACT_WALK, DIR_UP, 2U },
-                            { ACT_WALK, DIR_RIGHT, 2U },
-                            { ACT_WAIT, DIR_UP, 300U },
-                            { ACT_WALK, DIR_RIGHT, 2U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_LEFT, 1U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_LEFT, 4U },
-                            { ACT_WALK, DIR_UP, 3U },
-                            { ACT_WALK, DIR_LEFT, 2U },
-                            { ACT_WALK, DIR_DOWN, 9U },
-                            { ACT_WALK, DIR_LEFT, 8U },
-                            { ACT_WALK, DIR_DOWN, 4U },
-                            { ACT_WAIT, DIR_DOWN, 600U },
-                            { ACT_WALK, DIR_RIGHT, 2U },
-                            { ACT_WALK, DIR_DOWN, 7U }
-                          };
-
-static ActionObject actionsBlue[] = { 
-                            { ACT_WAIT, DIR_UP, 1200U },
-                            { ACT_WALK, DIR_RIGHT, 5U },
-                            { ACT_WALK, DIR_DOWN, 4U },
-                            { ACT_WALK, DIR_RIGHT, 11U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_RIGHT, 9U },
-                            { ACT_WALK, DIR_DOWN, 5U },
-                            { ACT_WAIT, DIR_UP, 600U },
-                            { ACT_WALK, DIR_LEFT, 5U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_RIGHT, 5U },
-                            { ACT_WAIT, DIR_RIGHT, 300U },
-                            { ACT_WAIT, DIR_LEFT, 120U },
-                            { ACT_WAIT, DIR_RIGHT, 120U },
-                            { ACT_WALK, DIR_LEFT, 9U },
-                            { ACT_WALK, DIR_UP, 10U },
-                            { ACT_WALK, DIR_LEFT, 10U },
-                            { ACT_WALK, DIR_UP, 3U },
-                            { ACT_WALK, DIR_LEFT, 6U }
-                          };
-
-static ActionObject actionsCyan[] = {
-                            { ACT_WALK, DIR_RIGHT, 3U },
-                            { ACT_WALK, DIR_DOWN, 5U },
-                            { ACT_WAIT, DIR_LEFT, 300U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_LEFT, 3U },
-                            { ACT_WALK, DIR_UP, 1U },
-                            { ACT_WALK, DIR_LEFT, 5U },
-                            { ACT_WALK, DIR_UP, 5U },
-                            { ACT_WAIT, DIR_UP, 180U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_RIGHT, 5U },
-                            { ACT_WALK, DIR_UP, 3U }
-};
-
-static ActionObject actionsMagenta[] = {
-                            { ACT_WAIT, DIR_UP, 1200U },
-                            { ACT_WALK, DIR_RIGHT, 8U },
-                            { ACT_WALK, DIR_UP, 1U },
-                            { ACT_WALK, DIR_RIGHT, 7U },
-                            { ACT_WAIT, DIR_LEFT, 1200U },
-                            { ACT_WALK, DIR_LEFT, 3U },
-                            { ACT_WALK, DIR_UP, 1U },
-                            { ACT_WAIT, DIR_UP, 180U },
-                            { ACT_WALK, DIR_DOWN, 1U },
-                            { ACT_WALK, DIR_LEFT, 4U },
-                            { ACT_WALK, DIR_DOWN, 2U },
-                            { ACT_WALK, DIR_LEFT, 1U },
-                            { ACT_WALK, DIR_DOWN, 8U },
-                            { ACT_WALK, DIR_RIGHT, 7U },
-                            { ACT_WALK, DIR_DOWN, 10U },
-                            { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
-                            { ACT_WAIT, DIR_DOWN, 1200U },
-                            { ACT_TOGGLE_HIDING, DIR_UP, 0U },
-                            { ACT_WALK, DIR_RIGHT, 1U },
-                            { ACT_WALK, DIR_UP, 5U },
-                            { ACT_WALK, DIR_RIGHT, 3U },
-                            { ACT_WALK, DIR_UP, 6U },
-                            { ACT_WALK, DIR_LEFT, 10U },
-                            { ACT_WALK, DIR_UP, 8U },
-                            { ACT_WALK, DIR_LEFT, 8U }
-};
-
-
-static RoutineObject routine0;
-static RoutineObject routine1;
-static RoutineObject routine2;
-static RoutineObject routine3;
-static RoutineObject routine4;
-static RoutineObject routine5;
-static RoutineObject* routines[] = { &routine0, &routine1, &routine2, &routine3, &routine4, &routine5 };
-
-
 /* SUBSTATE METHODS */
 static void phaseInit(void);
 static void phaseReinit(void);
@@ -264,7 +124,7 @@ static void inputs(void);
 static void commonInit(void);
 static void checkUnderfootTile(void);
 static void entityKill(UINT8);
-static UINT8 entityListAdd(UINT8, UINT8, UINT8);
+static void entityListAdd(UINT8);
 static void handleRoutines(void);
 static void killPlayer(void);
 static void loadLevel(void);
@@ -316,41 +176,21 @@ static void phaseInit(void)
     // Load entity sprite data
     // Load player sprite data
 
-
-    
     // Init entity stuff
-    for (i = 0U; i != 8U; ++i)
+    for (i = 0U; i != ENTITY_MAX; ++i)
         entityList[i].id = 0xFFU;
 
+    for (i = 0U; i != 6U; ++i)
+    {
+        getNPCData(i);
+        entityListAdd(i);
+    }
 
-    // routine0.length = 22U;
-    // routine0.actions = &actionsRed[0];
-    // routine1.length = 12U;
-    // routine1.actions = &actionsCyan[0];
-    // routine2.length = 7U;
-    // routine2.actions = &actionsGreen[0];
-    // routine3.length = 27U;
-    // routine3.actions = &actionsYellow[0];
-    // routine4.length = 19U;
-    // routine4.actions = &actionsBlue[0];
-    // routine5.length = 25U;
-    // routine5.actions = &actionsMagenta[0];
-
-entityListAdd(1, 16, 15);
-entityList[0].curRoutineIndex = 0U;
-entityListAdd(1, 27, 26);
-entityList[1].curRoutineIndex = 1U;
-entityListAdd(1, 16, 29);
-entityList[2].curRoutineIndex = 2U;
-entityListAdd(1, 7, 22);
-entityList[3].curRoutineIndex = 3U;
-entityListAdd(1, 4, 15);
-entityList[4].curRoutineIndex = 4U;
-entityListAdd(1, 2, 10);
-entityList[5].curRoutineIndex = 5U;
-
-
-
+    // entityListAdd(1U, &(getNPCData(1U)));
+    // entityListAdd(2U, &(getNPCData(2U)));
+    // entityListAdd(3U, &(getNPCData(3U)));
+    // entityListAdd(4U, &(getNPCData(4U)));
+    // entityListAdd(5U, &(getNPCData(5U)));
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -428,6 +268,7 @@ static void phaseLoop(void)
     // set_win_tile_xy(19,0,player.xTile%10U);
     // set_win_tile_xy(18,1,player.yTile/10U);
     // set_win_tile_xy(19,1,player.yTile%10U);
+
 }
 
 
@@ -671,49 +512,19 @@ static void commonInit(void)
     // TODO: Need to read entity info from a list or something
     // for (i = 0U; i != ENTITY_MAX; ++i)
     // {
-        if (entityList[0].state == ENTITY_DEAD)
+
+    for (i = 0U; i != ENTITY_MAX; ++i)
+    {
+        if (entityList[i].id != 0xFF)
         {
-            entityList[0].id = 0xFFU;
-            entityListAdd(1, 16, 15);
-            entityList[0].curRoutineIndex = 0U;
-            entityKill(0);
+            if (entityList[i].state != ENTITY_DEAD)
+            {
+                getNPCData(i);
+                entityListAdd(i);
+            }
         }
-        if (entityList[1].state == ENTITY_DEAD)
-        {
-            entityList[1].id = 0xFFU;
-            entityListAdd(1, 27, 26);
-            entityList[1].curRoutineIndex = 1U;
-            entityKill(1);
-        }
-        if (entityList[2].state == ENTITY_DEAD)
-        {
-            entityList[2].id = 0xFFU;
-            entityListAdd(1, 16, 29);
-            entityList[2].curRoutineIndex = 2U;
-            entityKill(2);
-        }
-        if (entityList[3].state == ENTITY_DEAD)
-        {
-            entityList[3].id = 0xFFU;
-            entityListAdd(1, 7, 22);
-            entityList[3].curRoutineIndex = 3U;
-            entityKill(3);
-        }
-        if (entityList[4].state == ENTITY_DEAD)
-        {
-            entityList[4].id = 0xFFU;
-            entityListAdd(2, 4, 15);
-            entityList[4].curRoutineIndex = 4U;
-            entityKill(4);
-        }
-        if (entityList[5].state == ENTITY_DEAD)
-        {
-            entityList[5].id = 0xFFU;
-            entityListAdd(2, 2, 10);
-            entityList[5].curRoutineIndex = 5U;
-            entityKill(5);
-        }
-    // }
+    }
+
     headCount = 2U;
     displayHeadcount();
 
@@ -742,42 +553,30 @@ static void entityKill(UINT8 entityId)
     displayHeadcount();
 }
 
-static UINT8 entityListAdd(UINT8 speciesId, UINT8 tileX, UINT8 tileY)
+static void entityListAdd(UINT8 id)
 {
-    // Find the first open slot
-    k = 0U;
-    for (i = 0U; i != 8U; ++i)
-    {
-        if (entityList[i].id == 0xFFU)
-        {
-            k = i;
-            break;  // End loop faster
-        }
-    }
-
     // Init the new entity
-    entityList[k].id = k;
-    entityList[k].speciesId = speciesId;
-    entityList[k].state = ENTITY_IDLE;
-    entityList[k].spriteId = (k + 1U) * 4U + 10U;  // The 10 padding is for the HUD sprites
-    entityList[k].animTick = 0U;
-    entityList[k].animFrame = 0U;
-    entityList[k].actionTimer = 0U;
-    entityList[k].curActionIndex = 0U;
-    entityList[k].curRoutineIndex = 0U;
-    entityList[k].xSpr = (tileX * 16U) + 8U;
-    entityList[k].ySpr = (tileY * 16U) + 16U;
-    entityList[k].xTile = tileX;
-    entityList[k].yTile = tileY;
-    entityList[k].dir = DIR_DOWN;
-    entityList[k].moveSpeed = 1U;
-    entityList[k].visionDistance = 3U;
-    entityList[k].hpMax = 0U;
-    entityList[k].hpCur = 0U;
+    entityList[id].id = id;
+    entityList[id].speciesId = tempNPC.speciesId;
+    entityList[id].state = ENTITY_IDLE;
+    entityList[id].spriteId = (id + 1U) * 4U + 10U;  // The 10 padding is for the HUD sprites
+    entityList[id].animTick = 0U;
+    entityList[id].animFrame = 0U;
+    entityList[id].actionTimer = 0U;
+    entityList[id].curActionIndex = 0U;
+    entityList[id].curRoutineIndex = tempNPC.routineId;
+    entityList[id].xTile = tempNPC.xTile;
+    entityList[id].yTile = tempNPC.yTile;
+    entityList[id].xSpr = (tempNPC.xTile * 16U) + 8U;
+    entityList[id].ySpr = (tempNPC.yTile * 16U) + 16U;
+    entityList[id].dir = DIR_DOWN;
+    entityList[id].moveSpeed = 1U;
+    entityList[id].visionDistance = 3U;
+    entityList[id].hpMax = 0U;
+    entityList[id].hpCur = 0U;
 
-    // entityGrid[tileY][tileX] = k;
-
-    return k;
+    set_bkg_tile_xy(id,0,tempNPC.routineId);
+    set_win_tile_xy(id,0,tempNPC.routineId);
 }
 
 static void handleRoutines(void)
@@ -904,10 +703,7 @@ static void loadRoom(UINT8 id)
 {
     roomId = id;
 
-    if (roomId == 0U)
-        set_bkg_data(0U, HouseTiles_tileset_size, HouseTiles_tileset);
-    else
-       set_bkg_data(0U, HouseMTiles_tileset_size, HouseMTiles_tileset);
+    loadMapTileData(roomId);
 
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
@@ -1219,9 +1015,9 @@ static void drawNewBkg(void)
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
 {
     if (roomId == 0U)
-        set_bkg_tiles(x, y, 2U, 2U, YaMetaTiles[tileIndex]);
+        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
     else
-        set_bkg_tiles(x, y, 2U, 2U, YaMMetaTiles[tileIndex]);
+        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
     // set_bkg_tile_xy(x,y,x);
     // set_bkg_tile_xy(x+1,y,y);
     // set_bkg_tile_xy(x, y, tileIndex);
