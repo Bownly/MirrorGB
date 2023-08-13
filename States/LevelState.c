@@ -124,6 +124,7 @@ static void phaseLoop(void);
 static void inputs(void);
 
 /* HELPER METHODS */
+static UINT8 checkForEntityCollision(UINT8, UINT8);
 static void commonInit(void);
 static void checkUnderfootTile(void);
 static void entityKill(UINT8);
@@ -323,7 +324,7 @@ static void inputs(void)
                 default: break;
             }
 
-            // Check if tile in front is wax
+            // Check if tile in front is an npc
             entityPtr = entityList;
             for (k = 0U; k != ENTITY_MAX; ++k)
             {
@@ -335,7 +336,6 @@ static void inputs(void)
                     displayHealthPips();
                     hungerTick = 0U;
                 }
-
             }
         }
 
@@ -343,7 +343,8 @@ static void inputs(void)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT 
+                && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE)
             {
                 // Move sprite, not camera
                 if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
@@ -365,7 +366,8 @@ static void inputs(void)
         {
             player.dir = DIR_DOWN;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT
+                && checkForEntityCollision(player.xTile, player.yTile + 1U) == FALSE)
             {
                 // Move sprite, not camera
                 if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
@@ -387,7 +389,8 @@ static void inputs(void)
         {
             player.dir = DIR_LEFT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT
+                && checkForEntityCollision(player.xTile - 1U, player.yTile) == FALSE)
             {
                 // Move sprite, not camera
                 if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
@@ -409,7 +412,8 @@ static void inputs(void)
         {
             player.dir = DIR_RIGHT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT
+                && checkForEntityCollision(player.xTile + 1U, player.yTile) == FALSE)
             {
                 // Move sprite, not camera
                 if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
@@ -432,6 +436,25 @@ static void inputs(void)
 
 
 /******************************** HELPER METHODS *********************************/
+static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
+{
+    // Check if tile in front is an npc
+    entityPtr = entityList;
+    for (k = 0U; k != ENTITY_MAX; ++k)
+    {
+        entityPtr = &entityList[k];
+        switch (entityPtr->state)
+        {
+            case ENTITY_IDLE:
+            case ENTITY_WAITING:
+                if (entityPtr->xTile == x && entityPtr->yTile == y)
+                    return TRUE;
+                break;
+        }
+    }
+    return FALSE;
+}
+
 static void checkUnderfootTile(void)
 {
     player.state = ENTITY_IDLE;
