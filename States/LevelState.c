@@ -8,8 +8,10 @@
 // #include "../Engine/ram.h"
 // #include "../Engine/songPlayer.h"
 #include "../Engine/ILoadMapTileData.h"
+#include "../Engine/IShareLevelData.h"
 #include "../Engine/IShareMapData.h"
 #include "../Engine/IShareNPCData.h"
+#include "../Engine/IShareNPCGraphics.h"
 #include "../Engine/IShareroutineData.h"
 
 #include "../Assets/Sprites/HUDTeeth.h"
@@ -50,6 +52,7 @@ extern UINT8 (*playGridPtr)[32U][32U];
 extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
 extern UINT8 metaTiles[256U][4U];
+extern UINT8 handyDandyString[19U];
 
 extern ActionObject tempAction;
 extern NPCObject tempNPC;
@@ -503,15 +506,14 @@ static void commonInit(void)
 
     animatePlayer();
 
-    set_sprite_data(0x30U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x41U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x50U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x60U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-    set_sprite_data(0x70U, NPCgirl_TILE_COUNT, NPCgirl_tiles);
-
-    // TODO: Need to read entity info from a list or something
-    // for (i = 0U; i != ENTITY_MAX; ++i)
-    // {
+    UINT8 junkvar = 0x30U;
+    loadLevelNPCSpeciesList(roomId);
+    for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
+    {
+        if (handyDandyString[i] != 0xFF)
+            junkvar += loadNPCSpriteTiles(handyDandyString[i], junkvar);
+    }
+    
 
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
@@ -898,12 +900,9 @@ static void animateEntities(void)
                 }
                 else
                 {
-                    if (entityPtr->dir == DIR_LEFT)
-                        move_metasprite_vflip(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                        entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
-                    else
-                        move_metasprite(NPCgirl_metasprites[entityPtr->animFrame], 0x30U, entityPtr->spriteId,
-                                        entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U);
+                    moveNPCSprite(entityPtr->speciesId, entityPtr->animFrame, 0x30U, entityPtr->spriteId,
+                                  entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U,
+                                   entityPtr->dir == DIR_LEFT ? TRUE : FALSE);
                 }
             }
             else

@@ -12,12 +12,14 @@ extern UINT8 playGrid[32U][32U];
 extern UINT8 playGridM[32U][32U];
 
 #define OWTILES_BKG_INDEX  0x60U
-
 #define MAP_BANK 3U
+
+static UINT8 nextBank;
+static UINT8 returnVal;
 
 void loadMapDataFromDatabase(UINT8 (*playGridPtr)[32U], UINT8 mapId, UINT8 w, UINT8 h)
 {
-    UINT8 nextBank = CURRENT_BANK;
+    nextBank = CURRENT_BANK;
 
     SWITCH_ROM(MAP_BANK);
 
@@ -109,9 +111,9 @@ void loadMapDataFromDatabase(UINT8 (*playGridPtr)[32U], UINT8 mapId, UINT8 w, UI
 
 UINT8 getOwMapHeight(UINT8 mapId)
 {
-    UINT8 nextBank = CURRENT_BANK;
+    nextBank = CURRENT_BANK;
     SWITCH_ROM(MAP_BANK);
-    UINT8 returnVal;
+    returnVal;
     returnVal = roomDex[mapId].h;
     SWITCH_ROM(nextBank);
     return returnVal;
@@ -119,9 +121,9 @@ UINT8 getOwMapHeight(UINT8 mapId)
 
 UINT8 getOwMapWidth(UINT8 mapId)
 {   
-    UINT8 nextBank = CURRENT_BANK;
+    nextBank = CURRENT_BANK;
     SWITCH_ROM(MAP_BANK);
-    UINT8 returnVal;
+    returnVal;
     returnVal = roomDex[mapId].w;
     SWITCH_ROM(nextBank);
     return returnVal;

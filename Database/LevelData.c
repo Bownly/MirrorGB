@@ -9,6 +9,6 @@ const LevelObject levelDex[8U] = {
         .roomRId = 0U,
         .roomMId = 1U,
         .npcCount = 8U,
-        .npcSpecies = { 0U, 0U, 0xFFU, 0xFFU, 0xFFU, 0xFFU }
+        .npcSpecies = { 0U, 0U, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU }
     }
 };
