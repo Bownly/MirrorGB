@@ -76,7 +76,7 @@ static UINT8 gridW;
 static UINT8 gridH;
 static UINT16 camera_max_x = 10U * 128U;
 static UINT16 camera_max_y = 9U * 128U;
-static UINT8 walkableTileCount = 32U;
+#define WALKABLE_TILE_COUNT 32U
 
 
 // current and new positions of the camera in pixels
@@ -343,7 +343,7 @@ static void inputs(void)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
                 // Move sprite, not camera
                 if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
@@ -365,7 +365,7 @@ static void inputs(void)
         {
             player.dir = DIR_DOWN;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
                 // Move sprite, not camera
                 if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
@@ -387,7 +387,7 @@ static void inputs(void)
         {
             player.dir = DIR_LEFT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT)
             {
                 // Move sprite, not camera
                 if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
@@ -409,7 +409,7 @@ static void inputs(void)
         {
             player.dir = DIR_RIGHT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < walkableTileCount)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT)
             {
                 // Move sprite, not camera
                 if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
@@ -681,7 +681,9 @@ static void handleRoutines(void)
                         case DIR_LEFT:  i -= 1U; break;
                         case DIR_RIGHT: i += 1U; break;
                     }
-                    if (i == player.xTile && j == player.yTile)  // Spotted player
+                    if (playGrid[i][j] >= WALKABLE_TILE_COUNT)
+                        break;
+                    else if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
                         entityPtr->state = ENTITY_IDLE;
 
