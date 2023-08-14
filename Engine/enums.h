@@ -10,7 +10,8 @@ typedef enum {
 typedef enum {
     SUB_INIT,
     SUB_REINIT,
-    SUB_LOOP
+    SUB_LOOP,
+    SUB_SPOTTED
 } SUBSTATE;
 
 typedef enum {

@@ -11,7 +11,7 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/House
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseMMap.o Assets/Maps/Levels/HouseMMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/BloodstainTiles.o Assets/Tiles/BloodstainTiles.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/CrosshairTiles.o Assets/Tiles/CrosshairTiles.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/ExclamationTiles.o Assets/Tiles/ExclamationTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/HUDTiles.o Assets/Tiles/HUD.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c

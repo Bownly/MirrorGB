@@ -19,6 +19,7 @@
 #include "../Assets/Sprites/NPCgirl.h"
 
 #include "../Assets/Tiles/BloodstainTiles.h"
+#include "../Assets/Tiles/ExclamationTiles.h"
 #include "../Assets/Tiles/fontTiles.h"
 #include "../Assets/Tiles/HUD.h"
 
@@ -63,7 +64,7 @@ static UINT16 hungerTick;
 static EntityObject* entityPtr;
 // static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[8U];
-#define ENTITY_MAX 8U
+#define ENTITY_MAX 7U
 static UINT8 headCount;
 
 static const UINT8 hudMouthMap[8U] = {0xF0, 0xF2, 0xF4, 0xF6, 0xF1, 0xF3, 0xF5, 0xF7};
@@ -77,7 +78,6 @@ static UINT8 gridH;
 static UINT16 camera_max_x = 10U * 128U;
 static UINT16 camera_max_y = 9U * 128U;
 #define WALKABLE_TILE_COUNT 32U
-
 
 // current and new positions of the camera in pixels
 static WORD camera_x = STARTCAM, camera_y = STARTCAM, new_camera_x = STARTCAM, new_camera_y = STARTCAM;
@@ -104,6 +104,10 @@ static UBYTE redraw;
 #define RIGHT_BOUND 652
 #define TOP_BOUND 48
 #define BOTTOM_BOUND 652
+
+#define SPOTTED_ANIM_DURATION 60U
+#define EXCLAMATION_SPR_ID 4U
+#define EXCLAMATION_SPR_INDEX 0xE8U
 #define BLOOD_SPR_INDEX 0xECU
 
 #define pxToSubpx(px) ((px) << 4U)
@@ -119,6 +123,7 @@ static UBYTE redraw;
 static void phaseInit(void);
 static void phaseReinit(void);
 static void phaseLoop(void);
+static void phaseSpotted(void);
 
 /* INPUT METHODS */
 static void inputs(void);
@@ -159,6 +164,9 @@ void LevelStateMain(void)
         case SUB_LOOP:
             phaseLoop();
             break;
+        case SUB_SPOTTED:
+            phaseSpotted();
+            break;
         default:  // Abort to title in the event of unexpected state
             gamestate = STATE_TITLE;
             substate = SUB_INIT;
@@ -189,12 +197,6 @@ static void phaseInit(void)
         getNPCData(i);
         entityListAdd(i);
     }
-
-    // entityListAdd(1U, &(getNPCData(1U)));
-    // entityListAdd(2U, &(getNPCData(2U)));
-    // entityListAdd(3U, &(getNPCData(3U)));
-    // entityListAdd(4U, &(getNPCData(4U)));
-    // entityListAdd(5U, &(getNPCData(5U)));
 
     HIDE_WIN;
     SHOW_SPRITES;
@@ -268,11 +270,28 @@ static void phaseLoop(void)
     // else
     //     wait_vbl_done();
 
-    // set_win_tile_xy(18,0,player.xTile/10U);
-    // set_win_tile_xy(19,0,player.xTile%10U);
-    // set_win_tile_xy(18,1,player.yTile/10U);
-    // set_win_tile_xy(19,1,player.yTile%10U);
+}
 
+static void phaseSpotted(void)
+{
+    if (animTick == 0U)
+    {
+        set_sprite_tile(EXCLAMATION_SPR_ID,      EXCLAMATION_SPR_INDEX);
+        set_sprite_tile(EXCLAMATION_SPR_ID + 1U, EXCLAMATION_SPR_INDEX + 1U);
+        set_sprite_tile(EXCLAMATION_SPR_ID + 2U, EXCLAMATION_SPR_INDEX);
+        set_sprite_tile(EXCLAMATION_SPR_ID + 3U, EXCLAMATION_SPR_INDEX + 1U);
+        set_sprite_prop(EXCLAMATION_SPR_ID + 2U, 0b00100000U);
+        set_sprite_prop(EXCLAMATION_SPR_ID + 3U, 0b00100000U);
+        move_sprite(EXCLAMATION_SPR_ID,      entityList[k].xSpr - camera_x,      entityList[k].ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 1U, entityList[k].xSpr - camera_x,      entityList[k].ySpr - camera_y - 10U);
+        move_sprite(EXCLAMATION_SPR_ID + 2U, entityList[k].xSpr - camera_x + 8U, entityList[k].ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 3U, entityList[k].xSpr - camera_x + 8U, entityList[k].ySpr - camera_y - 10U);
+    }
+    else if (animTick == SPOTTED_ANIM_DURATION)
+    {
+        killPlayer();
+    }
+    ++animTick;
 }
 
 
@@ -495,6 +514,7 @@ static void commonInit(void)
     set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
     set_bkg_data(0xF0U, 8U, HUDTeeth_tiles + ((3U - player.lives) * 128));
     set_sprite_data(BLOOD_SPR_INDEX, 4U, BloodstainTiles);
+    set_sprite_data(EXCLAMATION_SPR_INDEX, 2U, ExclamationTiles);
 
     // HUD sprites meant to hide NPCs when walking N and S
     for (i = 4U; i != 14U; i++)
@@ -537,7 +557,7 @@ static void commonInit(void)
             junkvar += loadNPCSpriteTiles(handyDandyString[i], junkvar);
     }
     
-
+    headCount = 0U;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
         if (entityList[i].id != 0xFF)
@@ -550,7 +570,6 @@ static void commonInit(void)
         }
     }
 
-    headCount = 2U;
     displayHeadcount();
 
     substate = SUB_LOOP;
@@ -584,7 +603,7 @@ static void entityListAdd(UINT8 id)
     entityList[id].id = id;
     entityList[id].speciesId = tempNPC.speciesId;
     entityList[id].state = ENTITY_IDLE;
-    entityList[id].spriteId = (id + 1U) * 4U + 10U;  // The 10 padding is for the HUD sprites
+    entityList[id].spriteId = ((id + 1U) * 4U) + 10U;  // The 10 padding is for the HUD sprites
     entityList[id].animTick = 0U;
     entityList[id].animFrame = 0U;
     entityList[id].actionTimer = 0U;
@@ -600,8 +619,7 @@ static void entityListAdd(UINT8 id)
     entityList[id].hpMax = 0U;
     entityList[id].hpCur = 0U;
 
-    set_bkg_tile_xy(id,0,tempNPC.routineId);
-    set_win_tile_xy(id,0,tempNPC.routineId);
+    ++headCount;
 }
 
 static void handleRoutines(void)
@@ -704,13 +722,15 @@ static void handleRoutines(void)
                         case DIR_LEFT:  i -= 1U; break;
                         case DIR_RIGHT: i += 1U; break;
                     }
-                    if (playGrid[i][j] >= WALKABLE_TILE_COUNT)
-                        break;
-                    else if (i == player.xTile && j == player.yTile)  // Spotted player
+                    if (playGrid[j][i] >= WALKABLE_TILE_COUNT)
+                        m = entityPtr->visionDistance - 1U;
+                    else 
+                    if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
                         entityPtr->state = ENTITY_IDLE;
-
-                        killPlayer();
+                        substate = SUB_SPOTTED;
+                        animTick = 0U;
+                        k = entityPtr->id;
                         return;
                     }
                 }
@@ -724,6 +744,7 @@ static void killPlayer(void)
     fadeout();
     player.lives--;
     substate = SUB_REINIT;
+    animTick = 0U;
 }
 
 static void loadRoom(UINT8 id)
