@@ -6,7 +6,7 @@
 #include "../Engine/enums.h"
 #include "../Engine/fade.h"
 // #include "../Engine/ram.h"
-// #include "../Engine/songPlayer.h"
+#include "../Engine/songPlayer.h"
 #include "../Engine/ILoadMapTileData.h"
 #include "../Engine/IShareLevelData.h"
 #include "../Engine/IShareMapData.h"
@@ -28,9 +28,6 @@
 #include "../Objects/LevelObject.h"
 #include "../Objects/NPCObject.h"
 #include "../Objects/RoutineObject.h"
-
-
-// extern const hUGESong_t templateTwilightDriveSong;
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
@@ -206,8 +203,7 @@ static void phaseInit(void)
     // loadLevel();
 
     commonInit();
-
-    // set_bkg_data(0xF0U, 8U, HUDTeeth_tiles);
+    playOutsideSong(SONG_HOUSE);
 
 }
 
@@ -235,7 +231,7 @@ static void phaseLoop(void)
     ++hungerTick;
     if (hungerTick == HUNGER_THRESHOLD)
     {
-        // player.hpCur--;
+        player.hpCur--;
         displayHealthPips();
         hungerTick = 0U;
 
@@ -244,7 +240,6 @@ static void phaseLoop(void)
             killPlayer();
             return;
         }
-
     }
 
     // Player movements and inputs
@@ -263,12 +258,9 @@ static void phaseLoop(void)
 
     if (redraw && player.state == ENTITY_WALKING)
     {
-        // wait_vbl_done();
         drawNewBkg();
         redraw = FALSE;
     }
-    // else
-    //     wait_vbl_done();
 
 }
 
@@ -276,16 +268,23 @@ static void phaseSpotted(void)
 {
     if (animTick == 0U)
     {
+        set_win_tile_xy(0,0,0xFF);
         set_sprite_tile(EXCLAMATION_SPR_ID,      EXCLAMATION_SPR_INDEX);
         set_sprite_tile(EXCLAMATION_SPR_ID + 1U, EXCLAMATION_SPR_INDEX + 1U);
         set_sprite_tile(EXCLAMATION_SPR_ID + 2U, EXCLAMATION_SPR_INDEX);
         set_sprite_tile(EXCLAMATION_SPR_ID + 3U, EXCLAMATION_SPR_INDEX + 1U);
         set_sprite_prop(EXCLAMATION_SPR_ID + 2U, 0b00100000U);
         set_sprite_prop(EXCLAMATION_SPR_ID + 3U, 0b00100000U);
-        move_sprite(EXCLAMATION_SPR_ID,      entityList[k].xSpr - camera_x,      entityList[k].ySpr - camera_y - 18U);
-        move_sprite(EXCLAMATION_SPR_ID + 1U, entityList[k].xSpr - camera_x,      entityList[k].ySpr - camera_y - 10U);
-        move_sprite(EXCLAMATION_SPR_ID + 2U, entityList[k].xSpr - camera_x + 8U, entityList[k].ySpr - camera_y - 18U);
-        move_sprite(EXCLAMATION_SPR_ID + 3U, entityList[k].xSpr - camera_x + 8U, entityList[k].ySpr - camera_y - 10U);
+
+        UINT8 xPad = 0U;
+        if (entityList[p].yTile == player.yTile + 1U)
+            xPad = 1U;
+
+        move_sprite(EXCLAMATION_SPR_ID,      entityList[p].xSpr - camera_x - xPad,      entityList[p].ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 1U, entityList[p].xSpr - camera_x - xPad,      entityList[p].ySpr - camera_y - 10U);
+        move_sprite(EXCLAMATION_SPR_ID + 2U, entityList[p].xSpr - camera_x - xPad + 8U, entityList[p].ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 3U, entityList[p].xSpr - camera_x - xPad + 8U, entityList[p].ySpr - camera_y - 10U);
+        p = 0xFFU;
     }
     else if (animTick == SPOTTED_ANIM_DURATION)
     {
@@ -302,46 +301,52 @@ static void inputs(void)
     {
         if (curJoypad & J_A && !(prevJoypad & J_A))
         {
-            fadeout();
-            player.xTile = 31U - player.xTile;
-            if (roomId % 2U == 0U)  // Normal world
-            {
-                ++roomId;
-                playGridPtr = &playGridM;
-
-                for (i = 0U; i != ENTITY_MAX; ++i)
-                    entityList[i].isVisible = FALSE;
-
-                hide_sprites_range(14U, 40U);
-            }
-            else  // Mirror world
-            {
-                --roomId;
-                playGridPtr = &playGrid;
-            }
-            loadRoom(roomId);
-            if (player.dir == DIR_RIGHT)
-                player.dir = DIR_LEFT;
-            else if (player.dir == DIR_LEFT)
-                player.dir = DIR_RIGHT;
-        
-            fadein();
-            return;
-        }
-
-        if (curJoypad & J_B && !(prevJoypad & J_B))
-        {
+            //////// Mirror check
             i = player.xTile;
             j = player.yTile;
 
             switch (player.dir)
             {
-                case DIR_UP: --j; break;
+                case DIR_UP: j -= 2U; break;
                 case DIR_DOWN: ++j; break;
                 case DIR_LEFT: --i; break;
                 case DIR_RIGHT: ++i; break;
                 default: break;
             }
+
+            if ((*playGridPtr)[j][i] == WALKABLE_TILE_COUNT)
+            {
+                fadeout();
+                player.xTile = 31U - player.xTile;
+                if (roomId % 2U == 0U)  // Normal world
+                {
+                    ++roomId;
+                    playGridPtr = &playGridM;
+
+                    for (i = 0U; i != ENTITY_MAX; ++i)
+                        entityList[i].isVisible = FALSE;
+
+                    hide_sprites_range(14U, 40U);
+                }
+                else  // Mirror world
+                {
+                    --roomId;
+                    playGridPtr = &playGrid;
+                }
+                loadRoom(roomId);
+                if (player.dir == DIR_RIGHT)
+                    player.dir = DIR_LEFT;
+                else if (player.dir == DIR_LEFT)
+                    player.dir = DIR_RIGHT;
+            
+                fadein();
+                return;
+            }
+
+            //////// NPC kill check
+            // We look 2 tiles upwards for mirrors, but only 1 for other interactions
+            if (player.dir == DIR_UP)
+                ++j;
 
             // Check if tile in front is an npc
             entityPtr = entityList;
@@ -730,7 +735,7 @@ static void handleRoutines(void)
                         entityPtr->state = ENTITY_IDLE;
                         substate = SUB_SPOTTED;
                         animTick = 0U;
-                        k = entityPtr->id;
+                        p = entityPtr->id;
                         return;
                     }
                 }

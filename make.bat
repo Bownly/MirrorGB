@@ -3,6 +3,8 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01.c
+
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
@@ -33,9 +35,10 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareMapData.o Engine/IShareMapData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareNPCData.o Engine/IShareNPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareNPCGraphics.o Engine/IShareNPCGraphics.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareRoutineData.o Engine/IShareRoutineData.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/songPlayer.o Engine/songPlayer.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/main.o main.c
-C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c
+C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c Engine/hUGEDriver.obj.o
 
 
 @REM ######## Bank info
@@ -45,3 +48,4 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  3: room data
 @REM #  4: level data; npc data; routine data; metatiles data
 @REM #  5: npc graphics
+@REM #  6: songs

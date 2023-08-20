@@ -38,6 +38,7 @@ UINT8 substate;
 // GAMESTATE nextGamestate;
 // SUBSTATE prevSubstate;
 // SUBSTATE nextSubstate;
+UINT8 curSongBank;
 
 // UINT8 shouldSkipMusicThisFrame;
 

@@ -37,4 +37,8 @@ typedef enum {
     ACT_SWITCH_ROUTINE
 } ACTION;
 
+typedef enum {
+    SONG_HOUSE
+} SONGS;
+
 #endif
