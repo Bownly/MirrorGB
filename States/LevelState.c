@@ -102,7 +102,7 @@ static UBYTE redraw;
 #define TOP_BOUND 48
 #define BOTTOM_BOUND 652
 
-#define SPOTTED_ANIM_DURATION 60U
+#define SPOTTED_ANIM_DURATION 30U
 #define EXCLAMATION_SPR_ID 4U
 #define EXCLAMATION_SPR_INDEX 0xE8U
 #define BLOOD_SPR_INDEX 0xECU
@@ -126,6 +126,7 @@ static void phaseSpotted(void);
 static void inputs(void);
 
 /* HELPER METHODS */
+static void addChaseActionToChasers(UINT8);
 static UINT8 checkForEntityCollision(UINT8, UINT8);
 static void commonInit(void);
 static void checkUnderfootTile(void);
@@ -228,17 +229,20 @@ static void phaseLoop(void)
     ++animTick;
 
     // Hunger logic
-    ++hungerTick;
-    if (hungerTick == HUNGER_THRESHOLD)
+    if (roomId % 2U == 0U)
     {
-        player.hpCur--;
-        displayHealthPips();
-        hungerTick = 0U;
-
-        if (player.hpCur == 0U)
+        ++hungerTick;
+        if (hungerTick == HUNGER_THRESHOLD)
         {
-            killPlayer();
-            return;
+            player.hpCur--;
+            displayHealthPips();
+            hungerTick = 0U;
+
+            if (player.hpCur == 0U)
+            {
+                killPlayer();
+                return;
+            }
         }
     }
 
@@ -268,7 +272,6 @@ static void phaseSpotted(void)
 {
     if (animTick == 0U)
     {
-        set_win_tile_xy(0,0,0xFF);
         set_sprite_tile(EXCLAMATION_SPR_ID,      EXCLAMATION_SPR_INDEX);
         set_sprite_tile(EXCLAMATION_SPR_ID + 1U, EXCLAMATION_SPR_INDEX + 1U);
         set_sprite_tile(EXCLAMATION_SPR_ID + 2U, EXCLAMATION_SPR_INDEX);
@@ -276,19 +279,41 @@ static void phaseSpotted(void)
         set_sprite_prop(EXCLAMATION_SPR_ID + 2U, 0b00100000U);
         set_sprite_prop(EXCLAMATION_SPR_ID + 3U, 0b00100000U);
 
+        entityPtr = &entityList[p];
+        p = 0xFFU;
+
         UINT8 xPad = 0U;
-        if (entityList[p].yTile == player.yTile + 1U)
+        if (entityPtr->yTile == player.yTile + 1U)
             xPad = 1U;
 
-        move_sprite(EXCLAMATION_SPR_ID,      entityList[p].xSpr - camera_x - xPad,      entityList[p].ySpr - camera_y - 18U);
-        move_sprite(EXCLAMATION_SPR_ID + 1U, entityList[p].xSpr - camera_x - xPad,      entityList[p].ySpr - camera_y - 10U);
-        move_sprite(EXCLAMATION_SPR_ID + 2U, entityList[p].xSpr - camera_x - xPad + 8U, entityList[p].ySpr - camera_y - 18U);
-        move_sprite(EXCLAMATION_SPR_ID + 3U, entityList[p].xSpr - camera_x - xPad + 8U, entityList[p].ySpr - camera_y - 10U);
-        p = 0xFFU;
+        move_sprite(EXCLAMATION_SPR_ID,      entityPtr->xSpr - camera_x - xPad,      entityPtr->ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 1U, entityPtr->xSpr - camera_x - xPad,      entityPtr->ySpr - camera_y - 10U);
+        move_sprite(EXCLAMATION_SPR_ID + 2U, entityPtr->xSpr - camera_x - xPad + 8U, entityPtr->ySpr - camera_y - 18U);
+        move_sprite(EXCLAMATION_SPR_ID + 3U, entityPtr->xSpr - camera_x - xPad + 8U, entityPtr->ySpr - camera_y - 10U);
     }
     else if (animTick == SPOTTED_ANIM_DURATION)
     {
-        killPlayer();
+        for (i = 0U; i != 4U; ++i)
+        {
+            set_sprite_tile(EXCLAMATION_SPR_ID + i, 0xA5U);
+            move_sprite(EXCLAMATION_SPR_ID + i, 0U, 144U);
+        }
+
+        entityPtr->oldState = entityPtr->state;
+        entityPtr->oldDir = entityPtr->dir;
+        entityPtr->oldXSpr = entityPtr->xSpr;
+        entityPtr->oldYSpr = entityPtr->ySpr;
+        entityPtr->oldXTile = entityPtr->xTile;
+        entityPtr->oldYTile = entityPtr->yTile;
+        entityPtr->oldActionTimer = entityPtr->actionTimer;
+        entityPtr->oldActionIndex = entityPtr->curActionIndex;
+        entityPtr->oldRoutineIndex = entityPtr->curRoutineIndex;
+        entityPtr->isChasing = TRUE;
+        entityPtr->actionTimer = 0U;
+        if (entityPtr->state != ENTITY_WALKING)
+            entityPtr->state = ENTITY_IDLE;
+
+        substate = SUB_LOOP;
     }
     ++animTick;
 }
@@ -318,17 +343,33 @@ static void inputs(void)
             {
                 fadeout();
                 player.xTile = 31U - player.xTile;
-                if (roomId % 2U == 0U)  // Normal world
+                if (roomId % 2U == 0U)  // From real world to mirror world
                 {
                     ++roomId;
                     playGridPtr = &playGridM;
 
                     for (i = 0U; i != ENTITY_MAX; ++i)
+                    {
                         entityList[i].isVisible = FALSE;
+                        if (entityList[i].isChasing == TRUE)  // Reset chasers
+                        {
+                            entityList[i].isChasing = FALSE;
+                            entityList[i].chasingActionsCount = 0U;
+                            entityList[i].state = entityList[i].oldState;
+                            entityList[i].dir = entityList[i].oldDir;
+                            entityList[i].xSpr = entityList[i].oldXSpr;
+                            entityList[i].ySpr = entityList[i].oldYSpr;
+                            entityList[i].xTile = entityList[i].oldXTile;
+                            entityList[i].yTile = entityList[i].oldYTile;
+                            entityList[i].actionTimer = entityList[i].oldActionTimer;
+                            entityList[i].curActionIndex = entityList[i].oldActionIndex;
+                            entityList[i].curRoutineIndex = entityList[i].oldRoutineIndex;
+                        }
+                    }
 
                     hide_sprites_range(14U, 40U);
                 }
-                else  // Mirror world
+                else  // From mirror world to real world
                 {
                     --roomId;
                     playGridPtr = &playGrid;
@@ -384,6 +425,8 @@ static void inputs(void)
                     player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
+
+                addChaseActionToChasers(player.dir);
             }
         }
         else if (curJoypad & J_DOWN)
@@ -407,6 +450,8 @@ static void inputs(void)
                     player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
+
+                addChaseActionToChasers(player.dir);
             }
         } 
         else if (curJoypad & J_LEFT)
@@ -430,6 +475,8 @@ static void inputs(void)
                     player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
+
+                addChaseActionToChasers(player.dir);
             }
         }
         else if (curJoypad & J_RIGHT)
@@ -453,6 +500,8 @@ static void inputs(void)
                     player.state = ENTITY_WALKING;
                     redraw = TRUE;
                 }
+
+                addChaseActionToChasers(player.dir);
             }
         }
     }
@@ -460,6 +509,20 @@ static void inputs(void)
 
 
 /******************************** HELPER METHODS *********************************/
+static void addChaseActionToChasers(UINT8 dir)
+{
+    for (i = 0U; i != ENTITY_MAX; ++i)
+    {
+        if (entityList[i].isChasing == TRUE)
+        {
+            entityList[i].chasingActions[entityList[i].chasingActionsCount].action = ACT_WALK;
+            entityList[i].chasingActions[entityList[i].chasingActionsCount].direction = dir;
+            entityList[i].chasingActions[entityList[i].chasingActionsCount].magnitude = 1U;
+            entityList[i].chasingActionsCount++;
+        }
+    }
+}
+
 static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
 {
     // Check if tile in front is an npc
@@ -501,8 +564,10 @@ static void commonInit(void)
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
-    player.xTile = 12U;
-    player.yTile = 14U;
+    // player.xTile = 12U;
+    // player.yTile = 14U;
+    player.xTile = 22U;
+    player.yTile = 24U;
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
     player.xSpr = 88U;
@@ -514,7 +579,6 @@ static void commonInit(void)
     playGridPtr = &playGridM;
 
     // Load graphics
-    set_bkg_data(0x00U, 10U, fontTiles);
     set_bkg_data(0xF0U, HUD_tileset_size-1U, HUD_tileset + 16U);  // Aseprite exports annoyingly have a leading blank tile
     set_sprite_data(0U, MC_TILE_COUNT, MC_tiles);
     set_bkg_data(0xF0U, 8U, HUDTeeth_tiles + ((3U - player.lives) * 128));
@@ -574,12 +638,13 @@ static void commonInit(void)
             }
         }
     }
-
     displayHeadcount();
 
     substate = SUB_LOOP;
-
     player.moveSpeed = PLAYER_SPEED;
+
+    // Test line
+    // set_bkg_data(0x00U, 10U, fontTiles);
 
     fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -623,6 +688,16 @@ static void entityListAdd(UINT8 id)
     entityList[id].visionDistance = 3U;
     entityList[id].hpMax = 0U;
     entityList[id].hpCur = 0U;
+    entityList[id].oldState = entityList[id].state;
+    entityList[id].oldDir = entityList[id].dir;
+    entityList[id].oldXSpr = entityList[id].xSpr;
+    entityList[id].oldYSpr = entityList[id].ySpr;
+    entityList[id].oldXTile = tempNPC.xTile;
+    entityList[id].oldYTile = tempNPC.yTile;
+    entityList[id].oldActionTimer = 0U;
+    entityList[id].oldActionIndex = 0U;
+    entityList[id].oldRoutineIndex = 0U;
+    entityList[id].isChasing = FALSE;
 
     ++headCount;
 }
@@ -644,21 +719,22 @@ static void handleRoutines(void)
                     entityPtr->actionTimer--;
                     break;
                 case ENTITY_WALKING:
+                    m = entityPtr->isChasing == TRUE ? 2U : 1U;
                     if (entityPtr->actionTimer != 0U)
                     {
                         switch (entityPtr->dir)
                         {
-                            case DIR_UP:    entityPtr->ySpr -= 1U; break;
-                            case DIR_DOWN:  entityPtr->ySpr += 1U; break;
-                            case DIR_LEFT:  entityPtr->xSpr -= 1U; break;
-                            case DIR_RIGHT: entityPtr->xSpr += 1U; break;
+                            case DIR_UP:    entityPtr->ySpr -= m; break;
+                            case DIR_DOWN:  entityPtr->ySpr += m; break;
+                            case DIR_LEFT:  entityPtr->xSpr -= m; break;
+                            case DIR_RIGHT: entityPtr->xSpr += m; break;
                         }
                         entityPtr->xTile = (entityPtr->xSpr - 8U) >> 4U;
                         entityPtr->yTile = (entityPtr->ySpr - 16U) >> 4U;
                     }
                     else
                         entityPtr->state = ENTITY_IDLE;
-                    entityPtr->actionTimer--;
+                    entityPtr->actionTimer -= m;
                     entityPtr->animTick++;
                     entityPtr->animFrame = entityPtr->animTick % 32U;
                     entityPtr->animFrame /= 8U;
@@ -681,7 +757,32 @@ static void handleRoutines(void)
             if (entityPtr->state == ENTITY_IDLE)
             {
                 // Get next action
-                entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
+                if (entityPtr->isChasing == FALSE)
+                    entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
+                else
+                {
+                    if (entityPtr->chasingActionsCount == 0U)
+                    {
+                        tempAction.action = ACT_WAIT;
+                        tempAction.direction = DIR_DOWN;
+                        tempAction.magnitude = 0U;
+                    }
+                    else
+                    {
+                        tempAction.action = entityPtr->chasingActions[0U].action;
+                        tempAction.direction = entityPtr->chasingActions[0U].direction;
+                        tempAction.magnitude = entityPtr->chasingActions[0U].magnitude;
+
+                        // Shift everything up the list... or is it down the list? Left the list.
+                        for (i = 0U; i != entityPtr->chasingActionsCount - 1U; ++i)
+                        {
+                            entityPtr->chasingActions[i].action = entityPtr->chasingActions[i+1U].action;
+                            entityPtr->chasingActions[i].direction = entityPtr->chasingActions[i+1U].direction;
+                            entityPtr->chasingActions[i].magnitude = entityPtr->chasingActions[i+1U].magnitude;
+                        }
+                        entityPtr->chasingActionsCount--;
+                    }
+                }
 
                 switch (tempAction.action)
                 {
@@ -694,6 +795,10 @@ static void handleRoutines(void)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
                         else
                             entityPtr->animFrame = entityPtr->dir * 3U;
+                        break;
+                    case ACT_FINISHING_WALK:
+                            entityPtr->actionTimer = tempAction.magnitude;
+                            entityPtr->state = ENTITY_WALKING;
                         break;
                     case ACT_WAIT:
                         entityPtr->state = ENTITY_WAITING;
@@ -716,7 +821,7 @@ static void handleRoutines(void)
             i = entityPtr->xTile;
             j = entityPtr->yTile;
 
-            if (entityPtr->isVisible == TRUE && entityPtr->state != ENTITY_DEAD)
+            if (entityPtr->isVisible == TRUE && entityPtr->state != ENTITY_DEAD && entityPtr->isChasing == FALSE)
             {
                 for (m = 0U; m != entityPtr->visionDistance; ++m)
                 {
@@ -732,10 +837,44 @@ static void handleRoutines(void)
                     else 
                     if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
-                        entityPtr->state = ENTITY_IDLE;
                         substate = SUB_SPOTTED;
                         animTick = 0U;
                         p = entityPtr->id;
+
+                        // Fill out chasingAction array
+                        entityPtr->chasingActionsCount = m + 1U;
+                        n = 0U;
+                        if (entityPtr->state == ENTITY_WALKING)
+                        {
+                            // Since actionTimer is so closely tied to position and speed, we need to make sure the NPC isn't starting in a literally odd spot
+                            if (entityPtr->actionTimer % 2U == 1U)
+                            {
+                                switch (entityPtr->dir)
+                                {
+                                    case DIR_UP:    entityPtr->ySpr++; break;
+                                    case DIR_DOWN:  entityPtr->ySpr--; break;
+                                    case DIR_LEFT:  entityPtr->xSpr++; break;
+                                    case DIR_RIGHT: entityPtr->xSpr--; break;
+                                }
+                                entityPtr->actionTimer = (entityPtr->actionTimer >> 1U) << 1U;
+                            }
+
+                            if (entityPtr->actionTimer % 16U != 0U)
+                            {
+                                n = 1U;
+                                entityPtr->chasingActions[0U].action = ACT_FINISHING_WALK;
+                                entityPtr->chasingActions[0U].direction = entityPtr->dir;
+                                entityPtr->chasingActions[0U].magnitude = entityPtr->actionTimer % 16U;
+                                entityPtr->chasingActionsCount++;
+                            }
+                        }
+                        for (; n != entityPtr->chasingActionsCount + 1U; ++n)
+                        {
+                            entityPtr->chasingActions[n].action = ACT_WALK;
+                            entityPtr->chasingActions[n].direction = entityPtr->dir;
+                            entityPtr->chasingActions[n].magnitude = 1U;
+                        }
+
                         return;
                     }
                 }

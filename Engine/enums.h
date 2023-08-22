@@ -18,6 +18,7 @@ typedef enum {
     ENTITY_IDLE,
     ENTITY_WAITING,
     ENTITY_WALKING,
+    ENTITY_FINISHING_WALK,
     ENTITY_DEAD,
     ENTITY_TOGGLING_HIDE
 } ENTITYSTATE;
@@ -31,6 +32,7 @@ typedef enum {
 
 typedef enum {
     ACT_WALK,
+    ACT_FINISHING_WALK,
     ACT_TURN,
     ACT_WAIT,
     ACT_TOGGLE_HIDING,

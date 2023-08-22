@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include "../Engine/enums.h"
+#include "ActionObject.h"
 #include "RoutineObject.h"
 
 #ifndef ENTITYOBJECT_H
@@ -21,6 +22,16 @@ typedef struct EntityObject {
     UINT16 actionTimer;
     UINT8 curActionIndex;
     UINT8 curRoutineIndex;
+    ENTITYSTATE oldState;
+    DIRECTION oldDir;
+    UINT16 oldXSpr;
+    UINT16 oldYSpr;
+    UINT8 oldXTile;
+    UINT8 oldYTile;
+    UINT8 oldActionTimer;
+    UINT8 oldActionIndex;
+    UINT8 oldRoutineIndex;
+    UINT8 isChasing;
     UINT8 isVisible;
     UINT8 isHiding;
     UINT8 visionDistance;
@@ -29,6 +40,9 @@ typedef struct EntityObject {
     UINT8 hpMax;
     UINT8 hpCur;
     UINT8 lives;
+    // RoutineObject chasingRoutine;
+    ActionObject chasingActions[8U];
+    UINT8 chasingActionsCount;
 } EntityObject;
 
 #endif
