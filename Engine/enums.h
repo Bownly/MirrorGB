@@ -11,7 +11,8 @@ typedef enum {
     SUB_INIT,
     SUB_REINIT,
     SUB_LOOP,
-    SUB_SPOTTED
+    SUB_SPOTTED,
+    SUB_KILL_PLAYER
 } SUBSTATE;
 
 typedef enum {

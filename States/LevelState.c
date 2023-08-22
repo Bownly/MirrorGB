@@ -121,6 +121,7 @@ static void phaseInit(void);
 static void phaseReinit(void);
 static void phaseLoop(void);
 static void phaseSpotted(void);
+static void phaseKillPlayer(void);
 
 /* INPUT METHODS */
 static void inputs(void);
@@ -164,6 +165,9 @@ void LevelStateMain(void)
             break;
         case SUB_SPOTTED:
             phaseSpotted();
+            break;
+        case SUB_KILL_PLAYER:
+            phaseKillPlayer();
             break;
         default:  // Abort to title in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -314,6 +318,29 @@ static void phaseSpotted(void)
             entityPtr->state = ENTITY_IDLE;
 
         substate = SUB_LOOP;
+    }
+    ++animTick;
+}
+
+static void phaseKillPlayer(void)
+{
+    if (animTick == 0U)
+    {
+        p = 0xFFU;
+        // Turn player sprite into bloodstain
+        player.state = ENTITY_DEAD;
+        set_sprite_tile(player.spriteId,      BLOOD_SPR_INDEX);
+        set_sprite_tile(player.spriteId + 1U, BLOOD_SPR_INDEX + 1U);
+        set_sprite_tile(player.spriteId + 2U, BLOOD_SPR_INDEX + 2U);
+        set_sprite_tile(player.spriteId + 3U, BLOOD_SPR_INDEX + 3U);
+        set_sprite_prop(player.spriteId,      0b00011000U);
+        set_sprite_prop(player.spriteId + 1U, 0b00011000U);
+        set_sprite_prop(player.spriteId + 2U, 0b00011000U);
+        set_sprite_prop(player.spriteId + 3U, 0b00011000U);
+    }
+    else if (animTick == SPOTTED_ANIM_DURATION)
+    {
+        killPlayer();
     }
     ++animTick;
 }
@@ -561,6 +588,7 @@ static void commonInit(void)
 
     // Initializations
     animTick = 0U;
+    player.spriteId = 0U;
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
@@ -618,12 +646,12 @@ static void commonInit(void)
 
     animatePlayer();
 
-    UINT8 junkvar = 0x30U;
+    k = 0x30U;
     loadLevelNPCSpeciesList(roomId);
     for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
     {
         if (handyDandyString[i] != 0xFF)
-            junkvar += loadNPCSpriteTiles(handyDandyString[i], junkvar);
+            k += loadNPCSpriteTiles(handyDandyString[i], k);
     }
     
     headCount = 0U;
@@ -761,7 +789,7 @@ static void handleRoutines(void)
                     entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
                 else
                 {
-                    if (entityPtr->chasingActionsCount == 0U)
+                    if (entityPtr->chasingActionsCount == 0U)  // This should never happen, but you never know.
                     {
                         tempAction.action = ACT_WAIT;
                         tempAction.direction = DIR_DOWN;
@@ -769,6 +797,24 @@ static void handleRoutines(void)
                     }
                     else
                     {
+                        // Check to see if NPC caught up with player
+                        i = entityPtr->xTile;
+                        j = entityPtr->yTile;
+                        switch (entityPtr->dir)
+                        {
+                            case DIR_UP:    --j; break;
+                            case DIR_DOWN:  ++j; break;
+                            case DIR_LEFT:  --i; break;
+                            case DIR_RIGHT: ++i; break;
+                        }
+                        if (player.xTile == i && player.yTile == j)
+                        {
+                            substate = SUB_KILL_PLAYER;
+                            animTick = 0U;
+                            p = entityPtr->id;
+                            return;
+                        }
+
                         tempAction.action = entityPtr->chasingActions[0U].action;
                         tempAction.direction = entityPtr->chasingActions[0U].direction;
                         tempAction.magnitude = entityPtr->chasingActions[0U].magnitude;
@@ -834,8 +880,7 @@ static void handleRoutines(void)
                     }
                     if (playGrid[j][i] >= WALKABLE_TILE_COUNT)
                         m = entityPtr->visionDistance - 1U;
-                    else 
-                    if (i == player.xTile && j == player.yTile)  // Spotted player
+                    else if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
                         substate = SUB_SPOTTED;
                         animTick = 0U;
@@ -874,7 +919,6 @@ static void handleRoutines(void)
                             entityPtr->chasingActions[n].direction = entityPtr->dir;
                             entityPtr->chasingActions[n].magnitude = 1U;
                         }
-
                         return;
                     }
                 }
@@ -887,7 +931,13 @@ static void killPlayer(void)
 {
     fadeout();
     player.lives--;
-    substate = SUB_REINIT;
+    if (player.lives == 0U)
+    {
+        gamestate = STATE_TITLE;
+        substate = SUB_INIT;
+    }
+    else
+        substate = SUB_REINIT;
     animTick = 0U;
 }
 
