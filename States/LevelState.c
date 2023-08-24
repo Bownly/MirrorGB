@@ -347,9 +347,6 @@ static void phaseKillPlayer(void)
     ++animTick;
 }
 
-    ++animTick;
-}
-
 
 /******************************** INPUT METHODS *********************************/
 static void inputs(void)
