@@ -339,14 +339,14 @@ static void phaseKillPlayer(void)
         set_sprite_prop(player.spriteId + 1U, 0b00011000U);
         set_sprite_prop(player.spriteId + 2U, 0b00011000U);
         set_sprite_prop(player.spriteId + 3U, 0b00011000U);
-
-        // --headCount;
-        // displayHeadcount();
     }
     else if (animTick == SPOTTED_ANIM_DURATION)
     {
         killPlayer();
     }
+    ++animTick;
+}
+
     ++animTick;
 }
 
