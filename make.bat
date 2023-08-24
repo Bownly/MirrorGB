@@ -5,6 +5,10 @@ del o\*.sym
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01.c
 
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
@@ -25,7 +29,9 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesDa
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/fade.o Engine/fade.c
@@ -38,12 +44,12 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareRoutineData.o Engine/IShareRoutineData
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/songPlayer.o Engine/songPlayer.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/main.o main.c
-C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c Engine/hUGEDriver.obj.o
+C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c Assets/Illustrations/*.c Engine/hUGEDriver.obj.o
 
 
 @REM ######## Bank info
 @REM #  0: main
-@REM #  1: 
+@REM #  1: title; game over; beat level; beat game
 @REM #  2: level state
 @REM #  3: room data
 @REM #  4: level data; npc data; routine data; metatiles data

@@ -1,0 +1,57 @@
+cd "/Users/computer/Documents/Projects/Gameboy/MirrorGB"
+clear
+
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01.c
+
+/gbdk-4.2.0/bin/png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+/gbdk-4.2.0/bin/png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+/gbdk-4.2.0/bin/png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+/gbdk-4.2.0/bin/png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+/gbdk-4.2.0/bin/png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
+/gbdk-4.2.0/bin/png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
+/gbdk-4.2.0/bin/png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/HouseRMap.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo3 -c -o o/HouseMMap.o Assets/Maps/Levels/HouseMMap.c
+
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/BloodstainTiles.o Assets/Tiles/BloodstainTiles.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/ExclamationTiles.o Assets/Tiles/ExclamationTiles.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/HUDTiles.o Assets/Tiles/HUD.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/HouseMTiles.o Assets/Tiles/HouseMTiles.c
+
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo3 -c -o o/RoomData.o Database/RoomData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/LevelData.o Database/LevelData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
+
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
+
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/common.o Engine/common.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/fade.o Engine/fade.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/IShareLevelData.o Engine/IShareLevelData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/ILoadMapTileData.o Engine/ILoadMapTileData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/IShareMapData.o Engine/IShareMapData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/IShareNPCData.o Engine/IShareNPCData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/IShareNPCGraphics.o Engine/IShareNPCGraphics.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/IShareRoutineData.o Engine/IShareRoutineData.c
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/songPlayer.o Engine/songPlayer.c
+
+/gbdk-4.2.0/bin/lcc -Wa-l -c -o o/main.o main.c
+/gbdk-4.2.0/bin/lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c Assets/Illustrations/*.c Engine/hUGEDriver.obj.o
+
+exit 0
+
+
+@REM ######## Bank info
+@REM #  0: main
+@REM #  1: title; game over; beat level; beat game
+@REM #  2: level state
+@REM #  3: room data
+@REM #  4: level data; npc data; routine data; metatiles data
+@REM #  5: npc graphics
+@REM #  6: songs

@@ -121,6 +121,7 @@ static void phaseInit(void);
 static void phaseReinit(void);
 static void phaseLoop(void);
 static void phaseSpotted(void);
+static void phaseKillPlayer(void);
 
 /* INPUT METHODS */
 static void inputs(void);
@@ -164,6 +165,9 @@ void LevelStateMain(void)
             break;
         case SUB_SPOTTED:
             phaseSpotted();
+            break;
+        case SUB_KILL_PLAYER:
+            phaseKillPlayer();
             break;
         default:  // Abort to title in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -251,9 +255,11 @@ static void phaseLoop(void)
         walkPlayer();
 
     handleRoutines();
+    // if (substate == SUB_SPOTTED)
+    //   return;
 
     // Need to recheck player.state because the previous fn might have changed it
-    if (player.state == ENTITY_IDLE)
+    if (substate == SUB_LOOP && player.state == ENTITY_IDLE)
         inputs();
 
     animatePlayer();
@@ -318,10 +324,36 @@ static void phaseSpotted(void)
     ++animTick;
 }
 
+static void phaseKillPlayer(void)
+{
+    if (animTick == 0U)
+    {
+        p = 0xFFU;
+        // Turn player sprite into bloodstain
+        player.state = ENTITY_DEAD;
+        set_sprite_tile(player.spriteId,      BLOOD_SPR_INDEX);
+        set_sprite_tile(player.spriteId + 1U, BLOOD_SPR_INDEX + 1U);
+        set_sprite_tile(player.spriteId + 2U, BLOOD_SPR_INDEX + 2U);
+        set_sprite_tile(player.spriteId + 3U, BLOOD_SPR_INDEX + 3U);
+        set_sprite_prop(player.spriteId,      0b00011000U);
+        set_sprite_prop(player.spriteId + 1U, 0b00011000U);
+        set_sprite_prop(player.spriteId + 2U, 0b00011000U);
+        set_sprite_prop(player.spriteId + 3U, 0b00011000U);
+
+        // --headCount;
+        // displayHeadcount();
+    }
+    else if (animTick == SPOTTED_ANIM_DURATION)
+    {
+        killPlayer();
+    }
+    ++animTick;
+}
+
 
 /******************************** INPUT METHODS *********************************/
 static void inputs(void)
-{    
+{
     if (player.state == ENTITY_IDLE)
     {
         if (curJoypad & J_A && !(prevJoypad & J_A))
@@ -379,7 +411,7 @@ static void inputs(void)
                     player.dir = DIR_LEFT;
                 else if (player.dir == DIR_LEFT)
                     player.dir = DIR_RIGHT;
-            
+
                 fadein();
                 return;
             }
@@ -394,7 +426,7 @@ static void inputs(void)
             for (k = 0U; k != ENTITY_MAX; ++k)
             {
                 entityPtr = &entityList[k];
-                if (entityPtr->state != ENTITY_DEAD && entityPtr->xTile == i && entityPtr->yTile == j)
+                if (entityPtr->state != ENTITY_DEAD && entityPtr->xTile == i && entityPtr->yTile == j && entityPtr->state != ENTITY_WALKING)
                 {
                     entityKill(entityPtr->id);
                     player.hpCur = player.hpMax;
@@ -408,7 +440,7 @@ static void inputs(void)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT 
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT
                 && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE)
             {
                 // Move sprite, not camera
@@ -453,7 +485,7 @@ static void inputs(void)
 
                 addChaseActionToChasers(player.dir);
             }
-        } 
+        }
         else if (curJoypad & J_LEFT)
         {
             player.dir = DIR_LEFT;
@@ -561,6 +593,7 @@ static void commonInit(void)
 
     // Initializations
     animTick = 0U;
+    player.spriteId = 0U;
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
@@ -618,14 +651,14 @@ static void commonInit(void)
 
     animatePlayer();
 
-    UINT8 junkvar = 0x30U;
+    k = 0x30U;
     loadLevelNPCSpeciesList(roomId);
     for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
     {
         if (handyDandyString[i] != 0xFF)
-            junkvar += loadNPCSpriteTiles(handyDandyString[i], junkvar);
+            k += loadNPCSpriteTiles(handyDandyString[i], k);
     }
-    
+
     headCount = 0U;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
@@ -720,6 +753,11 @@ static void handleRoutines(void)
                     break;
                 case ENTITY_WALKING:
                     m = entityPtr->isChasing == TRUE ? 2U : 1U;
+                    if (entityPtr->actionTimer % 16U == 0U)
+                    {
+                      entityPtr->xTile = (entityPtr->xSpr - 8U) >> 4U;
+                      entityPtr->yTile = (entityPtr->ySpr - 16U) >> 4U;
+                    }
                     if (entityPtr->actionTimer != 0U)
                     {
                         switch (entityPtr->dir)
@@ -729,8 +767,6 @@ static void handleRoutines(void)
                             case DIR_LEFT:  entityPtr->xSpr -= m; break;
                             case DIR_RIGHT: entityPtr->xSpr += m; break;
                         }
-                        entityPtr->xTile = (entityPtr->xSpr - 8U) >> 4U;
-                        entityPtr->yTile = (entityPtr->ySpr - 16U) >> 4U;
                     }
                     else
                         entityPtr->state = ENTITY_IDLE;
@@ -746,7 +782,7 @@ static void handleRoutines(void)
                         entityPtr->animFrame += entityPtr->dir * 3U;
                     break;
                 case ENTITY_TOGGLING_HIDE:
-                    entityPtr->isHiding = entityPtr->isHiding == TRUE ? FALSE : TRUE; 
+                    entityPtr->isHiding = entityPtr->isHiding == TRUE ? FALSE : TRUE;
                     entityPtr->state = ENTITY_IDLE;
                     break;
                 default:
@@ -761,7 +797,7 @@ static void handleRoutines(void)
                     entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
                 else
                 {
-                    if (entityPtr->chasingActionsCount == 0U)
+                    if (entityPtr->chasingActionsCount == 0U)  // This should never happen, but you never know.
                     {
                         tempAction.action = ACT_WAIT;
                         tempAction.direction = DIR_DOWN;
@@ -769,6 +805,24 @@ static void handleRoutines(void)
                     }
                     else
                     {
+                        // Check to see if NPC caught up with player
+                        i = entityPtr->xTile;
+                        j = entityPtr->yTile;
+                        switch (entityPtr->dir)
+                        {
+                            case DIR_UP:    --j; break;
+                            case DIR_DOWN:  ++j; break;
+                            case DIR_LEFT:  --i; break;
+                            case DIR_RIGHT: ++i; break;
+                        }
+                        if (player.xTile == i && player.yTile == j)
+                        {
+                            substate = SUB_KILL_PLAYER;
+                            animTick = 0U;
+                            p = entityPtr->id;
+                            return;
+                        }
+
                         tempAction.action = entityPtr->chasingActions[0U].action;
                         tempAction.direction = entityPtr->chasingActions[0U].direction;
                         tempAction.magnitude = entityPtr->chasingActions[0U].magnitude;
@@ -834,8 +888,7 @@ static void handleRoutines(void)
                     }
                     if (playGrid[j][i] >= WALKABLE_TILE_COUNT)
                         m = entityPtr->visionDistance - 1U;
-                    else 
-                    if (i == player.xTile && j == player.yTile)  // Spotted player
+                    else if (i == player.xTile && j == player.yTile)  // Spotted player
                     {
                         substate = SUB_SPOTTED;
                         animTick = 0U;
@@ -874,7 +927,6 @@ static void handleRoutines(void)
                             entityPtr->chasingActions[n].direction = entityPtr->dir;
                             entityPtr->chasingActions[n].magnitude = 1U;
                         }
-
                         return;
                     }
                 }
@@ -887,7 +939,13 @@ static void killPlayer(void)
 {
     fadeout();
     player.lives--;
-    substate = SUB_REINIT;
+    if (player.lives == 0U)
+    {
+        gamestate = STATE_GAMEOVER;
+        substate = SUB_INIT;
+    }
+    else
+        substate = SUB_REINIT;
     animTick = 0U;
 }
 
@@ -899,7 +957,7 @@ static void loadRoom(UINT8 id)
 
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
-  
+
     // Reset camera and player position
     if (player.xTile > 5)  // 5 is the x offset from left to center
     {
@@ -1063,7 +1121,7 @@ static void animateEntities(void)
 {
     UINT16 rightBound = camera_x + 160U;
     UINT16 bottomBound = camera_y + 138U;
-   
+
     entityPtr = entityList;
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
@@ -1164,8 +1222,8 @@ static void drawNewBkg(void)
 {
     // Vertical
     new_map_pos_y = (BYTE)(new_camera_y >> 3U);
-    if (map_pos_y != new_map_pos_y) { 
-        if (new_camera_y < camera_y) 
+    if (map_pos_y != new_map_pos_y) {
+        if (new_camera_y < camera_y)
         {
             for (k = 0U; k != 10U; ++k)
             {
@@ -1178,19 +1236,19 @@ static void drawNewBkg(void)
                 drawBkgTile((map_pos_x+(k<<1U))%32U, (new_map_pos_y+16U)%32U, (*playGridPtr)[((new_map_pos_y+16U)>>1U)][(map_pos_x>>1U)+k]);
             }
         }
-        map_pos_y = new_map_pos_y; 
+        map_pos_y = new_map_pos_y;
     }
-  
-    // Horizontal 
+
+    // Horizontal
     new_map_pos_x = (BYTE)(new_camera_x >> 3U);
     if (map_pos_x != new_map_pos_x) {
-        if (new_camera_x < camera_x) 
+        if (new_camera_x < camera_x)
         {
             for (UINT8 k = 0U; k != 9U; ++k)
             {
                 drawBkgTile(new_map_pos_x%32U, (map_pos_y+(k<<1U))%32U, (*playGridPtr)[(map_pos_y>>1U)+k][new_map_pos_x>>1U]);
             }
-        } else 
+        } else
         {
             for (UINT8 k = 0U; k != 9U; ++k)
             {

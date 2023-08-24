@@ -14,7 +14,9 @@
 #include "Objects/EntityObject.h"
 #include "Objects/NPCObject.h"
 
+#include "States/GameOverState.h"
 #include "States/LevelState.h"
+#include "States/TitleState.h"
 
 
 // Save data stuff
@@ -70,7 +72,7 @@ void main(void)
     NR50_REG = 0x77; // sets the volume for both left and right channel just set to max 0x77
     NR51_REG = 0xFF; // is 1111 1111 in binary, select which chanels we want to use in this case all of them. One bit for the L one bit for the R of all four channels
     set_interrupts(TIM_IFLAG | VBL_IFLAG);
- 
+
     // set_bkg_data(0xF0U, 8U, borderTiles);
     // set_bkg_data(0U, 91U, fontTiles);
 
@@ -80,15 +82,16 @@ void main(void)
     DISPLAY_ON;
     SHOW_SPRITES;
     SHOW_BKG;
-    fadeout();
 
     // // Misc inits and stuff
     // shouldSkipMusicThisFrame = FALSE;
     // add_VBL(songPlayerUpdate);
 
     gamestate = STATE_LEVEL;
+    // gamestate = STATE_GAMEOVER;
+    gamestate = STATE_TITLE;
     substate = SUB_INIT;
-    
+
     while(1U)
     {
         wait_vbl_done();
@@ -96,13 +99,18 @@ void main(void)
         switch(gamestate)
         {
             case STATE_TITLE:
-                // titleStateMain();
+                SWITCH_ROM(1U);
+                TitleStateMain();
                 break;
             case STATE_LEVEL:
                 SWITCH_ROM(2U);
                 LevelStateMain();
                 break;
-           
+            case STATE_GAMEOVER:
+                SWITCH_ROM(1U);
+                GameOverStateMain();
+                break;
+
         }
     }
 }
@@ -140,6 +148,6 @@ void main(void)
 
 //     if (ram_data[RAM_UNLOCKED_CHARS] == 0U)
 //         ram_data[RAM_UNLOCKED_CHARS] = 0b00000011;
-    
+
 //     DISABLE_RAM;
 // }

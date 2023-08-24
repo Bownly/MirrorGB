@@ -83,7 +83,7 @@ const ActionObject actionsCyan[] = {
     { ACT_WALK, DIR_UP, 3U }
 };
 const ActionObject actionsBlue[] = {
-    { ACT_WAIT, DIR_UP, 1200U },
+    { ACT_WAIT, DIR_UP, 120U },
     { ACT_WALK, DIR_RIGHT, 5U },
     { ACT_WALK, DIR_DOWN, 4U },
     { ACT_WALK, DIR_RIGHT, 11U },

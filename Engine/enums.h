@@ -5,13 +5,17 @@ typedef enum {
     STATE_TITLE,
     STATE_LEVEL,
     STATE_PAUSEMENU,
+    STATE_BEAT_LEVEL,
+    STATE_BEAT_GAME,
+    STATE_GAMEOVER
 } GAMESTATE;
 
 typedef enum {
     SUB_INIT,
     SUB_REINIT,
     SUB_LOOP,
-    SUB_SPOTTED
+    SUB_SPOTTED,
+    SUB_KILL_PLAYER
 } SUBSTATE;
 
 typedef enum {
