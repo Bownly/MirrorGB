@@ -39,6 +39,9 @@ extern UINT8 m;  // Used for menus generally
 extern UINT8 n;  // Used for menus generally
 extern UINT8 p;  // Used for passing values between states
 extern UINT8 r;  // Used for randomization stuff
+static UINT16 i16;
+static UINT16 j16;
+
 
 extern UINT8 animTick;
 extern UINT8 animFrame;
@@ -315,9 +318,8 @@ static void phaseSpotted(void)
         entityPtr->oldActionIndex = entityPtr->curActionIndex;
         entityPtr->oldRoutineIndex = entityPtr->curRoutineIndex;
         entityPtr->isChasing = TRUE;
+        entityPtr->state = ENTITY_IDLE;
         entityPtr->actionTimer = 0U;
-        if (entityPtr->state != ENTITY_WALKING)
-            entityPtr->state = ENTITY_IDLE;
 
         substate = SUB_LOOP;
     }
@@ -326,7 +328,7 @@ static void phaseSpotted(void)
 
 static void phaseKillPlayer(void)
 {
-    if (animTick == 0U)
+    if (animTick == 1U)
     {
         p = 0xFFU;
         // Turn player sprite into bloodstain
@@ -339,6 +341,9 @@ static void phaseKillPlayer(void)
         set_sprite_prop(player.spriteId + 1U, 0b00011000U);
         set_sprite_prop(player.spriteId + 2U, 0b00011000U);
         set_sprite_prop(player.spriteId + 3U, 0b00011000U);
+
+        // NOTE: Temp line until we add a kill animation
+        animateEntities();
     }
     else if (animTick == SPOTTED_ANIM_DURATION)
     {
@@ -559,14 +564,14 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
     for (k = 0U; k != ENTITY_MAX; ++k)
     {
         entityPtr = &entityList[k];
-        switch (entityPtr->state)
-        {
-            case ENTITY_IDLE:
-            case ENTITY_WAITING:
+        // switch (entityPtr->state)
+        // {
+        //     case ENTITY_IDLE:
+        //     case ENTITY_WAITING:
                 if (entityPtr->xTile == x && entityPtr->yTile == y)
                     return TRUE;
-                break;
-        }
+        //         break;
+        // }
     }
     return FALSE;
 }
@@ -674,7 +679,7 @@ static void commonInit(void)
     player.moveSpeed = PLAYER_SPEED;
 
     // Test line
-    // set_bkg_data(0x00U, 10U, fontTiles);
+    // set_bkg_data(0x00U, 27U, fontTiles);
 
     fadein();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
@@ -749,25 +754,24 @@ static void handleRoutines(void)
                     entityPtr->actionTimer--;
                     break;
                 case ENTITY_WALKING:
-                    m = entityPtr->isChasing == TRUE ? 2U : 1U;
-                    if (entityPtr->actionTimer % 16U == 0U)
-                    {
-                      entityPtr->xTile = (entityPtr->xSpr - 8U) >> 4U;
-                      entityPtr->yTile = (entityPtr->ySpr - 16U) >> 4U;
-                    }
-                    if (entityPtr->actionTimer != 0U)
-                    {
-                        switch (entityPtr->dir)
-                        {
-                            case DIR_UP:    entityPtr->ySpr -= m; break;
-                            case DIR_DOWN:  entityPtr->ySpr += m; break;
-                            case DIR_LEFT:  entityPtr->xSpr -= m; break;
-                            case DIR_RIGHT: entityPtr->xSpr += m; break;
-                        }
-                    }
-                    else
+                    if (entityPtr->actionTimer == 0U)
                         entityPtr->state = ENTITY_IDLE;
+
+                    m = entityPtr->isChasing == TRUE ? 2U : 1U;
                     entityPtr->actionTimer -= m;
+
+                    entityPtr->xTile = (entityPtr->xSpr) >> 4U;
+                    entityPtr->yTile = (entityPtr->ySpr + 8U) >> 4U;
+                    switch (entityPtr->dir)
+                    {
+                        case DIR_UP:    entityPtr->ySpr -= m; break;
+                        case DIR_DOWN:  entityPtr->ySpr += m; break;
+                        case DIR_LEFT:  entityPtr->xSpr -= m; break;
+                        case DIR_RIGHT: entityPtr->xSpr += m; break;
+                    }
+                    if (entityPtr->actionTimer == 0U)
+                        entityPtr->state = ENTITY_IDLE;
+
                     entityPtr->animTick++;
                     entityPtr->animFrame = entityPtr->animTick % 32U;
                     entityPtr->animFrame /= 8U;
@@ -802,21 +806,30 @@ static void handleRoutines(void)
                     }
                     else
                     {
-                        // Check to see if NPC caught up with player
-                        i = entityPtr->xTile;
-                        j = entityPtr->yTile;
-                        switch (entityPtr->dir)
+                        i16 = entityPtr->xSpr;
+                        j16 = entityPtr->ySpr;
+                        switch (entityPtr->chasingActions[0U].direction)
                         {
-                            case DIR_UP:    --j; break;
-                            case DIR_DOWN:  ++j; break;
-                            case DIR_LEFT:  --i; break;
-                            case DIR_RIGHT: ++i; break;
+                            case DIR_UP:    j16 -= 16U; break;
+                            case DIR_DOWN:  j16 += 16U; break;
+                            case DIR_LEFT:  i16 -= 16U; break;
+                            case DIR_RIGHT: i16 += 16U; break;
                         }
+                        i = (i16) >> 4U;
+                        j = (j16- 8U) >> 4U;
+
                         if (player.xTile == i && player.yTile == j)
                         {
                             substate = SUB_KILL_PLAYER;
                             animTick = 0U;
                             p = entityPtr->id;
+                            entityPtr->dir = entityPtr->chasingActions[0U].direction;
+
+                            // NOTE: Temp lines until we add a kill animation
+                            if (entityPtr->dir == DIR_RIGHT)
+                                entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
+                            else
+                                entityPtr->animFrame = entityPtr->dir * 3U;
                             return;
                         }
 
@@ -840,7 +853,7 @@ static void handleRoutines(void)
                     case ACT_WALK:
                         entityPtr->state = ENTITY_WALKING;
                         entityPtr->dir = tempAction.direction;
-                        entityPtr->actionTimer = 16U * tempAction.magnitude;
+                        entityPtr->actionTimer = (16U * tempAction.magnitude);
 
                         if (entityPtr->dir == DIR_RIGHT)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
@@ -850,6 +863,7 @@ static void handleRoutines(void)
                     case ACT_FINISHING_WALK:
                             entityPtr->actionTimer = tempAction.magnitude;
                             entityPtr->state = ENTITY_WALKING;
+                            set_win_tile_xy(entityPtr->id,1,entityPtr->actionTimer % 16U);
                         break;
                     case ACT_WAIT:
                         entityPtr->state = ENTITY_WAITING;
@@ -869,8 +883,8 @@ static void handleRoutines(void)
             }
 
             // Look around
-            i = entityPtr->xTile;
-            j = entityPtr->yTile;
+            i = (entityPtr->xSpr) >> 4U;
+            j = (entityPtr->ySpr - 8U) >> 4U;
 
             if (entityPtr->isVisible == TRUE && entityPtr->state != ENTITY_DEAD && entityPtr->isChasing == FALSE)
             {
@@ -883,6 +897,7 @@ static void handleRoutines(void)
                         case DIR_LEFT:  i -= 1U; break;
                         case DIR_RIGHT: i += 1U; break;
                     }
+
                     if (playGrid[j][i] >= WALKABLE_TILE_COUNT)
                         m = entityPtr->visionDistance - 1U;
                     else if (i == player.xTile && j == player.yTile)  // Spotted player
@@ -909,7 +924,7 @@ static void handleRoutines(void)
                                 entityPtr->actionTimer = (entityPtr->actionTimer >> 1U) << 1U;
                             }
 
-                            if (entityPtr->actionTimer % 16U != 0U)
+                            if (entityPtr->actionTimer != 0U)
                             {
                                 n = 1U;
                                 entityPtr->chasingActions[0U].action = ACT_FINISHING_WALK;
@@ -1032,7 +1047,6 @@ static void walkPlayer(void)
             player.ySpr -= PLAYER_SPEED;
             if ((player.ySpr) % 16U == 0U)
             {
-                player.yTile--;
                 checkUnderfootTile();
             }
         }
@@ -1041,7 +1055,6 @@ static void walkPlayer(void)
             camera_y -= PLAYER_SPEED;
             if (camera_y % 16U == 0U)
             {
-                player.yTile--;
                 checkUnderfootTile();
             }
         }
@@ -1053,7 +1066,6 @@ static void walkPlayer(void)
             player.ySpr += PLAYER_SPEED;
             if ((player.ySpr) % 16U == 0U)
             {
-                player.yTile++;
                 checkUnderfootTile();
             }
         }
@@ -1062,7 +1074,6 @@ static void walkPlayer(void)
             camera_y += PLAYER_SPEED;
             if (camera_y % 16U == 0U)
             {
-                player.yTile++;
                 checkUnderfootTile();
             }
         }
@@ -1074,7 +1085,6 @@ static void walkPlayer(void)
             player.xSpr -= PLAYER_SPEED;
             if ((player.xSpr + 8U) % 16U == 0U)
             {
-                player.xTile--;
                 checkUnderfootTile();
             }
         }
@@ -1083,7 +1093,6 @@ static void walkPlayer(void)
             camera_x -= PLAYER_SPEED;
             if (camera_x % 16U == 0U)
             {
-                player.xTile--;
                 checkUnderfootTile();
             }
         }
@@ -1095,7 +1104,6 @@ static void walkPlayer(void)
             player.xSpr += PLAYER_SPEED;
             if ((player.xSpr + 8U) % 16U == 0U)
             {
-                player.xTile++;
                 checkUnderfootTile();
             }
         }
@@ -1104,11 +1112,13 @@ static void walkPlayer(void)
             camera_x += PLAYER_SPEED;
             if (camera_x % 16U == 0U)
             {
-                player.xTile++;
                 checkUnderfootTile();
             }
         }
     }
+    player.xTile = (player.xSpr + camera_x) >> 4U;
+    player.yTile = (player.ySpr + camera_y - 8U) >> 4U;
+
     SCX_REG = camera_x; SCY_REG = camera_y;
 }
 
