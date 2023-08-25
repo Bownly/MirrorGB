@@ -564,14 +564,8 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
     for (k = 0U; k != ENTITY_MAX; ++k)
     {
         entityPtr = &entityList[k];
-        // switch (entityPtr->state)
-        // {
-        //     case ENTITY_IDLE:
-        //     case ENTITY_WAITING:
-                if (entityPtr->xTile == x && entityPtr->yTile == y)
-                    return TRUE;
-        //         break;
-        // }
+        if (entityPtr->xTile == x && entityPtr->yTile == y)
+            return TRUE;
     }
     return FALSE;
 }
