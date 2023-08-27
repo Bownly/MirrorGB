@@ -5,6 +5,6 @@
 
 // void playSong(const hUGESong_t *);
 void playOutsideSong(UINT8);
-// void stopSong();
+void stopSong();
 
 #endif

@@ -72,7 +72,7 @@ static const UINT8 hudMouthMap[8U] = {0xF0, 0xF2, 0xF4, 0xF6, 0xF1, 0xF3, 0xF5, 
 #define STARTPOS 0U
 #define STARTCAM 0U
 
-static UINT8 roomId;
+extern UINT8 roomId;
 static UINT8 gridW;
 static UINT8 gridH;
 static UINT16 camera_max_x = 10U * 128U;
@@ -211,7 +211,7 @@ static void phaseInit(void)
     // loadLevel();
 
     commonInit();
-    playOutsideSong(SONG_HOUSE);
+    playOutsideSong(SONG_LEVEL01);
 
 }
 
@@ -438,6 +438,9 @@ static void inputs(void)
             }
         }
 
+        // if (curJoypad & J_B && !(prevJoypad & J_B))
+        //     entityKill(0U);
+
         if (curJoypad & J_UP)
         {
             player.dir = DIR_UP;
@@ -632,18 +635,16 @@ static void commonInit(void)
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
 
-    roomId = 1U;
     gridW = getOwMapWidth(1U);
     gridH = getOwMapHeight(1U);
     playGridPtr = &playGridM;
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
-    roomId = 0U;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId + 1U, gridW, gridH);
     gridW = getOwMapWidth(0U);
     gridH = getOwMapHeight(0U);
     playGridPtr = &playGrid;
     loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
-    loadRoom(0U);
+    loadRoom(roomId);
 
     animatePlayer();
 
@@ -694,6 +695,17 @@ static void entityKill(UINT8 entityId)
 
     --headCount;
     displayHeadcount();
+
+    if (headCount == 0U)
+    {
+        if (roomId / 2U == 2U)  // AKA, Level 3
+            gamestate = STATE_BEAT_GAME;
+        else
+            gamestate = STATE_BEAT_LEVEL;
+        substate = SUB_INIT;
+        fadeout();
+        stopSong();
+    }
 }
 
 static void entityListAdd(UINT8 id)
@@ -729,6 +741,7 @@ static void entityListAdd(UINT8 id)
     entityList[id].isChasing = FALSE;
 
     ++headCount;
+    // headCount = 1U;  // Test line
 }
 
 static void handleRoutines(void)
@@ -949,6 +962,7 @@ static void killPlayer(void)
     {
         gamestate = STATE_GAMEOVER;
         substate = SUB_INIT;
+        stopSong();
     }
     else
         substate = SUB_REINIT;

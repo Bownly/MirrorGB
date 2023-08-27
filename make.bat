@@ -3,7 +3,14 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level02Song.o Assets/Music/Level02Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level03Song.o Assets/Music/Level03Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/YouDiedSong.o Assets/Music/YouDiedSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/WinSong.o Assets/Music/WinSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/CGSceneSong.o Assets/Music/CGSceneSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/IntroSong.o Assets/Music/IntroSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/MainMenuSong.o Assets/Music/MainMenuSong.c
 
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
@@ -29,6 +36,8 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesDa
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatGameState.o States/BeatGameState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatLevelState.o States/BeatLevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c

@@ -9,8 +9,6 @@
 
 #include "../Assets/Illustrations/TitleScreenIllustration.h"
 
-// extern const hUGESong_t engineSloopygoopPartyTheme;
-
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
 extern UINT8 i;  // Used mostly for loops
@@ -27,6 +25,7 @@ extern UINT8 animFrame;
 
 extern UINT8 gamestate;
 extern UINT8 substate;
+extern UINT8 roomId;
 
 
 /* SUBSTATE METHODS */
@@ -79,7 +78,7 @@ static void phaseTitleInit(void)
     fadein();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    // playSong(&engineSloopygoopPartyTheme);
+    playOutsideSong(SONG_MAINMENU);
 }
 
 static void phaseTitleLoop(void)
@@ -96,7 +95,7 @@ static void phaseTitleLoop(void)
     //         set_bkg_tile_xy(i, 13U, 0xFFU);
     // }
     //
-    if (curJoypad & J_START && !(prevJoypad & J_START))
+    if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeout();
         // initrand(DIV_REG);
@@ -104,7 +103,9 @@ static void phaseTitleLoop(void)
 
         gamestate = STATE_LEVEL;
         substate = SUB_INIT;
-        // shouldRestartSong = FALSE;
+        stopSong();
+
+        roomId = 0U;
     }
     // else if (curJoypad & J_SELECT && curJoypad & J_B)
     // {

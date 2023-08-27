@@ -44,7 +44,14 @@ typedef enum {
 } ACTION;
 
 typedef enum {
-    SONG_HOUSE
+    SONG_LEVEL01,
+    SONG_LEVEL02,
+    SONG_LEVEL03,
+    SONG_YOUDIED,
+    SONG_WIN,
+    SONG_CGSCENE,
+    SONG_INTRO,
+    SONG_MAINMENU
 } SONGS;
 
 #endif
