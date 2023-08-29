@@ -28,6 +28,9 @@ extern UINT8 substate;
 extern UINT8 roomId;
 
 
+static UINT8 junk = 0U;
+
+
 /* SUBSTATE METHODS */
 static void phaseTitleInit(void);
 static void phaseTitleLoop(void);
@@ -95,7 +98,7 @@ static void phaseTitleLoop(void)
     //         set_bkg_tile_xy(i, 13U, 0xFFU);
     // }
     //
-    if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
+    if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeout();
         // initrand(DIV_REG);
@@ -107,12 +110,13 @@ static void phaseTitleLoop(void)
 
         roomId = 0U;
     }
-    // else if (curJoypad & J_SELECT && curJoypad & J_B)
-    // {
-    //     fadeout();
-    //     gamestate = STATE_DELETE_SAVE;
-    //     substate = SUB_INIT;
-    // }
+    else if (curJoypad & J_B && !(prevJoypad & J_B))
+    {
+        // stopSong();
+        playSfx(junk);
+        junk++;
+        junk %= 10U;
+    }
     // else if (curJoypad & J_SELECT && curJoypad & J_A)
     // {
     //     fadeout();

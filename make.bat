@@ -30,6 +30,17 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseMTiles.o Assets/Tiles/HouseMTiles.c
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_00.o Assets/Sfx/SFX_00.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_01.o Assets/Sfx/SFX_01.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_02.o Assets/Sfx/SFX_02.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_03.o Assets/Sfx/SFX_03.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_04.o Assets/Sfx/SFX_04.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_05.o Assets/Sfx/SFX_05.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_06.o Assets/Sfx/SFX_06.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_07.o Assets/Sfx/SFX_07.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_08.o Assets/Sfx/SFX_08.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_09.o Assets/Sfx/SFX_09.c
+
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/RoomData.o Database/RoomData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/LevelData.o Database/LevelData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesData.c
@@ -42,6 +53,7 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/fade.o Engine/fade.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareLevelData.o Engine/IShareLevelData.c

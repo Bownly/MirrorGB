@@ -54,4 +54,17 @@ typedef enum {
     SONG_MAINMENU
 } SONGS;
 
+typedef enum {
+    SFX_0,
+    SFX_1,
+    SFX_2,
+    SFX_3,
+    SFX_4,
+    SFX_5,
+    SFX_6,
+    SFX_7,
+    SFX_8,
+    SFX_9
+} SFX;
+
 #endif
