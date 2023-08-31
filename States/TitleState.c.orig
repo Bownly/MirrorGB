@@ -12,6 +12,8 @@
 #include "../Assets/Sprites/PressSprite.h"
 #include "../Assets/Sprites/StartSprite.h"
 
+// extern const hUGESong_t engineSloopygoopPartyTheme;
+
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
 extern UINT8 i;  // Used mostly for loops
@@ -88,30 +90,21 @@ static void phaseTitleInit(void)
 
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    playOutsideSong(SONG_MAINMENU);
+    // playSong(&engineSloopygoopPartyTheme);
 }
 
 static void phaseTitleLoop(void)
 {
     animatePressStart();
 
-    if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
+    if (curJoypad & J_START && !(prevJoypad & J_START))
     {
         fadeout();
         move_bkg(0U, 0U);
 
         gamestate = STATE_LEVEL;
         substate = SUB_INIT;
-        stopSong();
-
-        roomId = 0U;
-    }
-    else if (curJoypad & J_B && !(prevJoypad & J_B))
-    {
-        // stopSong();
-        playSfx(junk);
-        junk++;
-        junk %= 10U;
+        // shouldRestartSong = FALSE;
     }
     // else if (curJoypad & J_SELECT && curJoypad & J_B)
     // {

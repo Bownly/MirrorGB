@@ -3,12 +3,21 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level02Song.o Assets/Music/Level02Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level03Song.o Assets/Music/Level03Song.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/YouDiedSong.o Assets/Music/YouDiedSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/WinSong.o Assets/Music/WinSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/CGSceneSong.o Assets/Music/CGSceneSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/IntroSong.o Assets/Music/IntroSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/MainMenuSong.o Assets/Music/MainMenuSong.c
 
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/PressSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/StartSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8 -tile_origin 10
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
@@ -23,16 +32,30 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/fontTiles.o Assets/Tiles/fontTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseTiles.o Assets/Tiles/HouseTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseMTiles.o Assets/Tiles/HouseMTiles.c
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_00.o Assets/Sfx/SFX_00.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_01.o Assets/Sfx/SFX_01.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_02.o Assets/Sfx/SFX_02.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_03.o Assets/Sfx/SFX_03.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_04.o Assets/Sfx/SFX_04.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_05.o Assets/Sfx/SFX_05.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_06.o Assets/Sfx/SFX_06.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_07.o Assets/Sfx/SFX_07.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_08.o Assets/Sfx/SFX_08.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_09.o Assets/Sfx/SFX_09.c
+
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/RoomData.o Database/RoomData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/LevelData.o Database/LevelData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatGameState.o States/BeatGameState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatLevelState.o States/BeatLevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/fade.o Engine/fade.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareLevelData.o Engine/IShareLevelData.c

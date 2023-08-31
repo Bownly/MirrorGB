@@ -11,7 +11,7 @@
 #define TitleScreenIllustration_TILE_H 8
 #define TitleScreenIllustration_WIDTH 8
 #define TitleScreenIllustration_HEIGHT 8
-#define TitleScreenIllustration_TILE_COUNT 187
+#define TitleScreenIllustration_TILE_COUNT 198
 #define TitleScreenIllustration_PALETTE_COUNT 1
 #define TitleScreenIllustration_COLORS_PER_PALETTE 4
 #define TitleScreenIllustration_TOTAL_COLORS 4
@@ -20,7 +20,7 @@
 BANKREF_EXTERN(TitleScreenIllustration)
 
 extern const palette_color_t TitleScreenIllustration_palettes[4];
-extern const uint8_t TitleScreenIllustration_tiles[2992];
+extern const uint8_t TitleScreenIllustration_tiles[3168];
 
 extern const unsigned char TitleScreenIllustration_map[360];
 #define TitleScreenIllustration_map_attributes TitleScreenIllustration_map

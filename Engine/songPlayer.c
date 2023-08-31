@@ -1,10 +1,31 @@
 #include <gb/gb.h>
-#include "hUGEDriver.h"
 
+#include "cbtfx.h"
 #include "common.h"
 #include "enums.h"
+#include "hUGEDriver.h"
 
-extern const hUGESong_t level01;
+#include "../Assets/Sfx/SFX_00.h"
+#include "../Assets/Sfx/SFX_01.h"
+#include "../Assets/Sfx/SFX_02.h"
+#include "../Assets/Sfx/SFX_03.h"
+#include "../Assets/Sfx/SFX_04.h"
+#include "../Assets/Sfx/SFX_05.h"
+#include "../Assets/Sfx/SFX_06.h"
+#include "../Assets/Sfx/SFX_07.h"
+#include "../Assets/Sfx/SFX_08.h"
+#include "../Assets/Sfx/SFX_09.h"
+
+extern const hUGESong_t Level01Song;
+extern const hUGESong_t Level02Song;
+extern const hUGESong_t Level03Song;
+extern const hUGESong_t YouDiedSong;
+extern const hUGESong_t WinSong;
+extern const hUGESong_t CGSceneSong;
+extern const hUGESong_t IntroSong;
+extern const hUGESong_t MainMenuSong;
+
+const unsigned char * SFX_list[] = { &SFX_00[0], &SFX_01[0], &SFX_02[0], &SFX_03[0], &SFX_04[0], &SFX_05[0], &SFX_06[0], &SFX_07[0], &SFX_08[0], &SFX_09[0] };
 
 extern UINT8 curSongBank;
 static UINT8 nextBank;
@@ -14,7 +35,13 @@ void songPlayerVblFn()
     nextBank = CURRENT_BANK;
     SWITCH_ROM(curSongBank);
     hUGE_dosound();
+	CBTFX_update();
     SWITCH_ROM(nextBank);
+}
+
+void playSfx(SFX sfxName)
+{
+	CBTFX_init(SFX_list[sfxName]);
 }
 
 void playSong(const hUGESong_t * song)
@@ -25,41 +52,75 @@ void playSong(const hUGESong_t * song)
 
     curSongBank = CURRENT_BANK;
     
-    // // All this just to increase the tempo. Is there a better way to do this? Probably.
-    // hUGESong_t modifiedSong;
-    // modifiedSong.tempo = song->tempo - mgSpeed;
-    // modifiedSong.order_cnt = song->order_cnt;
-    // modifiedSong.order1 = song->order1;
-    // modifiedSong.order2 = song->order2;
-    // modifiedSong.order3 = song->order3;
-    // modifiedSong.order4 = song->order4;
-    // modifiedSong.duty_instruments = song->duty_instruments;
-    // modifiedSong.wave_instruments = song->wave_instruments;
-    // modifiedSong.noise_instruments = song->noise_instruments;
-    // modifiedSong.routines = song->routines;
-    // modifiedSong.waves = song->waves;
-
-    // hUGE_init(&modifiedSong);
     hUGE_init(song);
 }
 
-void playOutsideSong(UINT8 songName)
+void playOutsideSong(SONGS songName)
 {
     switch (songName)
     {
         default:
-        case SONG_HOUSE:
+        case SONG_LEVEL01:
             nextBank = CURRENT_BANK;
             curSongBank = 6U;
             SWITCH_ROM(curSongBank);
-            playSong(&level01);
+            playSong(&Level01Song);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_LEVEL02:
+            nextBank = CURRENT_BANK;
+            curSongBank = 6U;
+            SWITCH_ROM(curSongBank);
+            playSong(&Level02Song);
+            SWITCH_ROM(nextBank);
+            break;        
+        case SONG_LEVEL03:
+            nextBank = CURRENT_BANK;
+            curSongBank = 6U;
+            SWITCH_ROM(curSongBank);
+            playSong(&Level03Song);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_YOUDIED:
+            nextBank = CURRENT_BANK;
+            curSongBank = 6U;
+            SWITCH_ROM(curSongBank);
+            playSong(&YouDiedSong);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_WIN:
+            nextBank = CURRENT_BANK;
+            curSongBank = 6U;
+            SWITCH_ROM(curSongBank);
+            playSong(&WinSong);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_CGSCENE:
+            nextBank = CURRENT_BANK;
+            curSongBank = 7U;
+            SWITCH_ROM(curSongBank);
+            playSong(&CGSceneSong);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_INTRO:
+            nextBank = CURRENT_BANK;
+            curSongBank = 7U;
+            SWITCH_ROM(curSongBank);
+            playSong(&IntroSong);
+            SWITCH_ROM(nextBank);
+            break;        
+        case SONG_MAINMENU:
+            nextBank = CURRENT_BANK;
+            curSongBank = 7U;
+            SWITCH_ROM(curSongBank);
+            playSong(&MainMenuSong);
             SWITCH_ROM(nextBank);
             break;
     }
 }
 
-// void stopSong()
-// {
-//     NR12_REG = NR22_REG = NR32_REG = NR42_REG = 0;
-//     remove_VBL(songPlayerVblFn);
-// }
+void stopSong()
+{
+    NR12_REG = NR22_REG = NR32_REG = NR42_REG = 0;
+    remove_VBL(songPlayerVblFn);
+}

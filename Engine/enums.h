@@ -15,7 +15,8 @@ typedef enum {
     SUB_REINIT,
     SUB_LOOP,
     SUB_SPOTTED,
-    SUB_KILL_PLAYER
+    SUB_KILL_PLAYER,
+    SUB_MIRRORING
 } SUBSTATE;
 
 typedef enum {
@@ -44,7 +45,27 @@ typedef enum {
 } ACTION;
 
 typedef enum {
-    SONG_HOUSE
+    SONG_LEVEL01,
+    SONG_LEVEL02,
+    SONG_LEVEL03,
+    SONG_YOUDIED,
+    SONG_WIN,
+    SONG_CGSCENE,
+    SONG_INTRO,
+    SONG_MAINMENU
 } SONGS;
+
+typedef enum {
+    SFX_0,
+    SFX_1,
+    SFX_2,
+    SFX_3,
+    SFX_4,
+    SFX_5,
+    SFX_6,
+    SFX_7,
+    SFX_8,
+    SFX_9
+} SFX;
 
 #endif
