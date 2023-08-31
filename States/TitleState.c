@@ -7,11 +7,11 @@
 // #include "../Engine/ram.h"
 #include "../Engine/songPlayer.h"
 
+#include "../Assets/Illustrations/TitleScreenIllustration.h"
 
 #include "../Assets/Illustrations/TitleScreenIllustration.h"
 #include "../Assets/Sprites/PressSprite.h"
 #include "../Assets/Sprites/StartSprite.h"
-
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
 extern UINT8 i;  // Used mostly for loops
@@ -30,6 +30,10 @@ extern UINT8 gamestate;
 extern UINT8 substate;
 static UINT8 pressX = 62U;
 static UINT8 startX = 114U;
+extern UINT8 roomId;
+
+
+static UINT8 junk = 0U;
 
 
 /* SUBSTATE METHODS */
@@ -96,6 +100,7 @@ static void phaseTitleLoop(void)
     animatePressStart();
 
     if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
+    if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeout();
         move_bkg(0U, 0U);
@@ -113,12 +118,6 @@ static void phaseTitleLoop(void)
         junk++;
         junk %= 10U;
     }
-    // else if (curJoypad & J_SELECT && curJoypad & J_B)
-    // {
-    //     fadeout();
-    //     gamestate = STATE_DELETE_SAVE;
-    //     substate = SUB_INIT;
-    // }
 }
 
 /******************************** INPUT METHODS *********************************/

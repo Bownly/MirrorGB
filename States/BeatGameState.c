@@ -7,7 +7,7 @@
 // #include "../Engine/ram.h"
 #include "../Engine/songPlayer.h"
 
-#include "../Assets/Illustrations/GameOverIllustration.h"
+#include "../Assets/Illustrations/BeatGameIllustration.h"
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
@@ -38,7 +38,7 @@ static void phaseBeatGameLoop(void);
 /* DISPLAY METHODS */
 
 
-void GameOverStateMain(void)
+void BeatGameStateMain(void)
 {
     curJoypad = joypad();
 
@@ -67,17 +67,18 @@ static void phaseBeatGameInit(void)
     init_bkg(0xFFU);
     animTick = 0U;
     HIDE_WIN;
+    HIDE_SPRITES;
 
     move_bkg(0, 0U);
 
-    set_bkg_data(0x40U, GameOverIllustration_TILE_COUNT, GameOverIllustration_tiles);
-    set_bkg_tiles(0U, 0U, 20U, 18U, GameOverIllustration_map);
+    set_bkg_data(0x40U, BeatGameIllustration_TILE_COUNT, BeatGameIllustration_tiles);
+    set_bkg_tiles(0U, 0U, 20U, 18U, BeatGameIllustration_map);
 
     substate = SUB_LOOP;
     fadein();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    playOutsideSong(SONG_YOUDIED);
+    playOutsideSong(SONG_WIN);
 }
 
 static void phaseBeatGameLoop(void)

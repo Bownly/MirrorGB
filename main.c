@@ -14,6 +14,8 @@
 #include "Objects/EntityObject.h"
 #include "Objects/NPCObject.h"
 
+#include "States/BeatGameState.h"
+#include "States/BeatLevelState.h"
 #include "States/GameOverState.h"
 #include "States/LevelState.h"
 #include "States/TitleState.h"
@@ -41,6 +43,7 @@ UINT8 substate;
 // SUBSTATE prevSubstate;
 // SUBSTATE nextSubstate;
 UINT8 curSongBank;
+UINT8 roomId;
 
 // UINT8 shouldSkipMusicThisFrame;
 
@@ -105,6 +108,14 @@ void main(void)
             case STATE_LEVEL:
                 SWITCH_ROM(2U);
                 LevelStateMain();
+                break;
+            case STATE_BEAT_LEVEL:
+                SWITCH_ROM(1U);
+                BeatLevelStateMain();
+                break;
+            case STATE_BEAT_GAME:
+                SWITCH_ROM(1U);
+                BeatGameStateMain();
                 break;
             case STATE_GAMEOVER:
                 SWITCH_ROM(1U);

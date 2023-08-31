@@ -7,7 +7,7 @@
 // #include "../Engine/ram.h"
 #include "../Engine/songPlayer.h"
 
-#include "../Assets/Illustrations/GameOverIllustration.h"
+#include "../Assets/Illustrations/BeatLevelIllustration.h"
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
@@ -25,6 +25,7 @@ extern UINT8 animFrame;
 
 extern UINT8 gamestate;
 extern UINT8 substate;
+extern UINT8 roomId;
 
 
 /* SUBSTATE METHODS */
@@ -38,7 +39,7 @@ static void phaseBeatGameLoop(void);
 /* DISPLAY METHODS */
 
 
-void GameOverStateMain(void)
+void BeatLevelStateMain(void)
 {
     curJoypad = joypad();
 
@@ -67,17 +68,18 @@ static void phaseBeatGameInit(void)
     init_bkg(0xFFU);
     animTick = 0U;
     HIDE_WIN;
+    HIDE_SPRITES;
 
     move_bkg(0, 0U);
 
-    set_bkg_data(0x40U, GameOverIllustration_TILE_COUNT, GameOverIllustration_tiles);
-    set_bkg_tiles(0U, 0U, 20U, 18U, GameOverIllustration_map);
+    set_bkg_data(0x40U, BeatLevelIllustration_TILE_COUNT, BeatLevelIllustration_tiles);
+    set_bkg_tiles(0U, 0U, 20U, 18U, BeatLevelIllustration_map);
 
     substate = SUB_LOOP;
     fadein();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    playOutsideSong(SONG_YOUDIED);
+    playOutsideSong(SONG_WIN);
 }
 
 static void phaseBeatGameLoop(void)
@@ -100,8 +102,14 @@ static void phaseBeatGameLoop(void)
         // initrand(DIV_REG);
         // move_bkg(0U, 0U);
 
-        gamestate = STATE_TITLE;
+        gamestate = STATE_LEVEL;
         substate = SUB_INIT;
+
+        // This looks really silly
+        roomId >>= 1U;
+        roomId += 1U;
+        roomId <<= 1U;
+
         stopSong();
     }
 }
