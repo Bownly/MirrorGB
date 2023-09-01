@@ -6,12 +6,12 @@
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
 
-#define GameOverIllustration_TILE_ORIGIN 64
+#define GameOverIllustration_TILE_ORIGIN 0
 #define GameOverIllustration_TILE_W 8
 #define GameOverIllustration_TILE_H 8
 #define GameOverIllustration_WIDTH 8
 #define GameOverIllustration_HEIGHT 8
-#define GameOverIllustration_TILE_COUNT 131
+#define GameOverIllustration_TILE_COUNT 242
 #define GameOverIllustration_PALETTE_COUNT 1
 #define GameOverIllustration_COLORS_PER_PALETTE 4
 #define GameOverIllustration_TOTAL_COLORS 4
@@ -20,7 +20,7 @@
 BANKREF_EXTERN(GameOverIllustration)
 
 extern const palette_color_t GameOverIllustration_palettes[4];
-extern const uint8_t GameOverIllustration_tiles[2096];
+extern const uint8_t GameOverIllustration_tiles[3872];
 
 extern const unsigned char GameOverIllustration_map[360];
 #define GameOverIllustration_map_attributes GameOverIllustration_map

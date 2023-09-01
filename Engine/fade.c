@@ -41,6 +41,34 @@ void fadein(void)
     // pauseSong(0U);
 }
 
+void fadeInFromBlack(void)
+{
+    UINT8 i;
+    for (i = 0U; i != 3U; i++) 
+    {
+        switch(i) 
+        {
+            case 0U:
+                OBP0_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
+                OBP1_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
+                BGP_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
+                break;
+            case 1U:
+                OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                OBP1_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                BGP_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                break;
+            case 2U:
+                OBP0_REG = 0xD2;  // Dark grey as transparent  11010010
+                OBP1_REG = 0xD2;
+                BGP_REG = 0xE4;
+                break;
+        }
+        performantdelay(1U);
+    }
+    // pauseSong(0U);
+}
+
 void fadeout(void) 
 {
     UINT8 i;
@@ -71,6 +99,41 @@ void fadeout(void)
                 OBP0_REG = 0x00;
                 OBP1_REG = 0x00;
                 BGP_REG = 0x00;
+                break;
+        }
+        performantdelay(1U);
+    }
+
+    // I'm sure there's a better way to remove/reset sprites
+    for (i = 0U; i != 40U; i++)
+    {
+        move_sprite(i, 0U, 0U);
+        set_sprite_prop(i, 0b00000000U);
+    }
+}
+
+void fadeOutToBlack(void) 
+{
+    UINT8 i;
+    // pauseSong(1U);
+    for (i = 0U; i != 4U; i++) 
+    {
+        switch(i) 
+        {
+            case 0U:
+                OBP0_REG = 0xD2;  // Dark grey as transparent  11010010
+                OBP1_REG = 0xD2;
+                BGP_REG = 0xE4;
+                break;
+            case 1U:
+                OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                OBP1_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                BGP_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_DARK_GRAY, DMG_BLACK);
+                break;
+            case 2U:
+                OBP0_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
+                OBP1_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
+                BGP_REG = DMG_PALETTE(DMG_BLACK, DMG_BLACK, DMG_BLACK, DMG_BLACK);
                 break;
         }
         performantdelay(1U);

@@ -3,6 +3,7 @@
 
 typedef enum {
     STATE_TITLE,
+    STATE_INTRO,
     STATE_LEVEL,
     STATE_PAUSEMENU,
     STATE_BEAT_LEVEL,

@@ -17,6 +17,7 @@
 #include "States/BeatGameState.h"
 #include "States/BeatLevelState.h"
 #include "States/GameOverState.h"
+#include "States/IntroState.h"
 #include "States/LevelState.h"
 #include "States/TitleState.h"
 
@@ -104,6 +105,10 @@ void main(void)
             case STATE_TITLE:
                 SWITCH_ROM(1U);
                 TitleStateMain();
+                break;
+            case STATE_INTRO:
+                SWITCH_ROM(7U);
+                IntroStateMain();
                 break;
             case STATE_LEVEL:
                 SWITCH_ROM(2U);

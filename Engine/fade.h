@@ -3,6 +3,8 @@
 
 void performantdelay(UINT8);
 void fadein(void);
+void fadeInFromBlack(void);
 void fadeout(void);
+void fadeOutToBlack(void);
 
 #endif

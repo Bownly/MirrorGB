@@ -6,7 +6,7 @@
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
 
-#define TitleScreenIllustration_TILE_ORIGIN 64
+#define TitleScreenIllustration_TILE_ORIGIN 0
 #define TitleScreenIllustration_TILE_W 8
 #define TitleScreenIllustration_TILE_H 8
 #define TitleScreenIllustration_WIDTH 8

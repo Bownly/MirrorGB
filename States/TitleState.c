@@ -37,8 +37,8 @@ static UINT8 junk = 0U;
 
 
 /* SUBSTATE METHODS */
-static void phaseTitleInit(void);
-static void phaseTitleLoop(void);
+static void phaseIntroInit(void);
+static void phaseIntroLoop(void);
 
 /* INPUT METHODS */
 
@@ -55,10 +55,10 @@ void TitleStateMain(void)
     switch (substate)
     {
         case SUB_INIT:
-            phaseTitleInit();
+            phaseIntroInit();
             break;
         case SUB_LOOP:
-            phaseTitleLoop();
+            phaseIntroLoop();
             break;
         default:  // Abort to... uh, itself in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -70,7 +70,7 @@ void TitleStateMain(void)
 
 
 /******************************** SUBSTATE METHODS *******************************/
-static void phaseTitleInit(void)
+static void phaseIntroInit(void)
 {
     // Initializations
     // stopSong();
@@ -82,8 +82,8 @@ static void phaseTitleInit(void)
 
     set_sprite_data(0x00U, PressSprite_TILE_COUNT, PressSprite_tiles);
     set_sprite_data(10U, StartSprite_TILE_COUNT, StartSprite_tiles);
-    set_bkg_data(PressSprite_TILE_COUNT, StartSprite_TILE_COUNT, StartSprite_tiles);
-    set_bkg_data(0x40U, TitleScreenIllustration_TILE_COUNT, TitleScreenIllustration_tiles);
+    // set_bkg_data(PressSprite_TILE_COUNT, StartSprite_TILE_COUNT, StartSprite_tiles);
+    set_bkg_data(0U, TitleScreenIllustration_TILE_COUNT, TitleScreenIllustration_tiles);
     set_bkg_tiles(0U, 0U, 20U, 18U, TitleScreenIllustration_map);
 
     substate = SUB_LOOP;
@@ -95,17 +95,16 @@ static void phaseTitleInit(void)
     playOutsideSong(SONG_MAINMENU);
 }
 
-static void phaseTitleLoop(void)
+static void phaseIntroLoop(void)
 {
     animatePressStart();
 
     if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
-    if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
-        fadeout();
+        fadeOutToBlack();
         move_bkg(0U, 0U);
 
-        gamestate = STATE_LEVEL;
+        gamestate = STATE_INTRO;
         substate = SUB_INIT;
         stopSong();
 

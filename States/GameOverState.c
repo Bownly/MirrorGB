@@ -70,7 +70,7 @@ static void phaseBeatGameInit(void)
 
     move_bkg(0, 0U);
 
-    set_bkg_data(0x40U, GameOverIllustration_TILE_COUNT, GameOverIllustration_tiles);
+    set_bkg_data(0U, GameOverIllustration_TILE_COUNT, GameOverIllustration_tiles);
     set_bkg_tiles(0U, 0U, 20U, 18U, GameOverIllustration_map);
 
     substate = SUB_LOOP;
@@ -84,16 +84,6 @@ static void phaseBeatGameLoop(void)
 {
     ++animTick;
 
-    // if ((animTick % 64U) / 48U == 0U)
-    // {
-    //     printLine(5U, 13U, "PRESS START", FALSE);
-    // }
-    // else
-    // {
-    //     for (i = 5U; i != 16U; ++i)
-    //         set_bkg_tile_xy(i, 13U, 0xFFU);
-    // }
-    //
     if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeout();

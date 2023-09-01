@@ -12,8 +12,8 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/CGSceneSong.o Assets/Music/CGSceneSo
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/IntroSong.o Assets/Music/IntroSong.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/MainMenuSong.o Assets/Music/MainMenuSong.c
 
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/PressSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8
@@ -21,6 +21,12 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/StartSprite.png -pw 0 -ph 0 -b 1 -sw 
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro1Illustration1.png -b 7 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro1Illustration2.png -b 7 -map -tile_origin 67 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro2Illustration1.png -b 8 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro2Illustration2.png -b 8 -map -tile_origin 32 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro3Illustration.png -b 8 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro4Illustration.png -b 8 -map -tile_origin 0 -noflip
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/HouseRMap.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseMMap.o Assets/Maps/Levels/HouseMMap.c
@@ -54,11 +60,13 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo7 -c -o o/IntroState.o States/IntroState.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/fade.o Engine/fade.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareLevelData.o Engine/IShareLevelData.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/ILoadIllustrationData.o Engine/ILoadIllustrationData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/ILoadMapTileData.o Engine/ILoadMapTileData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareMapData.o Engine/IShareMapData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareNPCData.o Engine/IShareNPCData.c
@@ -78,3 +86,5 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  4: level data; npc data; routine data; metatiles data
 @REM #  5: npc graphics
 @REM #  6: songs
+@REM #  7: songs continued; some intro
+@REM #  8: intro continued
