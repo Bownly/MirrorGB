@@ -11,7 +11,7 @@
 #define Intro4Illustration_TILE_H 8
 #define Intro4Illustration_WIDTH 160
 #define Intro4Illustration_HEIGHT 144
-#define Intro4Illustration_TILE_COUNT 295
+#define Intro4Illustration_TILE_COUNT 200
 #define Intro4Illustration_PALETTE_COUNT 1
 #define Intro4Illustration_COLORS_PER_PALETTE 4
 #define Intro4Illustration_TOTAL_COLORS 4
@@ -20,7 +20,7 @@
 BANKREF_EXTERN(Intro4Illustration)
 
 extern const palette_color_t Intro4Illustration_palettes[4];
-extern const uint8_t Intro4Illustration_tiles[4720];
+extern const uint8_t Intro4Illustration_tiles[3200];
 
 extern const unsigned char Intro4Illustration_map[360];
 #define Intro4Illustration_map_attributes Intro4Illustration_map

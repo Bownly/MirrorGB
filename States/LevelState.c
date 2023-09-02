@@ -542,100 +542,108 @@ static void inputs(void)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE))
                 {
-                    if (player.ySpr != PLAYER_Y_UP)
+                    // Move sprite, not camera
+                    if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.ySpr != PLAYER_Y_UP)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_y -= 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_y -= 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
         else if (curJoypad & J_DOWN)
         {
             player.dir = DIR_DOWN;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile, player.yTile + 1U) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile, player.yTile + 1U) == FALSE))
                 {
-                    if (player.ySpr != PLAYER_Y_DOWN)
+                    // Move sprite, not camera
+                    if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.ySpr != PLAYER_Y_DOWN)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_y += 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
+                    else  // Move camera
+                    {
+                        new_camera_y += 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
+                    addChaseActionToChasers(player.dir);
                 }
 
-                addChaseActionToChasers(player.dir);
             }
         }
         else if (curJoypad & J_LEFT)
         {
             player.dir = DIR_LEFT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile - 1U, player.yTile) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile - 1U, player.yTile) == FALSE))
                 {
-                    if (player.xSpr != PLAYER_X_LEFT)
+                    // Move sprite, not camera
+                    if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.xSpr != PLAYER_X_LEFT)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_x -= 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_x -= 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
         else if (curJoypad & J_RIGHT)
         {
             player.dir = DIR_RIGHT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile + 1U, player.yTile) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile + 1U, player.yTile) == FALSE))
                 {
-                    if (player.xSpr != PLAYER_X_RIGHT)
+                    // Move sprite, not camera
+                    if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.xSpr != PLAYER_X_RIGHT)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_x += 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_x += 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
     }
@@ -664,8 +672,9 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
     for (k = 0U; k != ENTITY_MAX; ++k)
     {
         entityPtr = &entityList[k];
-        if (entityPtr->xTile == x && entityPtr->yTile == y)
-            return TRUE;
+        if (entityPtr->state != ENTITY_DEAD)
+            if (entityPtr->xTile == x && entityPtr->yTile == y)
+                return TRUE;
     }
     return FALSE;
 }
