@@ -4,6 +4,8 @@
 
 #include "../Assets/Tiles/HouseTiles.h"
 #include "../Assets/Tiles/HouseMTiles.h"
+#include "../Assets/Tiles/LabRTiles.h"
+#include "../Assets/Tiles/LabMTiles.h"
 #include "../Database/MetatilesData.h"
 
 #define TILES_BKG_INDEX 0x00U
@@ -20,10 +22,17 @@ void loadMapTileData(UINT8 tilesetId)
 
     switch (tilesetId)
     {
+        default:
         case 0U:
-            set_bkg_data(TILES_BKG_INDEX, HouseTiles_tileset_size, HouseTiles_tileset);
+            set_bkg_data(TILES_BKG_INDEX, LabRTiles_tileset_size, LabRTiles_tileset);
             break;
         case 1U:
+            set_bkg_data(TILES_BKG_INDEX, LabMTiles_tileset_size, LabMTiles_tileset);
+            break;
+        case 2U:
+            set_bkg_data(TILES_BKG_INDEX, HouseTiles_tileset_size, HouseTiles_tileset);
+            break;
+        case 3U:
             set_bkg_data(TILES_BKG_INDEX, HouseMTiles_tileset_size, HouseMTiles_tileset);
             break;
     }

@@ -42,7 +42,6 @@ extern UINT8 r;  // Used for randomization stuff
 static UINT16 i16;
 static UINT16 j16;
 
-
 extern UINT8 animTick;
 extern UINT8 animFrame;
 
@@ -56,6 +55,7 @@ extern UINT8 metaTiles[256U][4U];
 extern UINT8 handyDandyString[19U];
 
 extern ActionObject tempAction;
+extern LevelObject tempLevel;
 extern NPCObject tempNPC;
 
 extern EntityObject player;
@@ -233,15 +233,20 @@ static void phaseInit(void)
     // Load play grids
     // Load entity sprite data
     // Load player sprite data
+    headCount = 0U;
 
     // Init entity stuff
     for (i = 0U; i != ENTITY_MAX; ++i)
         entityList[i].id = 0xFFU;
 
-    for (i = 0U; i != 6U; ++i)
+    loadLevelObject(roomId / 2U);
+    for (i = 0U; i != tempLevel.npcCount; ++i)
     {
-        getNPCData(i);
-        entityListAdd(i);
+        if (tempLevel.npcIds[i] != 0xFFU)
+        {
+            getNPCData(tempLevel.npcIds[i]);
+            entityListAdd(i);
+        }
     }
 
     HIDE_WIN;
@@ -367,7 +372,7 @@ static void phaseMirroring(void)
     {
         fadeout();
         substate = SUB_LOOP;
-        player.xTile = 31U - player.xTile;
+        player.xTile = gridW - 1U - player.xTile;
         if (roomId % 2U == 0U)  // From real world to mirror world
         {
             ++roomId;
@@ -508,7 +513,7 @@ static void inputs(void)
                 default: break;
             }
 
-            if ((*playGridPtr)[j][i] == WALKABLE_TILE_COUNT)
+            if ((*playGridPtr)[j][i] == WALKABLE_TILE_COUNT && player.dir != DIR_DOWN)
             {
                 substate = SUB_MIRRORING;
                 animTick = 0U;
@@ -704,8 +709,8 @@ static void commonInit(void)
     player.hpCur = 16U;
     // player.xTile = 12U;
     // player.yTile = 14U;
-    player.xTile = 22U;
-    player.yTile = 24U;
+    player.xTile = 3U;
+    player.yTile = 12U;
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
     player.xSpr = 88U;
@@ -736,26 +741,25 @@ static void commonInit(void)
     set_win_tiles(0U, 0U, 4U, 2U, hudMouthMap);
     displayHealthPips();
 
+    gridW = getOwMapWidth(roomId + 1U);
+    gridH = getOwMapHeight(roomId + 1U);
+    playGridPtr = &playGridM;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId + 1U, gridW, gridH);
+    gridW = getOwMapWidth(roomId);
+    gridH = getOwMapHeight(roomId);
+    playGridPtr = &playGrid;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
     // Check levelId, pull appropriate level
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
-
-    gridW = getOwMapWidth(1U);
-    gridH = getOwMapHeight(1U);
-    playGridPtr = &playGridM;
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId + 1U, gridW, gridH);
-    gridW = getOwMapWidth(0U);
-    gridH = getOwMapHeight(0U);
-    playGridPtr = &playGrid;
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
     loadRoom(roomId);
 
     animatePlayer();
 
     k = 0x30U;
-    loadLevelNPCSpeciesList(roomId);
+    loadLevelNPCSpeciesList(roomId / 2U);
     for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
     {
         if (handyDandyString[i] != 0xFF)
@@ -763,14 +767,18 @@ static void commonInit(void)
     }
 
     headCount = 0U;
+    loadLevelObject(roomId >> 1Ul);
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
         if (entityList[i].id != 0xFF)
         {
             if (entityList[i].state != ENTITY_DEAD)
             {
-                getNPCData(i);
-                entityListAdd(i);
+                if (tempLevel.npcIds[i] != 0xFF)
+                {
+                    getNPCData(tempLevel.npcIds[i]);
+                    entityListAdd(i);
+                }
             }
         }
     }
@@ -1085,7 +1093,7 @@ static void loadRoom(UINT8 id)
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
 
     // Reset camera and player position
-    if (player.xTile > 5)  // 5 is the x offset from left to center
+    if (player.xTile > 5U)  // 5 is the x offset from left to center
     {
         // If on the far right side
         if (player.xTile > (gridW - 5U))  // 5 is the x offset from right to center
@@ -1248,7 +1256,6 @@ static void animateEntities(void)
     {
         entityPtr = &entityList[i];
         if (entityPtr->id != 0xFF)
-        // if (entityPtr->id != 0xFF && roomId % 2U == 0U)
         {
             if (entityPtr->isHiding == TRUE)
                 entityPtr->isVisible = FALSE;
@@ -1382,11 +1389,5 @@ static void drawNewBkg(void)
 
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
 {
-    if (roomId == 0U)
-        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
-    else
-        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
-    // set_bkg_tile_xy(x,y,x);
-    // set_bkg_tile_xy(x+1,y,y);
-    // set_bkg_tile_xy(x, y, tileIndex);
+    set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
 }

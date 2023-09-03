@@ -102,13 +102,13 @@ static void phaseIntroLoop(void)
     shakeScreen();
     // animatePressStart();
 
-    if ((curJoypad & J_A && !(prevJoypad & J_A)) || (curJoypad & J_START && !(prevJoypad & J_START)))
+    if ((curJoypad & J_A && !(prevJoypad & J_A)))
     {
         fadeOutToBlack();
         move_bkg(0U, 0U);
         ++slideNumber;
 
-        if (slideNumber == 4U)
+        if (slideNumber == 5U)
         {
             CRITICAL {
                 remove_LCD(parallaxMagic);
@@ -121,6 +121,18 @@ static void phaseIntroLoop(void)
 
         initSlide();
         // set_bkg_tile_xy(0,0,slideNumber);
+    }
+    else if (curJoypad & J_START && !(prevJoypad & J_START))
+    {
+        fadeOutToBlack();
+        move_bkg(0U, 0U);
+        CRITICAL {
+            remove_LCD(parallaxMagic);
+        }
+        gamestate = STATE_LEVEL;
+        substate = SUB_INIT;
+        stopSong();
+        return;
     }
 }
 
@@ -155,7 +167,8 @@ static void initSlide(void)
         case 2U:
             move_win(167U, 0U);
             break;
-        case 3U:
+        case 4U:
+            LYC_REG = 0U;
             break;
     }
 
@@ -203,8 +216,10 @@ static void parallaxMagic(void)
         //             break;
         //     }
         //     break;
-        // case 3U:
-        //     break;
+        case 4U:
+            if (LYC_REG == 88U)
+                WX_REG = 7U;
+            break;
     }
     // switch(LYC_REG)
     // {

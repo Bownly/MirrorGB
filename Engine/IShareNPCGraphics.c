@@ -4,6 +4,7 @@
 #include <gbdk/metasprites.h>
 
 #include "../Assets/Sprites/NPCgirl.h"
+#include "../Assets/Sprites/NPCScientist.h"
 
 
 #define DATA_BANK 5U
@@ -12,16 +13,19 @@ static UINT8 nextBank;
 
 static const UINT8 tileCounts[] = 
 {
+    NPCScientist_TILE_COUNT,
     NPCgirl_TILE_COUNT
 };
 
 static const UINT8* tilePtrs[] = 
 {
+    NPCScientist_tiles,
     NPCgirl_tiles
 };
 
 static const metasprite_t** npcMetasprites[] = 
 {
+    NPCScientist_metasprites,
     NPCgirl_metasprites
 };
 

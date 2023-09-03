@@ -7,6 +7,6 @@
 #include "../Objects/ActionObject.h"
 #include "../Objects/RoutineObject.h"
 
-extern const RoutineObject routineDex[6U];
+extern const RoutineObject routineDex[32U];
 
 #endif
