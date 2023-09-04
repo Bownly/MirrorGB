@@ -883,7 +883,7 @@ static void handleRoutines(void)
                     entityPtr->actionTimer -= m;
 
                     entityPtr->xTile = (entityPtr->xSpr) >> 4U;
-                    entityPtr->yTile = (entityPtr->ySpr + 8U) >> 4U;
+                    entityPtr->yTile = (entityPtr->ySpr - 8U) >> 4U;
                     switch (entityPtr->dir)
                     {
                         case DIR_UP:    entityPtr->ySpr -= m; break;
