@@ -707,15 +707,16 @@ static void commonInit(void)
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
-    // player.xTile = 12U;
-    // player.yTile = 14U;
-    player.xTile = 3U;
-    player.yTile = 12U;
+    switch (roomId / 2U)
+    {
+        default:
+        case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
+        case 1U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
+        case 2U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 3U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+    }
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
-    player.xSpr = 88U;
-    player.ySpr = 88U;
-    player.dir - DIR_DOWN;
     hungerTick = 0U;
     camera_x = STARTCAM, camera_y = STARTCAM, new_camera_x = STARTCAM, new_camera_y = STARTCAM;
     map_pos_x = STARTPOS, map_pos_y = STARTPOS, new_map_pos_x = STARTPOS, new_map_pos_y = STARTPOS;
