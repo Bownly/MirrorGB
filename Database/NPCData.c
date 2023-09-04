@@ -12,7 +12,7 @@ const NPCObject npcDex[] =
         // House map
         { .speciesId =  1U, .xTile = 16U, .yTile = 15U, .routineId =  0U },
         { .speciesId =  1U, .xTile = 27U, .yTile = 26U, .routineId =  1U },
-        { .speciesId =  1U, .xTile = 16U, .yTile = 29U, .routineId =  2U },
+        { .speciesId =  1U, .xTile = 16U, .yTile = 30U, .routineId =  2U },
         { .speciesId =  1U, .xTile =  7U, .yTile = 22U, .routineId =  3U },
         { .speciesId =  1U, .xTile =  4U, .yTile = 15U, .routineId =  4U },
         { .speciesId =  1U, .xTile =  2U, .yTile = 10U, .routineId =  5U }

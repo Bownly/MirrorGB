@@ -17,7 +17,8 @@ typedef enum {
     SUB_LOOP,
     SUB_SPOTTED,
     SUB_KILL_PLAYER,
-    SUB_MIRRORING
+    SUB_MIRRORING,
+    SUB_MIRROROUTING
 } SUBSTATE;
 
 typedef enum {

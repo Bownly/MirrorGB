@@ -160,7 +160,8 @@ static const unsigned char reverseByteTable[] = {
 static void phaseInit(void);
 static void phaseReinit(void);
 static void phaseLoop(void);
-static void phaseMirroring(void);
+static void phaseMirrorINg(void);
+static void phaseMirrorOUTing(void);
 static void phaseSpotted(void);
 static void phaseKillPlayer(void);
 
@@ -205,7 +206,10 @@ void LevelStateMain(void)
             phaseLoop();
             break;
         case SUB_MIRRORING:
-            phaseMirroring();
+            phaseMirrorINg();
+            break;
+        case SUB_MIRROROUTING:
+            phaseMirrorOUTing();
             break;
         case SUB_SPOTTED:
             phaseSpotted();
@@ -323,7 +327,7 @@ static void phaseLoop(void)
 
 }
 
-static void phaseMirroring(void)
+static void phaseMirrorINg(void)
 {
     // if (animTick == 0U)
     // {
@@ -356,22 +360,17 @@ static void phaseMirroring(void)
         i = player.dir == DIR_UP ? 4U : 2U;
         switch (player.dir)
         {
-            case DIR_UP:
-                player.ySpr -= 4U;
-                break;
-            case DIR_LEFT:
-                player.xSpr -= i;
-                break;
-            case DIR_RIGHT:
-                player.xSpr += i;
-                break;
+            case DIR_UP: player.ySpr -= 4U; break;
+            case DIR_LEFT: player.xSpr -= i; break;
+            case DIR_RIGHT: player.xSpr += i; break;
         }
         animatePlayer();
     }
     else if (animTick == 8U)
     {
         fadeout();
-        substate = SUB_LOOP;
+        substate = SUB_MIRROROUTING;
+
         player.xTile = gridW - 1U - player.xTile;
         if (roomId % 2U == 0U)  // From real world to mirror world
         {
@@ -405,13 +404,45 @@ static void phaseMirroring(void)
             playGridPtr = &playGrid;
         }
         loadRoom(roomId);
-        if (player.dir == DIR_RIGHT)
-            player.dir = DIR_LEFT;
-        else if (player.dir == DIR_LEFT)
-            player.dir = DIR_RIGHT;
+        if (player.dir == DIR_UP)
+            player.dir = DIR_DOWN;
 
+        animTick = 0U;
+        return;
+    }
+    
+    ++animTick;
+}
+
+static void phaseMirrorOUTing(void)
+{
+    if (animTick == 0U)
+    {
+        switch (player.dir)
+        {
+            case DIR_DOWN: player.ySpr -= 32U; break;
+            case DIR_LEFT: player.xSpr += 16U; break;
+            case DIR_RIGHT: player.xSpr -= 16U; break;
+        }
         fadein();
+    }
 
+    if (animTick < 8U)
+    {
+        i = player.dir == DIR_DOWN ? 4U : 2U;
+        switch (player.dir)
+        {
+            case DIR_DOWN: player.ySpr += 4U; break;
+            case DIR_LEFT: player.xSpr -= i; break;
+            case DIR_RIGHT: player.xSpr += i; break;
+        }
+        animatePlayer();
+    }
+    else if (animTick == 8U)
+    {
+        substate = SUB_LOOP;
+        animTick = 0U;
+        return;
     }
     
     ++animTick;
@@ -530,7 +561,7 @@ static void inputs(void)
             for (k = 0U; k != ENTITY_MAX; ++k)
             {
                 entityPtr = &entityList[k];
-                if (entityPtr->state != ENTITY_DEAD && entityPtr->xTile == i && entityPtr->yTile == j && entityPtr->state != ENTITY_WALKING)
+                if (entityPtr->state != ENTITY_DEAD && entityPtr->state != ENTITY_WALKING && entityPtr->isHiding == FALSE && entityPtr->xTile == i && entityPtr->yTile == j)
                 {
                     entityKill(entityPtr->id);
                     player.hpCur = player.hpMax;
