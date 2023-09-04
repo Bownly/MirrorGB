@@ -110,13 +110,6 @@ static void phaseIntroLoop(void)
 
         roomId = 0U;
     }
-    else if (curJoypad & J_B && !(prevJoypad & J_B))
-    {
-        // stopSong();
-        playSfx(junk);
-        junk++;
-        junk %= 10U;
-    }
 }
 
 /******************************** INPUT METHODS *********************************/

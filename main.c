@@ -12,6 +12,7 @@
 
 #include "Objects/ActionObject.h"
 #include "Objects/EntityObject.h"
+#include "Objects/LevelObject.h"
 #include "Objects/NPCObject.h"
 
 #include "States/BeatGameState.h"
@@ -62,6 +63,7 @@ UINT8 playGridM[32U][32U];
 UINT8 metaTiles[256U][4U];
 
 ActionObject tempAction;
+LevelObject tempLevel;
 NPCObject tempNPC;
 
 

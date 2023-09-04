@@ -6,6 +6,18 @@
 
 
 
+const ActionObject actionsTutWaiter[] = {
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 900U },
+    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U }
+};
+
+const ActionObject actionsTutWalker[] = {
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 240U },
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 3U },
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 240U },
+    { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U }
+};
+
 const ActionObject actionsGreen[] = {
     { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 1200U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 1U },
@@ -133,38 +145,18 @@ const ActionObject actionsMagenta[] = {
 
 
 
-const RoutineObject routineDex[6U] =
+const RoutineObject routineDex[32U] =
     // House map
     {
-        // House green
-        {
-            .length = 7U,
-            .actions = &actionsGreen
-        },
-        // House yellow
-        {
-            .length = 27U,
-            .actions = &actionsYellow
-        },
-        // House red
-        {
-            .length = 22U,
-            .actions = &actionsRed
-        },
-        // House cyan
-        {
-            .length = 12U,
-            .actions = &actionsCyan
-        },
-        // House blue
-        {
-            .length = 19U,
-            .actions = &actionsBlue
-        },
-        // House magenta
-        {
-            .length = 25U,
-            .actions = &actionsMagenta
-        }
+        // House
+        { .length = 7U, .actions = &actionsGreen },
+        { .length = 27U, .actions = &actionsYellow },
+        { .length = 22U, .actions = &actionsRed },
+        { .length = 12U, .actions = &actionsCyan },
+        { .length = 19U, .actions = &actionsBlue },
+        { .length = 25U, .actions = &actionsMagenta },
 
+        // Tutorial
+        { .length = 2U, .actions = &actionsTutWaiter },
+        { .length = 4U, .actions = &actionsTutWalker }
     };

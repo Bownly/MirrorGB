@@ -42,7 +42,6 @@ extern UINT8 r;  // Used for randomization stuff
 static UINT16 i16;
 static UINT16 j16;
 
-
 extern UINT8 animTick;
 extern UINT8 animFrame;
 
@@ -56,6 +55,7 @@ extern UINT8 metaTiles[256U][4U];
 extern UINT8 handyDandyString[19U];
 
 extern ActionObject tempAction;
+extern LevelObject tempLevel;
 extern NPCObject tempNPC;
 
 extern EntityObject player;
@@ -160,7 +160,8 @@ static const unsigned char reverseByteTable[] = {
 static void phaseInit(void);
 static void phaseReinit(void);
 static void phaseLoop(void);
-static void phaseMirroring(void);
+static void phaseMirrorINg(void);
+static void phaseMirrorOUTing(void);
 static void phaseSpotted(void);
 static void phaseKillPlayer(void);
 
@@ -205,7 +206,10 @@ void LevelStateMain(void)
             phaseLoop();
             break;
         case SUB_MIRRORING:
-            phaseMirroring();
+            phaseMirrorINg();
+            break;
+        case SUB_MIRROROUTING:
+            phaseMirrorOUTing();
             break;
         case SUB_SPOTTED:
             phaseSpotted();
@@ -233,15 +237,20 @@ static void phaseInit(void)
     // Load play grids
     // Load entity sprite data
     // Load player sprite data
+    headCount = 0U;
 
     // Init entity stuff
     for (i = 0U; i != ENTITY_MAX; ++i)
         entityList[i].id = 0xFFU;
 
-    for (i = 0U; i != 6U; ++i)
+    loadLevelObject(roomId / 2U);
+    for (i = 0U; i != tempLevel.npcCount; ++i)
     {
-        getNPCData(i);
-        entityListAdd(i);
+        if (tempLevel.npcIds[i] != 0xFFU)
+        {
+            getNPCData(tempLevel.npcIds[i]);
+            entityListAdd(i);
+        }
     }
 
     HIDE_WIN;
@@ -318,7 +327,7 @@ static void phaseLoop(void)
 
 }
 
-static void phaseMirroring(void)
+static void phaseMirrorINg(void)
 {
     // if (animTick == 0U)
     // {
@@ -351,23 +360,18 @@ static void phaseMirroring(void)
         i = player.dir == DIR_UP ? 4U : 2U;
         switch (player.dir)
         {
-            case DIR_UP:
-                player.ySpr -= 4U;
-                break;
-            case DIR_LEFT:
-                player.xSpr -= i;
-                break;
-            case DIR_RIGHT:
-                player.xSpr += i;
-                break;
+            case DIR_UP: player.ySpr -= 4U; break;
+            case DIR_LEFT: player.xSpr -= i; break;
+            case DIR_RIGHT: player.xSpr += i; break;
         }
         animatePlayer();
     }
     else if (animTick == 8U)
     {
         fadeout();
-        substate = SUB_LOOP;
-        player.xTile = 31U - player.xTile;
+        substate = SUB_MIRROROUTING;
+
+        player.xTile = gridW - 1U - player.xTile;
         if (roomId % 2U == 0U)  // From real world to mirror world
         {
             ++roomId;
@@ -400,13 +404,45 @@ static void phaseMirroring(void)
             playGridPtr = &playGrid;
         }
         loadRoom(roomId);
-        if (player.dir == DIR_RIGHT)
-            player.dir = DIR_LEFT;
-        else if (player.dir == DIR_LEFT)
-            player.dir = DIR_RIGHT;
+        if (player.dir == DIR_UP)
+            player.dir = DIR_DOWN;
 
+        animTick = 0U;
+        return;
+    }
+    
+    ++animTick;
+}
+
+static void phaseMirrorOUTing(void)
+{
+    if (animTick == 0U)
+    {
+        switch (player.dir)
+        {
+            case DIR_DOWN: player.ySpr -= 32U; break;
+            case DIR_LEFT: player.xSpr += 16U; break;
+            case DIR_RIGHT: player.xSpr -= 16U; break;
+        }
         fadein();
+    }
 
+    if (animTick < 8U)
+    {
+        i = player.dir == DIR_DOWN ? 4U : 2U;
+        switch (player.dir)
+        {
+            case DIR_DOWN: player.ySpr += 4U; break;
+            case DIR_LEFT: player.xSpr -= i; break;
+            case DIR_RIGHT: player.xSpr += i; break;
+        }
+        animatePlayer();
+    }
+    else if (animTick == 8U)
+    {
+        substate = SUB_LOOP;
+        animTick = 0U;
+        return;
     }
     
     ++animTick;
@@ -508,7 +544,7 @@ static void inputs(void)
                 default: break;
             }
 
-            if ((*playGridPtr)[j][i] == WALKABLE_TILE_COUNT)
+            if ((*playGridPtr)[j][i] == WALKABLE_TILE_COUNT && player.dir != DIR_DOWN)
             {
                 substate = SUB_MIRRORING;
                 animTick = 0U;
@@ -525,7 +561,7 @@ static void inputs(void)
             for (k = 0U; k != ENTITY_MAX; ++k)
             {
                 entityPtr = &entityList[k];
-                if (entityPtr->state != ENTITY_DEAD && entityPtr->xTile == i && entityPtr->yTile == j && entityPtr->state != ENTITY_WALKING)
+                if (entityPtr->state != ENTITY_DEAD && entityPtr->state != ENTITY_WALKING && entityPtr->isHiding == FALSE && entityPtr->xTile == i && entityPtr->yTile == j)
                 {
                     entityKill(entityPtr->id);
                     player.hpCur = player.hpMax;
@@ -542,100 +578,108 @@ static void inputs(void)
         {
             player.dir = DIR_UP;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile-1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile, player.yTile - 1U) == FALSE))
                 {
-                    if (player.ySpr != PLAYER_Y_UP)
+                    // Move sprite, not camera
+                    if (camera_y == 0U || player.ySpr > PLAYER_Y_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.ySpr != PLAYER_Y_UP)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_y -= 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_y -= 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
         else if (curJoypad & J_DOWN)
         {
             player.dir = DIR_DOWN;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile, player.yTile + 1U) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile+1U][player.xTile] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile, player.yTile + 1U) == FALSE))
                 {
-                    if (player.ySpr != PLAYER_Y_DOWN)
+                    // Move sprite, not camera
+                    if (camera_y == camera_max_y || player.ySpr < PLAYER_Y_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.ySpr != PLAYER_Y_DOWN)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_y += 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
+                    else  // Move camera
+                    {
+                        new_camera_y += 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
+                    addChaseActionToChasers(player.dir);
                 }
 
-                addChaseActionToChasers(player.dir);
             }
         }
         else if (curJoypad & J_LEFT)
         {
             player.dir = DIR_LEFT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile - 1U, player.yTile) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile-1U] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile - 1U, player.yTile) == FALSE))
                 {
-                    if (player.xSpr != PLAYER_X_LEFT)
+                    // Move sprite, not camera
+                    if (camera_x == 0U || player.xSpr > PLAYER_X_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.xSpr != PLAYER_X_LEFT)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_x -= 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_x -= 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
         else if (curJoypad & J_RIGHT)
         {
             player.dir = DIR_RIGHT;
 
-            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT
-                && checkForEntityCollision(player.xTile + 1U, player.yTile) == FALSE)
+            if (player.ySpr != 0U && (*playGridPtr)[player.yTile][player.xTile+1U] < WALKABLE_TILE_COUNT)
             {
-                // Move sprite, not camera
-                if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
+                if (roomId % 2U == 1U || (roomId % 2U == 0U && checkForEntityCollision(player.xTile + 1U, player.yTile) == FALSE))
                 {
-                    if (player.xSpr != PLAYER_X_RIGHT)
+                    // Move sprite, not camera
+                    if (camera_x == camera_max_x || player.xSpr < PLAYER_X_CENTER)
                     {
-                        player.state = ENTITY_WALKING;
+                        if (player.xSpr != PLAYER_X_RIGHT)
+                        {
+                            player.state = ENTITY_WALKING;
+                        }
                     }
-                }
-                else  // Move camera
-                {
-                    new_camera_x += 16;
-                    player.state = ENTITY_WALKING;
-                    redraw = TRUE;
-                }
+                    else  // Move camera
+                    {
+                        new_camera_x += 16;
+                        player.state = ENTITY_WALKING;
+                        redraw = TRUE;
+                    }
 
-                addChaseActionToChasers(player.dir);
+                    addChaseActionToChasers(player.dir);
+                }
             }
         }
     }
@@ -664,8 +708,9 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
     for (k = 0U; k != ENTITY_MAX; ++k)
     {
         entityPtr = &entityList[k];
-        if (entityPtr->xTile == x && entityPtr->yTile == y)
-            return TRUE;
+        if (entityPtr->state != ENTITY_DEAD)
+            if (entityPtr->xTile == x && entityPtr->yTile == y)
+                return TRUE;
     }
     return FALSE;
 }
@@ -693,15 +738,16 @@ static void commonInit(void)
     player.state = ENTITY_IDLE;
     player.hpMax = 16U;
     player.hpCur = 16U;
-    // player.xTile = 12U;
-    // player.yTile = 14U;
-    player.xTile = 22U;
-    player.yTile = 24U;
+    switch (roomId / 2U)
+    {
+        default:
+        case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
+        case 1U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
+        case 2U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 3U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+    }
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
-    player.xSpr = 88U;
-    player.ySpr = 88U;
-    player.dir - DIR_DOWN;
     hungerTick = 0U;
     camera_x = STARTCAM, camera_y = STARTCAM, new_camera_x = STARTCAM, new_camera_y = STARTCAM;
     map_pos_x = STARTPOS, map_pos_y = STARTPOS, new_map_pos_x = STARTPOS, new_map_pos_y = STARTPOS;
@@ -727,26 +773,25 @@ static void commonInit(void)
     set_win_tiles(0U, 0U, 4U, 2U, hudMouthMap);
     displayHealthPips();
 
+    gridW = getOwMapWidth(roomId + 1U);
+    gridH = getOwMapHeight(roomId + 1U);
+    playGridPtr = &playGridM;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId + 1U, gridW, gridH);
+    gridW = getOwMapWidth(roomId);
+    gridH = getOwMapHeight(roomId);
+    playGridPtr = &playGrid;
+    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
     // Check levelId, pull appropriate level
     camera_max_x = (((gridW - 20U) * 2U) + 20U) * 8U;
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
-
-    gridW = getOwMapWidth(1U);
-    gridH = getOwMapHeight(1U);
-    playGridPtr = &playGridM;
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId + 1U, gridW, gridH);
-    gridW = getOwMapWidth(0U);
-    gridH = getOwMapHeight(0U);
-    playGridPtr = &playGrid;
-    loadMapDataFromDatabase(&(playGridPtr[0][0]), roomId, gridW, gridH);
 
     loadRoom(roomId);
 
     animatePlayer();
 
     k = 0x30U;
-    loadLevelNPCSpeciesList(roomId);
+    loadLevelNPCSpeciesList(roomId / 2U);
     for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
     {
         if (handyDandyString[i] != 0xFF)
@@ -754,14 +799,18 @@ static void commonInit(void)
     }
 
     headCount = 0U;
+    loadLevelObject(roomId >> 1Ul);
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
         if (entityList[i].id != 0xFF)
         {
             if (entityList[i].state != ENTITY_DEAD)
             {
-                getNPCData(i);
-                entityListAdd(i);
+                if (tempLevel.npcIds[i] != 0xFF)
+                {
+                    getNPCData(tempLevel.npcIds[i]);
+                    entityListAdd(i);
+                }
             }
         }
     }
@@ -865,7 +914,7 @@ static void handleRoutines(void)
                     entityPtr->actionTimer -= m;
 
                     entityPtr->xTile = (entityPtr->xSpr) >> 4U;
-                    entityPtr->yTile = (entityPtr->ySpr + 8U) >> 4U;
+                    entityPtr->yTile = (entityPtr->ySpr - 8U) >> 4U;
                     switch (entityPtr->dir)
                     {
                         case DIR_UP:    entityPtr->ySpr -= m; break;
@@ -1076,7 +1125,7 @@ static void loadRoom(UINT8 id)
     camera_max_y = (((gridH - 18U) * 2U) + 18U) * 8U;
 
     // Reset camera and player position
-    if (player.xTile > 5)  // 5 is the x offset from left to center
+    if (player.xTile > 5U)  // 5 is the x offset from left to center
     {
         // If on the far right side
         if (player.xTile > (gridW - 5U))  // 5 is the x offset from right to center
@@ -1239,7 +1288,6 @@ static void animateEntities(void)
     {
         entityPtr = &entityList[i];
         if (entityPtr->id != 0xFF)
-        // if (entityPtr->id != 0xFF && roomId % 2U == 0U)
         {
             if (entityPtr->isHiding == TRUE)
                 entityPtr->isVisible = FALSE;
@@ -1373,11 +1421,5 @@ static void drawNewBkg(void)
 
 static void drawBkgTile(UINT8 x, UINT8 y, UINT8 tileIndex)
 {
-    if (roomId == 0U)
-        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
-    else
-        set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
-    // set_bkg_tile_xy(x,y,x);
-    // set_bkg_tile_xy(x+1,y,y);
-    // set_bkg_tile_xy(x, y, tileIndex);
+    set_bkg_tiles(x, y, 2U, 2U, metaTiles[tileIndex]);
 }

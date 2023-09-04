@@ -99,9 +99,6 @@ static void phaseBeatGameLoop(void)
     if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeout();
-        // initrand(DIV_REG);
-        // move_bkg(0U, 0U);
-
         gamestate = STATE_LEVEL;
         substate = SUB_INIT;
 
