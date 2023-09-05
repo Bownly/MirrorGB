@@ -280,7 +280,7 @@ const UINT8 LabRMetaTiles[][4] = {
 
     { 4U, 5U, 7U, 8U },  // Mirror
     { 2U, 9U, 44U, 12U },  // Computers
-    { 9U, 9U, 11U, 12U },
+    { 67U, 68U, 11U, 12U },
     { 9U, 9U, 47U, 10U },
     { 15U, 16U, 23U, 24U },
     { 17U, 18U, 25U, 26U },
@@ -297,7 +297,16 @@ const UINT8 LabRMetaTiles[][4] = {
     { 6U, 32U, 9U, 3U },
     { 9U, 9U, 10U, 10U },
     { 9U, 3U, 10U, 43U },
-    { 1U, 1U, 1U, 1U }  // Black square
+    { 1U, 1U, 1U, 1U },  // Black square
+    { 48U, 49U, 51U, 52U },  // Poster
+    { 49U, 49U, 53U, 54U },
+    { 49U, 49U, 55U, 56U },
+    { 49U, 49U, 57U, 58U },
+    { 49U, 50U, 59U, 60U },
+    { 61U, 62U, 11U, 12U },
+    { 63U, 64U, 47U, 10U },
+    { 65U, 66U, 10U, 10U },
+    { 69U, 70U, 47U, 10U }
 };
 
 const UINT8 LabMMetaTiles[][4] = {
@@ -337,7 +346,7 @@ const UINT8 LabMMetaTiles[][4] = {
     { 4U, 5U, 6U, 7U },  // Mirror
     { 19U, 20U, 29U, 30U },  // Spiral floor thing
     { 1U, 3U, 9U, 36U },  // Computers
-    { 1U, 1U, 9U, 10U },
+    { 74U, 75U, 9U, 10U },
     { 13U, 14U, 23U, 24U },
     { 15U, 16U, 25U, 26U },
     { 17U, 18U, 27U, 28U },  // Cabinets
@@ -354,9 +363,18 @@ const UINT8 LabMMetaTiles[][4] = {
     { 1U, 3U, 8U, 40U },
     { 1U, 1U, 8U, 8U },
     { 1U, 1U, 8U, 52U },
-    { 1U, 1U, 1U, 1U }  // Black tile
+    { 1U, 1U, 1U, 1U },  // Black tile
+    { 53U, 54U, 56U, 57U },  // Poster
+    { 54U, 54U, 58U, 59U },
+    { 54U, 54U, 60U, 61U },
+    { 54U, 54U, 62U, 63U },
+    { 54U, 55U, 64U, 65U },
+    { 66U, 67U, 8U, 52U },
+    { 68U, 69U, 9U, 10U },
+    { 70U, 71U, 8U, 8U },
+    { 72U, 73U, 8U, 52U },
+    { 74U, 75U, 9U, 10U }
 };
-
 
 
 const UINT8* metatilesDex[] =

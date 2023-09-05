@@ -4,7 +4,7 @@
 #define LabMTiles_tilemap_width 0
 #define LabMTiles_tilemap_height 0
 
-#define LabMTiles_tileset_size 53
+#define LabMTiles_tileset_size 76
 
 extern const unsigned char LabMTiles_tileset[]; 
 

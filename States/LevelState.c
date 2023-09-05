@@ -257,11 +257,16 @@ static void phaseInit(void)
     SHOW_SPRITES;
     SPRITES_8x8;
 
-    // // Check levelId, pull appropriate level
-    // loadLevel();
-
     commonInit();
-    playOutsideSong(SONG_LEVEL01);
+
+    switch (roomId / 2U)
+    {
+        default:
+        case 0U: playOutsideSong(SONG_LEVEL01); break;  // Tutorial
+        case 1U: playOutsideSong(SONG_LEVEL02); break;  // House
+        case 2U: playOutsideSong(SONG_LEVEL03); break;  // Church
+        case 2U: playOutsideSong(SONG_MAINMENU); break;  // School
+    }
 
 }
 
