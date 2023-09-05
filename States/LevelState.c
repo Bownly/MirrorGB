@@ -16,7 +16,6 @@
 
 #include "../Assets/Sprites/HUDTeeth.h"
 #include "../Assets/Sprites/MC.h"
-#include "../Assets/Sprites/NPCgirl.h"
 
 #include "../Assets/Tiles/BloodstainTiles.h"
 #include "../Assets/Tiles/ExclamationTiles.h"
@@ -64,6 +63,7 @@ static UINT16 hungerTick;
 static EntityObject* entityPtr;
 // static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[8U];
+static UINT8 entitySpriteIndexList[8U];  // Awful code, but whatever. 8 = number of unique NPC spritesheets
 #define ENTITY_MAX 7U
 static UINT8 headCount;
 
@@ -265,7 +265,7 @@ static void phaseInit(void)
         case 0U: playOutsideSong(SONG_LEVEL01); break;  // Tutorial
         case 1U: playOutsideSong(SONG_LEVEL02); break;  // House
         case 2U: playOutsideSong(SONG_LEVEL03); break;  // Church
-        case 2U: playOutsideSong(SONG_MAINMENU); break;  // School
+        case 3U: playOutsideSong(SONG_MAINMENU); break;  // School
     }
 
 }
@@ -800,7 +800,10 @@ static void commonInit(void)
     for (i = 0U; i != 8U; ++i)  // Note: 8U is the size of a LevelObject's npcSpecies list
     {
         if (handyDandyString[i] != 0xFF)
+        {
+            entitySpriteIndexList[handyDandyString[i]] = k;
             k += loadNPCSpriteTiles(handyDandyString[i], k);
+        }
     }
 
     headCount = 0U;
@@ -1313,7 +1316,7 @@ static void animateEntities(void)
                 }
                 else
                 {
-                    moveNPCSprite(entityPtr->speciesId, entityPtr->animFrame, 0x30U, entityPtr->spriteId,
+                    moveNPCSprite(entityPtr->speciesId, entityPtr->animFrame, entitySpriteIndexList[entityPtr->speciesId], entityPtr->spriteId,
                                   entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U,
                                    entityPtr->dir == DIR_LEFT ? TRUE : FALSE);
                 }

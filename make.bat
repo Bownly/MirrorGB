@@ -28,7 +28,11 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/PressSprite.png -pw 0 -ph 0 -b 1 -sw 
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/StartSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8 -tile_origin 10
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/HUDTeeth.png -pw 0 -ph 0 -b 2 -sw 32 -sh 16 -keep_duplicate_tiles -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/MC.png -pw 0 -ph 0 -b 2 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCBald.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCBoy.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCGuy.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCNun.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCScientist.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/TutorialRMap.o Assets/Maps/Levels/TutorialRMap.c
