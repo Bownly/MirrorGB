@@ -5,16 +5,18 @@
 #include "enums.h"
 #include "hUGEDriver.h"
 
-#include "../Assets/Sfx/SFX_00.h"
-#include "../Assets/Sfx/SFX_01.h"
-#include "../Assets/Sfx/SFX_02.h"
-#include "../Assets/Sfx/SFX_03.h"
-#include "../Assets/Sfx/SFX_04.h"
-#include "../Assets/Sfx/SFX_05.h"
-#include "../Assets/Sfx/SFX_06.h"
-#include "../Assets/Sfx/SFX_07.h"
-#include "../Assets/Sfx/SFX_08.h"
-#include "../Assets/Sfx/SFX_09.h"
+#include "../Assets/Sfx/outSFX_00.h"
+#include "../Assets/Sfx/outSFX_01.h"
+#include "../Assets/Sfx/outSFX_02.h"
+#include "../Assets/Sfx/outSFX_03.h"
+#include "../Assets/Sfx/outSFX_04.h"
+#include "../Assets/Sfx/outSFX_05.h"
+#include "../Assets/Sfx/outSFX_06.h"
+#include "../Assets/Sfx/outSFX_07.h"
+#include "../Assets/Sfx/outSFX_08.h"
+#include "../Assets/Sfx/outSFX_09.h"
+#include "../Assets/Sfx/outSFX_0A.h"
+#include "../Assets/Sfx/outSFX_0B.h"
 
 extern const hUGESong_t Level01Song;
 extern const hUGESong_t Level02Song;
@@ -25,7 +27,7 @@ extern const hUGESong_t CGSceneSong;
 extern const hUGESong_t IntroSong;
 extern const hUGESong_t MainMenuSong;
 
-const unsigned char * SFX_list[] = { &SFX_00[0], &SFX_01[0], &SFX_02[0], &SFX_03[0], &SFX_04[0], &SFX_05[0], &SFX_06[0], &SFX_07[0], &SFX_08[0], &SFX_09[0] };
+const unsigned char * SFX_list[] = { &SFX_00[0], &SFX_01[0], &SFX_02[0], &SFX_03[0], &SFX_04[0], &SFX_05[0], &SFX_06[0], &SFX_07[0], &SFX_08[0], &SFX_09[0], &SFX_0A[0], &SFX_0B[0] };
 
 extern UINT8 curSongBank;
 static UINT8 nextBank;

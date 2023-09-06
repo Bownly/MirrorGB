@@ -67,7 +67,9 @@ typedef enum {
     SFX_6,
     SFX_7,
     SFX_8,
-    SFX_9
+    SFX_9,
+    SFX_A,
+    SFX_B
 } SFX;
 
 #endif

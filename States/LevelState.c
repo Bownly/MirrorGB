@@ -375,6 +375,7 @@ static void phaseMirrorINg(void)
     {
         fadeout();
         substate = SUB_MIRROROUTING;
+        playSfx(SFX_7);
 
         player.xTile = gridW - 1U - player.xTile;
         if (roomId % 2U == 0U)  // From real world to mirror world
@@ -407,6 +408,20 @@ static void phaseMirrorINg(void)
         {
             --roomId;
             playGridPtr = &playGrid;
+
+            // for (i = 0U; i != ENTITY_MAX; ++i)
+            // {
+            //     entityPtr = &entityList[i];
+            //     if (entityPtr->id != 0xFF)
+            //     {
+            //         set_win_tile_xy(i, 0, entityPtr->dir);
+            //         set_win_tile_xy(i, 1, entityPtr->isVisible);
+            //     }
+            // }
+            // // This is to reset NPCs' dir post-chase
+            // if (roomId % 2U == 0U)  // Don't animate entities if we're entering the mirror world
+            //     animateEntities();
+
         }
         loadRoom(roomId);
         if (player.dir == DIR_UP)
@@ -429,6 +444,7 @@ static void phaseMirrorOUTing(void)
             case DIR_LEFT: player.xSpr += 16U; break;
             case DIR_RIGHT: player.xSpr -= 16U; break;
         }
+
         fadein();
     }
 
@@ -506,6 +522,7 @@ static void phaseKillPlayer(void)
 {
     if (animTick == 1U)
     {
+        playSfx(SFX_8);
         p = 0xFFU;
         // Turn player sprite into bloodstain
         player.state = ENTITY_DEAD;
@@ -576,8 +593,11 @@ static void inputs(void)
             }
         }
 
-        // if (curJoypad & J_B && !(prevJoypad & J_B))
-        //     entityKill(0U);
+        if (curJoypad & J_B && !(prevJoypad & J_B))
+        {
+            headCount = 1U;
+            entityKill(0U);
+        }
 
         if (curJoypad & J_UP)
         {
@@ -749,7 +769,7 @@ static void commonInit(void)
         case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
         case 1U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
         case 2U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
-        case 3U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 3U: player.xTile = 15U; player.yTile = 24U; player.dir = DIR_DOWN; break;
     }
     player.xSpr = player.xTile * 16U + 8U;
     player.ySpr = player.yTile * 16U + 16U;
@@ -849,10 +869,11 @@ static void entityKill(UINT8 entityId)
 
     --headCount;
     displayHeadcount();
+    playSfx(SFX_8);
 
     if (headCount == 0U)
     {
-        if (roomId / 2U == 2U)  // AKA, Level 3
+        if (roomId / 2U == 3U)  // AKA, Level 4
             gamestate = STATE_BEAT_GAME;
         else
             gamestate = STATE_BEAT_LEVEL;
@@ -1066,6 +1087,8 @@ static void handleRoutines(void)
                         substate = SUB_SPOTTED;
                         animTick = 0U;
                         p = entityPtr->id;
+
+                        playSfx(SFX_A);
 
                         // Fill out chasingAction array
                         entityPtr->chasingActionsCount = m + 1U;
@@ -1318,7 +1341,7 @@ static void animateEntities(void)
                 {
                     moveNPCSprite(entityPtr->speciesId, entityPtr->animFrame, entitySpriteIndexList[entityPtr->speciesId], entityPtr->spriteId,
                                   entityPtr->xSpr - camera_x + 8U, entityPtr->ySpr - camera_y + 6U,
-                                   entityPtr->dir == DIR_LEFT ? TRUE : FALSE);
+                                  entityPtr->dir == DIR_LEFT ? TRUE : FALSE);
                 }
             }
             else

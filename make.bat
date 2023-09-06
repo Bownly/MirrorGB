@@ -39,6 +39,10 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/TutorialRMap.o Assets/Maps/Levels/Tu
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/TutorialMMap.o Assets/Maps/Levels/TutorialMMap.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseRMap.o Assets/Maps/Levels/HouseRMap.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/HouseMMap.o Assets/Maps/Levels/HouseMMap.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/ChurchRMap.o Assets/Maps/Levels/ChurchRMap.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/ChurchMMap.o Assets/Maps/Levels/ChurchMMap.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/SchoolRMap.o Assets/Maps/Levels/SchoolRMap.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/SchoolMMap.o Assets/Maps/Levels/SchoolMMap.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/BloodstainTiles.o Assets/Tiles/BloodstainTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo2 -c -o o/ExclamationTiles.o Assets/Tiles/ExclamationTiles.c
@@ -49,16 +53,18 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/HouseMTiles.o Assets/Tiles/HouseMTil
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/LabRTiles.o Assets/Tiles/LabRTiles.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/LabMTiles.o Assets/Tiles/LabMTiles.c
 
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_00.o Assets/Sfx/SFX_00.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_01.o Assets/Sfx/SFX_01.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_02.o Assets/Sfx/SFX_02.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_03.o Assets/Sfx/SFX_03.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_04.o Assets/Sfx/SFX_04.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_05.o Assets/Sfx/SFX_05.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_06.o Assets/Sfx/SFX_06.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_07.o Assets/Sfx/SFX_07.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_08.o Assets/Sfx/SFX_08.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/SFX_09.o Assets/Sfx/SFX_09.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_00.o Assets/Sfx/outSFX_00.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_01.o Assets/Sfx/outSFX_01.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_02.o Assets/Sfx/outSFX_02.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_03.o Assets/Sfx/outSFX_03.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_04.o Assets/Sfx/outSFX_04.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_05.o Assets/Sfx/outSFX_05.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_06.o Assets/Sfx/outSFX_06.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_07.o Assets/Sfx/outSFX_07.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_08.o Assets/Sfx/outSFX_08.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_09.o Assets/Sfx/outSFX_09.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_0A.o Assets/Sfx/outSFX_0A.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/outSFX_0B.o Assets/Sfx/outSFX_0B.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/RoomData.o Database/RoomData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/LevelData.o Database/LevelData.c

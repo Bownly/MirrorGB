@@ -90,7 +90,6 @@ static void phaseIntroInit(void)
     animatePressStart();
     fadein();
 
-
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
     playOutsideSong(SONG_MAINMENU);
 }
@@ -110,6 +109,12 @@ static void phaseIntroLoop(void)
 
         roomId = 0U;
     }
+    // else if (curJoypad & J_B && !(prevJoypad & J_B))
+    // {
+    //     playSfx(junk);
+    //     junk++;
+    //     junk %= 0x0CU;
+    // }
 }
 
 /******************************** INPUT METHODS *********************************/
