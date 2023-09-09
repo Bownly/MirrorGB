@@ -767,6 +767,7 @@ static void commonInit(void)
     {
         default:
         case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
+        // case 0U: player.xTile =  8U; player.yTile =  6U; player.dir = DIR_UP;   break;
         case 1U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
         case 2U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
         case 3U: player.xTile = 15U; player.yTile = 24U; player.dir = DIR_DOWN; break;
@@ -1030,6 +1031,16 @@ static void handleRoutines(void)
                     }
                 }
 
+                // Need to do special stuff here to avoid a frame of delay between actions
+                if (tempAction.action == ACT_SWITCH_ROUTINE)
+                {
+                    m = tempAction.direction + getRandUint8(tempAction.magnitude);
+                    entityPtr->curRoutineIndex = m;
+                    entityPtr->curActionIndex = 0U;
+                    entityPtr->actionTimer = 0U;
+                    entityPtr->curActionIndex = getAction(entityPtr->curRoutineIndex, entityPtr->curActionIndex);
+                }
+
                 switch (tempAction.action)
                 {
                     case ACT_WALK:
@@ -1050,7 +1061,10 @@ static void handleRoutines(void)
                     case ACT_WAIT:
                         entityPtr->state = ENTITY_WAITING;
                         entityPtr->actionTimer = tempAction.magnitude;
-                        entityPtr->dir = tempAction.direction;
+                        if (tempAction.direction == DIR_RAND)
+                            entityPtr->dir = getRandUint8(4U);
+                        else
+                            entityPtr->dir = tempAction.direction;
 
                         if (entityPtr->dir == DIR_RIGHT)
                             entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;

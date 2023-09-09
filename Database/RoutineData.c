@@ -18,14 +18,14 @@ const ActionObject actionsTutWalker[] = {
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U }
 };
 
-const ActionObject actionsGreen[] = {
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 1200U },
+const ActionObject actionsBathroom[] = {
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 1000U },
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 1U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 1U },
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 30U },
-    { .action = ACT_WAIT, .direction = DIR_LEFT, .magnitude = 30U },
-    { .action = ACT_WAIT, .direction = DIR_RIGHT, .magnitude = 30U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 90U },
-    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 1U }
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 120U },
+    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 1U },
+    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U },
+    { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 1U }
 };
 const ActionObject actionsYellow[] = {
     { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 1200U },
@@ -143,20 +143,43 @@ const ActionObject actionsMagenta[] = {
     { ACT_WALK, DIR_LEFT, 8U }
 };
 
+const ActionObject actionsCircle[] = {
+    { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
+    { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 2U },
+    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 2U },
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
+    { .action = ACT_SWITCH_ROUTINE, .direction = 8U, .magnitude = 2U }
+};
+
+const ActionObject actionsLineAndBack[] = {
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
+    { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 2U },
+    { .action = ACT_SWITCH_ROUTINE, .direction = 8U, .magnitude = 0U }
+};
+
+const ActionObject actionsRandLook[] = {
+    { .action = ACT_WAIT, .direction = DIR_RAND, .magnitude = 30U }
+};
 
 
 const RoutineObject routineDex[32U] =
     // House map
     {
         // House
-        { .length = 7U, .actions = &actionsGreen },
+        { .length =  7U, .actions = &actionsBathroom },
         { .length = 27U, .actions = &actionsYellow },
         { .length = 22U, .actions = &actionsRed },
         { .length = 12U, .actions = &actionsCyan },
         { .length = 19U, .actions = &actionsBlue },
-        { .length = 25U, .actions = &actionsMagenta },
+        { .length = 25U, .actions = &actionsMagenta },  // 5
 
         // Tutorial
         { .length = 2U, .actions = &actionsTutWaiter },
-        { .length = 4U, .actions = &actionsTutWalker }
+        { .length = 4U, .actions = &actionsTutWalker },
+
+        // Test
+        { .length = 5U, .actions = &actionsCircle },
+        { .length = 3U, .actions = &actionsLineAndBack },
+        { .length = 1U, .actions = &actionsRandLook },  // 10
+
     };

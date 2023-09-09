@@ -102,6 +102,7 @@ static void phaseIntroLoop(void)
     {
         fadeOutToBlack();
         move_bkg(0U, 0U);
+        initrand(DIV_REG);
 
         gamestate = STATE_INTRO;
         substate = SUB_INIT;

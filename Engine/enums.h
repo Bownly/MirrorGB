@@ -34,7 +34,8 @@ typedef enum {
     DIR_UP = 0U,
     DIR_DOWN = 1U,
     DIR_LEFT = 2U,
-    DIR_RIGHT = 3U
+    DIR_RIGHT = 3U,
+    DIR_RAND
 } DIRECTION;
 
 typedef enum {
