@@ -18,11 +18,15 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro2Illustration1.png -b 8 -m
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro2Illustration2.png -b 8 -map -tile_origin 32 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro3Illustration.png -b 8 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/Intro4Illustration.png -b 8 -map -tile_origin 0 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TutorialIllustration.png -b 8 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TutorialIllustration1.png -b 8 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TutorialIllustration2.png -b 8 -map -tile_origin 65 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel1Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel2Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel3Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
 
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/PressSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/StartSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8 -tile_origin 10
@@ -73,11 +77,11 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatGameState.o States/BeatGameState.c
-/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatLevelState.o States/BeatLevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo7 -c -o o/IntroState.o States/IntroState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo9 -c -o o/BeatLevelState.o States/BeatLevelState.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
@@ -97,7 +101,7 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 
 @REM ######## Bank info
 @REM #  0: main
-@REM #  1: title; game over; beat level; beat game
+@REM #  1: title; game over; beat game
 @REM #  2: level state
 @REM #  3: room data
 @REM #  4: level data; npc data; routine data; metatiles data
@@ -105,3 +109,4 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  6: songs
 @REM #  7: songs continued; some intro
 @REM #  8: intro continued
+@REM #  9: beat level 

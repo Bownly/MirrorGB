@@ -168,6 +168,9 @@ static void initSlide(void)
             move_win(167U, 0U);
             break;
         case 4U:
+            move_win(7U, 0U);
+            break;
+        case 5U:
             LYC_REG = 0U;
             break;
     }
@@ -217,6 +220,19 @@ static void parallaxMagic(void)
         //     }
         //     break;
         case 4U:
+            switch(LYC_REG)
+            {
+                case 0U:
+                    WX_REG = 7U;
+                    LYC_REG = 70U;
+                    break;
+                case 70U:
+                    WX_REG = 160U;
+                    LYC_REG = 0U;
+                    break;
+            }
+            break;
+        case 5U:
             if (LYC_REG == 88U)
                 WX_REG = 7U;
             break;

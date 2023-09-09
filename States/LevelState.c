@@ -1056,7 +1056,6 @@ static void handleRoutines(void)
                     case ACT_FINISHING_WALK:
                             entityPtr->actionTimer = tempAction.magnitude;
                             entityPtr->state = ENTITY_WALKING;
-                            set_win_tile_xy(entityPtr->id,1,entityPtr->actionTimer % 16U);
                         break;
                     case ACT_WAIT:
                         entityPtr->state = ENTITY_WAITING;

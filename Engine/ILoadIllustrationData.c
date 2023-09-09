@@ -8,7 +8,8 @@
 #include "../Assets/Illustrations/Intro2Illustration2.h"
 #include "../Assets/Illustrations/Intro3Illustration.h"
 #include "../Assets/Illustrations/Intro4Illustration.h"
-#include "../Assets/Illustrations/TutorialIllustration.h"
+#include "../Assets/Illustrations/TutorialIllustration1.h"
+#include "../Assets/Illustrations/TutorialIllustration2.h"
 
 extern UINT8 metaTiles[256U][4U];
 static UINT8 nextBank;
@@ -45,8 +46,10 @@ void loadIllustrationData(UINT8 illustrationId)
             break;
         case 4U:
             SWITCH_ROM(8U);
-            set_bkg_data(0U, TutorialIllustration_TILE_COUNT, TutorialIllustration_tiles);
-            set_bkg_tiles(0U, 0U, 20U, 18U, TutorialIllustration_map);
+            set_bkg_data(0U, TutorialIllustration1_TILE_COUNT, TutorialIllustration1_tiles);
+            set_bkg_tiles(0U, 9U, 20U, 9U, TutorialIllustration1_map);
+            set_bkg_data(TutorialIllustration1_TILE_COUNT, TutorialIllustration2_TILE_COUNT, TutorialIllustration2_tiles);
+            set_win_tiles(0U, 0U, 20U, 18U, TutorialIllustration2_map);
             break;
     }
     SWITCH_ROM(nextBank);

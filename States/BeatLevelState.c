@@ -8,6 +8,9 @@
 #include "../Engine/songPlayer.h"
 
 #include "../Assets/Illustrations/BeatLevelIllustration.h"
+#include "../Assets/Illustrations/BeatLevel1Illustration.h"
+#include "../Assets/Illustrations/BeatLevel2Illustration.h"
+#include "../Assets/Illustrations/BeatLevel3Illustration.h"
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
