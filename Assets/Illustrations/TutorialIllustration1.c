@@ -11,7 +11,7 @@ BANKREF(TutorialIllustration1)
 const palette_color_t TutorialIllustration1_palettes[12] = {
 	RGB8(255,255,255), RGB8(203,219,252), RGB8(155,173,183), RGB8( 34, 32, 52)
 	,
-	RGB8(255,255,255), RGB8( 48, 96,130), RGB8( 34, 32, 52), RGB8(104,  2,  0)
+	RGB8(255,255,255), RGB8( 48, 96,130), RGB8( 34, 32, 52), RGB8(204,  1,  0)
 	,
 	RGB8(255,255,255), RGB8(203,219,252), RGB8(132,126,135), RGB8( 34, 32, 52)
 	

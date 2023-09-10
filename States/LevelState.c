@@ -241,7 +241,10 @@ static void phaseInit(void)
 
     // Init entity stuff
     for (i = 0U; i != ENTITY_MAX; ++i)
+    {
         entityList[i].id = 0xFFU;
+        entityList[i].isHiding = FALSE;
+    }
 
     loadLevelObject(roomId / 2U);
     for (i = 0U; i != tempLevel.npcCount; ++i)
@@ -768,8 +771,8 @@ static void commonInit(void)
         default:
         case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
         // case 0U: player.xTile =  8U; player.yTile =  6U; player.dir = DIR_UP;   break;
-        case 1U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
-        case 2U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 1U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 2U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
         case 3U: player.xTile = 15U; player.yTile = 24U; player.dir = DIR_DOWN; break;
     }
     player.xSpr = player.xTile * 16U + 8U;

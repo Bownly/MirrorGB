@@ -9,7 +9,7 @@
 BANKREF(BeatLevel2Illustration)
 
 const palette_color_t BeatLevel2Illustration_palettes[4] = {
-	RGB8(134,192,108), RGB8( 48,104, 80), RGB8(  7, 24, 33), RGB8( 19,  1,  0)
+	RGB8(134,192,108), RGB8( 48,104, 80), RGB8(  7, 24, 33), RGB8(188,  1,  0)
 	
 };
 
