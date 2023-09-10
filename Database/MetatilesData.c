@@ -135,8 +135,15 @@ const UINT8 HouseRMetaTiles[][4] = {
     { 30U, 30U, 77U, 30U },  // Chairs
     { 78U, 79U, 30U, 30U },
     { 0x49, 0x49, 0x25, 0x26 },  // Carpeted doorway
-
-
+    { 93U, 94U, 99U, 100U },  // Toilet
+    { 95U, 96U, 101U, 102U },  // Candle thing
+    { 97U, 98U, 103U, 104U },  // Bookshelf top
+    { 105U, 106U, 110U, 111U },  // Table book left
+    { 107U, 51U, 112U, 57U },  // Table book right
+    { 108U, 109U, 113U, 114U },  // Bookshelf bottom
+    { 115U, 116U, 120U, 121U },  // Trash can
+    { 73U, 117U, 4U, 122U },  // Misc books
+    { 118U, 119U, 123U, 124U }  
 };
 
 const UINT8 HouseMMetaTiles[][4] = {

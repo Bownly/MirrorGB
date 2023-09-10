@@ -3,9 +3,10 @@ del o\*.lst
 del o\*.asm
 del o\*.sym
 
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo5 -c -o o/PreMenuSong.o Assets/Music/PreMenuSong.c
+C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo5 -c -o o/Level03Song.o Assets/Music/Level03Song.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level01Song.o Assets/Music/Level01Song.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level02Song.o Assets/Music/Level02Song.c
-C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/Level03Song.o Assets/Music/Level03Song.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/YouDiedSong.o Assets/Music/YouDiedSong.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo6 -c -o o/WinSong.o Assets/Music/WinSong.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo7 -c -o o/CGSceneSong.o Assets/Music/CGSceneSong.c
@@ -105,7 +106,7 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  2: level state
 @REM #  3: room data
 @REM #  4: level data; npc data; routine data; metatiles data
-@REM #  5: npc graphics
+@REM #  5: npc graphics; extra songs
 @REM #  6: songs
 @REM #  7: songs continued; some intro
 @REM #  8: intro continued

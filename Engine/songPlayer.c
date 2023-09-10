@@ -26,6 +26,7 @@ extern const hUGESong_t WinSong;
 extern const hUGESong_t CGSceneSong;
 extern const hUGESong_t IntroSong;
 extern const hUGESong_t MainMenuSong;
+extern const hUGESong_t PreMenuSong;
 
 const unsigned char * SFX_list[] = { &SFX_00[0], &SFX_01[0], &SFX_02[0], &SFX_03[0], &SFX_04[0], &SFX_05[0], &SFX_06[0], &SFX_07[0], &SFX_08[0], &SFX_09[0], &SFX_0A[0], &SFX_0B[0] };
 
@@ -78,7 +79,7 @@ void playOutsideSong(SONGS songName)
             break;        
         case SONG_LEVEL03:
             nextBank = CURRENT_BANK;
-            curSongBank = 6U;
+            curSongBank = 5U;
             SWITCH_ROM(curSongBank);
             playSong(&Level03Song);
             SWITCH_ROM(nextBank);
@@ -116,6 +117,13 @@ void playOutsideSong(SONGS songName)
             curSongBank = 7U;
             SWITCH_ROM(curSongBank);
             playSong(&MainMenuSong);
+            SWITCH_ROM(nextBank);
+            break;
+        case SONG_PREMENU:
+            nextBank = CURRENT_BANK;
+            curSongBank = 5U;
+            SWITCH_ROM(curSongBank);
+            playSong(&PreMenuSong);
             SWITCH_ROM(nextBank);
             break;
     }

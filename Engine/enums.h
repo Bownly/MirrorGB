@@ -55,7 +55,8 @@ typedef enum {
     SONG_WIN,
     SONG_CGSCENE,
     SONG_INTRO,
-    SONG_MAINMENU
+    SONG_MAINMENU,
+    SONG_PREMENU
 } SONGS;
 
 typedef enum {
