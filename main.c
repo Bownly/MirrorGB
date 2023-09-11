@@ -21,6 +21,7 @@
 #include "States/IntroState.h"
 #include "States/LevelState.h"
 #include "States/TitleState.h"
+#include "States/SplashScreenState.h"
 
 
 // Save data stuff
@@ -93,10 +94,10 @@ void main(void)
     // shouldSkipMusicThisFrame = FALSE;
     // add_VBL(songPlayerUpdate);
 
-    gamestate = STATE_LEVEL;
-    // gamestate = STATE_GAMEOVER;
-    gamestate = STATE_TITLE;
+    gamestate = STATE_SPLASH;
     substate = SUB_INIT;
+
+    p = 0U;
 
     while(1U)
     {
@@ -104,6 +105,10 @@ void main(void)
 
         switch(gamestate)
         {
+            case STATE_SPLASH:
+                SWITCH_ROM(10U);
+                SplashScreenStateMain();
+                break;
             case STATE_TITLE:
                 SWITCH_ROM(1U);
                 TitleStateMain();

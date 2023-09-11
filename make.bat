@@ -28,6 +28,8 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel1Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel2Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel3Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GBCompoIllustration.png -spr8x8 -sw 8 -sh 8 -b 10 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/AttributionIllustration.png -spr8x8 -sw 8 -sh 8 -b 10 -map -tile_origin 0 -noflip
 
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/PressSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/StartSprite.png -pw 0 -ph 0 -b 1 -sw 40 -sh 16 -spr8x8 -tile_origin 10
@@ -83,6 +85,7 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo7 -c -o o/IntroState.o States/IntroState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo9 -c -o o/BeatLevelState.o States/BeatLevelState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo10 -c -o o/SplashScreenState.o States/SplashScreenState.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
@@ -111,3 +114,4 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  7: songs continued; some intro
 @REM #  8: intro continued
 @REM #  9: beat level 
+@REM # 10: splash screen state

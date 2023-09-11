@@ -376,7 +376,7 @@ static void phaseMirrorINg(void)
     }
     else if (animTick == 8U)
     {
-        fadeout();
+        fadeOutToBlack();
         substate = SUB_MIRROROUTING;
         playSfx(SFX_7);
 
@@ -448,7 +448,7 @@ static void phaseMirrorOUTing(void)
             case DIR_RIGHT: player.xSpr -= 16U; break;
         }
 
-        fadein();
+        fadeInFromBlack();
     }
 
     if (animTick < 8U)
@@ -854,7 +854,7 @@ static void commonInit(void)
     // Test line
     // set_bkg_data(0x00U, 27U, fontTiles);
 
-    fadein();
+    fadeInFromBlack();
     OBP0_REG = DMG_PALETTE(DMG_LITE_GRAY, DMG_WHITE, DMG_LITE_GRAY, DMG_BLACK);
     substate = SUB_LOOP;
 }
@@ -882,7 +882,7 @@ static void entityKill(UINT8 entityId)
         else
             gamestate = STATE_BEAT_LEVEL;
         substate = SUB_INIT;
-        fadeout();
+        fadeOutToBlack();
         stopSong();
     }
 }
@@ -1149,7 +1149,7 @@ static void handleRoutines(void)
 
 static void killPlayer(void)
 {
-    fadeout();
+    fadeOutToBlack();
     player.lives--;
     if (player.lives == 0U)
     {

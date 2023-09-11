@@ -7,7 +7,8 @@
 // #include "../Engine/ram.h"
 #include "../Engine/songPlayer.h"
 
-#include "../Assets/Illustrations/BeatGameIllustration.h"
+#include "../Assets/Illustrations/GBCompoIllustration.h"
+#include "../Assets/Illustrations/AttributionIllustration.h"
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
@@ -25,11 +26,12 @@ extern UINT8 animFrame;
 
 extern UINT8 gamestate;
 extern UINT8 substate;
+extern UINT8 roomId;
 
 
 /* SUBSTATE METHODS */
-static void phaseBeatGameInit(void);
-static void phaseBeatGameLoop(void);
+static void phaseSplashScreenInit(void);
+static void phaseSplashScreenLoop(void);
 
 /* INPUT METHODS */
 
@@ -38,17 +40,17 @@ static void phaseBeatGameLoop(void);
 /* DISPLAY METHODS */
 
 
-void BeatGameStateMain(void)
+void SplashScreenStateMain(void)
 {
     curJoypad = joypad();
 
     switch (substate)
     {
         case SUB_INIT:
-            phaseBeatGameInit();
+            phaseSplashScreenInit();
             break;
         case SUB_LOOP:
-            phaseBeatGameLoop();
+            phaseSplashScreenLoop();
             break;
         default:  // Abort to title screen in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -60,7 +62,7 @@ void BeatGameStateMain(void)
 
 
 /******************************** SUBSTATE METHODS *******************************/
-static void phaseBeatGameInit(void)
+static void phaseSplashScreenInit(void)
 {
     // Initializations
     // stopSong();
@@ -71,8 +73,16 @@ static void phaseBeatGameInit(void)
 
     move_bkg(0, 0U);
 
-    set_bkg_data(0x40U, BeatGameIllustration_TILE_COUNT, BeatGameIllustration_tiles);
-    set_bkg_tiles(0U, 0U, 20U, 18U, BeatGameIllustration_map);
+    if (p == 0U)
+    {
+        set_bkg_data(0x00U, GBCompoIllustration_TILE_COUNT, GBCompoIllustration_tiles);
+        set_bkg_tiles(0U, 0U, 20U, 18U, GBCompoIllustration_map);
+    }
+    else if (p == 1U)
+    {
+        set_bkg_data(0x00U, AttributionIllustration_TILE_COUNT, AttributionIllustration_tiles);
+        set_bkg_tiles(0U, 0U, 20U, 18U, AttributionIllustration_map);
+    }
 
     substate = SUB_LOOP;
     fadeInFromBlack();
@@ -81,29 +91,26 @@ static void phaseBeatGameInit(void)
     playOutsideSong(SONG_WIN);
 }
 
-static void phaseBeatGameLoop(void)
+static void phaseSplashScreenLoop(void)
 {
     ++animTick;
 
-    // if ((animTick % 64U) / 48U == 0U)
-    // {
-    //     printLine(5U, 13U, "PRESS START", FALSE);
-    // }
-    // else
-    // {
-    //     for (i = 5U; i != 16U; ++i)
-    //         set_bkg_tile_xy(i, 13U, 0xFFU);
-    // }
-    //
-    if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
+    if (animTick == 180U || (curJoypad & J_A && curJoypad & J_A))
     {
         fadeOutToBlack();
-        // initrand(DIV_REG);
-        // move_bkg(0U, 0U);
+        playSfx(SFX_7);
 
-        gamestate = STATE_TITLE;
+        ++p;
+        if (p != 2U)
+            gamestate = STATE_SPLASH;
+        else
+        {
+            p = 0xFF;
+            gamestate = STATE_TITLE;
+            stopSong();
+        }
         substate = SUB_INIT;
-        stopSong();
+
     }
 }
 

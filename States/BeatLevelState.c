@@ -79,7 +79,7 @@ static void phaseBeatGameInit(void)
     set_bkg_tiles(0U, 0U, 20U, 18U, BeatLevelIllustration_map);
 
     substate = SUB_LOOP;
-    fadein();
+    fadeInFromBlack();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
     playOutsideSong(SONG_WIN);
@@ -101,7 +101,7 @@ static void phaseBeatGameLoop(void)
     //
     if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
-        fadeout();
+        fadeOutToBlack();
         gamestate = STATE_LEVEL;
         substate = SUB_INIT;
 

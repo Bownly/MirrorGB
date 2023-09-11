@@ -88,7 +88,7 @@ static void phaseIntroInit(void)
 
     substate = SUB_LOOP;
     animatePressStart();
-    fadein();
+    fadeInFromBlack();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
     playOutsideSong(SONG_MAINMENU);
