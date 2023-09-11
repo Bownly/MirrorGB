@@ -28,6 +28,8 @@ typedef struct EntityObject {
     UINT16 oldYSpr;
     UINT8 oldXTile;
     UINT8 oldYTile;
+    UINT8 oldAnimTick;
+    UINT8 oldAnimFrame;
     UINT8 oldActionTimer;
     UINT8 oldActionIndex;
     UINT8 oldRoutineIndex;

@@ -11,7 +11,7 @@
 #define NPCScientist_TILE_H 8
 #define NPCScientist_WIDTH 16
 #define NPCScientist_HEIGHT 16
-#define NPCScientist_TILE_COUNT 21
+#define NPCScientist_TILE_COUNT 24
 #define NPCScientist_PALETTE_COUNT 1
 #define NPCScientist_COLORS_PER_PALETTE 4
 #define NPCScientist_TOTAL_COLORS 4
@@ -23,8 +23,8 @@
 BANKREF_EXTERN(NPCScientist)
 
 extern const palette_color_t NPCScientist_palettes[4];
-extern const uint8_t NPCScientist_tiles[336];
+extern const uint8_t NPCScientist_tiles[384];
 
-extern const metasprite_t* const NPCScientist_metasprites[9];
+extern const metasprite_t* const NPCScientist_metasprites[12];
 
 #endif

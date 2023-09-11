@@ -65,23 +65,23 @@ const ActionObject actionsChurchChecker[] = {
 
 };
 const ActionObject actionsPriestCircle[] = {
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 180U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 180U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 3U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 1U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 180U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 180U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 3U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 1U },
     { .action = ACT_SWITCH_ROUTINE, .direction = 14U, .magnitude = 2U }
 };
 const ActionObject actionsPriestAudience[] = {
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 180U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 180U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 4U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 4U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 1U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 210U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 210U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 1U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 3U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
@@ -174,10 +174,12 @@ const ActionObject actionsCouchman[] = {
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U },
     { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 180U },
-    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 4U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 300U },
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 3U },
+    { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 1U },
+    { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 1U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 300U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 1U },
-    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 4U },
+    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 5U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 4U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 7U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 6U },
@@ -212,7 +214,7 @@ const ActionObject actionsWentToGetMilk[] = {
 const ActionObject actionsHiki[] = {
     { ACT_WALK, DIR_RIGHT, 3U },
     { ACT_WALK, DIR_DOWN, 5U },
-    { ACT_WAIT, DIR_LEFT, 180U },
+    { ACT_SPECIAL_ACTION, DIR_DOWN, 180U },
     { ACT_WALK, DIR_DOWN, 2U },
     { ACT_WALK, DIR_LEFT, 3U },
     { ACT_WALK, DIR_UP, 1U },
@@ -244,15 +246,16 @@ const ActionObject actionsWhateverDude[] = {
     { ACT_WALK, DIR_UP, 3U },
     { ACT_WALK, DIR_LEFT, 6U }
 };
-const ActionObject actionsWorldTour[] = {
+const ActionObject actionsBather[] = {
     { ACT_WAIT, DIR_UP, 300U },
     { ACT_WALK, DIR_RIGHT, 8U },
     { ACT_WALK, DIR_UP, 1U },
-    { ACT_WALK, DIR_RIGHT, 7U },
-    { ACT_WAIT, DIR_LEFT, 600U },
-    { ACT_WALK, DIR_LEFT, 3U },
+    { ACT_WALK, DIR_RIGHT, 6U },
     { ACT_WALK, DIR_UP, 1U },
-    { ACT_WAIT, DIR_UP, 180U },
+    { ACT_WALK, DIR_RIGHT, 1U },
+    { ACT_SPECIAL_ACTION, DIR_DOWN, 300U },
+    { ACT_WALK, DIR_LEFT, 3U },
+    { ACT_WAIT, DIR_UP, 90U },
     { ACT_WALK, DIR_DOWN, 1U },
     { ACT_WALK, DIR_LEFT, 4U },
     { ACT_WALK, DIR_DOWN, 2U },
@@ -261,7 +264,7 @@ const ActionObject actionsWorldTour[] = {
     { ACT_WALK, DIR_RIGHT, 7U },
     { ACT_WALK, DIR_DOWN, 11U },
     { ACT_TOGGLE_HIDING, DIR_DOWN, 0U },
-    { ACT_WAIT, DIR_DOWN, 750U },
+    { ACT_WAIT, DIR_DOWN, 450U },
     { ACT_TOGGLE_HIDING, DIR_UP, 0U },
     { ACT_WALK, DIR_UP, 1U },
     { ACT_WALK, DIR_RIGHT, 1U },
@@ -310,11 +313,11 @@ const ActionObject actionsGymRunner[] = {
 const ActionObject actionsHookieKid[] = {
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 5U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 4U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 120U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_DOWN, .magnitude = 120U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 4U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U },
     { .action = ACT_WAIT, .direction = DIR_RIGHT, .magnitude = 150U }
@@ -342,7 +345,7 @@ const ActionObject actionsTeachersLounger[] = {
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U }
 };
 const ActionObject actionsBlackboardLoop[] = {
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 120U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_UP, .magnitude = 120U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 4U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 3U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 4U },
@@ -351,7 +354,7 @@ const ActionObject actionsBlackboardLoop[] = {
     { .action = ACT_SWITCH_ROUTINE, .direction = 28U, .magnitude = 2U }
 };
 const ActionObject actionsBlackboardRead[] = {
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 120U },
+    { .action = ACT_SPECIAL_ACTION, .direction = DIR_UP, .magnitude = 120U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 5U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 1U },
     { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U },
@@ -397,11 +400,11 @@ const RoutineObject routineDex[32U] =
 {
     // House
     { .length =  7U, .actions = &actionsBathroom },
-    { .length = 27U, .actions = &actionsCouchman },
+    { .length = 29U, .actions = &actionsCouchman },
     { .length = 23U, .actions = &actionsWentToGetMilk },
     { .length = 12U, .actions = &actionsHiki },
     { .length = 19U, .actions = &actionsWhateverDude },
-    { .length = 26U, .actions = &actionsWorldTour },  // 5
+    { .length = 27U, .actions = &actionsBather },  // 5
 
     // Tutorial
     { .length = 2U, .actions = &actionsTutWaiter },

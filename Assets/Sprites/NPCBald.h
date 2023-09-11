@@ -11,7 +11,7 @@
 #define NPCBald_TILE_H 8
 #define NPCBald_WIDTH 16
 #define NPCBald_HEIGHT 16
-#define NPCBald_TILE_COUNT 19
+#define NPCBald_TILE_COUNT 25
 #define NPCBald_PALETTE_COUNT 1
 #define NPCBald_COLORS_PER_PALETTE 4
 #define NPCBald_TOTAL_COLORS 4
@@ -23,7 +23,7 @@
 BANKREF_EXTERN(NPCBald)
 
 extern const palette_color_t NPCBald_palettes[4];
-extern const uint8_t NPCBald_tiles[304];
+extern const uint8_t NPCBald_tiles[400];
 
 extern const metasprite_t* const NPCBald_metasprites[9];
 

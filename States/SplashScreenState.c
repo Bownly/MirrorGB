@@ -98,7 +98,7 @@ static void phaseSplashScreenLoop(void)
     if (animTick == 180U || (curJoypad & J_A && curJoypad & J_A))
     {
         fadeOutToBlack();
-        playSfx(SFX_7);
+        // playSfx(SFX_7);
 
         ++p;
         if (p != 2U)

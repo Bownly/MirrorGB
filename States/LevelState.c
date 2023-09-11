@@ -64,7 +64,7 @@ static EntityObject* entityPtr;
 // static UINT8 entityGrid[32U][32U];  // Holds IDs of entities
 static EntityObject entityList[8U];
 static UINT8 entitySpriteIndexList[8U];  // Awful code, but whatever. 8 = number of unique NPC spritesheets
-#define ENTITY_MAX 7U
+#define ENTITY_MAX 6U
 static UINT8 headCount;
 
 static const UINT8 hudMouthMap[8U] = {0xF0, 0xF2, 0xF4, 0xF6, 0xF1, 0xF3, 0xF5, 0xF7};
@@ -165,6 +165,7 @@ static void phaseMirrorOUTing(void);
 static void phaseSpotted(void);
 static void phaseKillPlayer(void);
 static void phasePaused(void);
+static void phaseTastefulPause(void);
 
 /* INPUT METHODS */
 static void inputs(void);
@@ -221,6 +222,9 @@ void LevelStateMain(void)
             break;
         case SUB_PAUSED:
             phasePaused();
+            break;
+        case SUB_TASTEFUL_PAUSE:
+            phaseTastefulPause();
             break;
         default:  // Abort to title in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -404,6 +408,8 @@ static void phaseMirrorINg(void)
                     entityList[i].ySpr = entityList[i].oldYSpr;
                     entityList[i].xTile = entityList[i].oldXTile;
                     entityList[i].yTile = entityList[i].oldYTile;
+                    entityList[i].animTick = entityList[i].oldAnimTick;
+                    entityList[i].animFrame = entityList[i].oldAnimFrame;
                     entityList[i].actionTimer = entityList[i].oldActionTimer;
                     entityList[i].curActionIndex = entityList[i].oldActionIndex;
                     entityList[i].curRoutineIndex = entityList[i].oldRoutineIndex;
@@ -517,6 +523,8 @@ static void phaseSpotted(void)
         entityPtr->oldActionTimer = entityPtr->actionTimer;
         entityPtr->oldActionIndex = entityPtr->curActionIndex;
         entityPtr->oldRoutineIndex = entityPtr->curRoutineIndex;
+        entityPtr->oldAnimTick = entityPtr->animTick;
+        entityPtr->oldAnimFrame = entityPtr->animFrame;
         entityPtr->isChasing = TRUE;
         entityPtr->state = ENTITY_IDLE;
         entityPtr->actionTimer = 0U;
@@ -556,6 +564,20 @@ static void phaseKillPlayer(void)
 static void phasePaused(void)
 {
     inputsPaused();
+}
+
+static void phaseTastefulPause(void)
+{
+    if (animTick++ == 36U)  // Arbitrary value
+    {
+        if (roomId / 2U == 3U)  // AKA, Level 4
+            gamestate = STATE_BEAT_GAME;
+        else
+            gamestate = STATE_BEAT_LEVEL;
+        substate = SUB_INIT;
+        fadeOutToBlack();
+        stopSong();
+    }
 }
 
 
@@ -632,7 +654,6 @@ static void inputs(void)
                     {
                         new_camera_y -= 16;
                         player.state = ENTITY_WALKING;
-                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -659,7 +680,6 @@ static void inputs(void)
                     {
                         new_camera_y += 16;
                         player.state = ENTITY_WALKING;
-                        redraw = TRUE;
                     }
                     addChaseActionToChasers(player.dir);
                 }
@@ -686,7 +706,6 @@ static void inputs(void)
                     {
                         new_camera_x -= 16;
                         player.state = ENTITY_WALKING;
-                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -713,7 +732,6 @@ static void inputs(void)
                     {
                         new_camera_x += 16;
                         player.state = ENTITY_WALKING;
-                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -779,6 +797,7 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
 static void checkUnderfootTile(void)
 {
     player.state = ENTITY_IDLE;
+    redraw = TRUE;
 }
 
 static void commonInit(void)
@@ -864,13 +883,14 @@ static void commonInit(void)
     }
 
     headCount = 0U;
-    loadLevelObject(roomId >> 1Ul);
+    loadLevelObject(roomId >> 1U);
     for (i = 0U; i != ENTITY_MAX; ++i)
     {
         if (entityList[i].id != 0xFF)
         {
             if (entityList[i].state != ENTITY_DEAD)
             {
+                entityList[i].isHiding = FALSE;
                 if (tempLevel.npcIds[i] != 0xFF)
                 {
                     getNPCData(tempLevel.npcIds[i]);
@@ -910,13 +930,8 @@ static void entityKill(UINT8 entityId)
 
     if (headCount == 0U)
     {
-        if (roomId / 2U == 3U)  // AKA, Level 4
-            gamestate = STATE_BEAT_GAME;
-        else
-            gamestate = STATE_BEAT_LEVEL;
-        substate = SUB_INIT;
-        fadeOutToBlack();
-        stopSong();
+        animTick = 0U;
+        substate = SUB_TASTEFUL_PAUSE;
     }
 }
 
@@ -947,6 +962,8 @@ static void entityListAdd(UINT8 id)
     entityList[id].oldYSpr = entityList[id].ySpr;
     entityList[id].oldXTile = tempNPC.xTile;
     entityList[id].oldYTile = tempNPC.yTile;
+    entityList[id].oldAnimTick = 0U;
+    entityList[id].oldAnimFrame = 0U;
     entityList[id].oldActionTimer = 0U;
     entityList[id].oldActionIndex = 0U;
     entityList[id].oldRoutineIndex = 0U;
@@ -967,6 +984,11 @@ static void handleRoutines(void)
             // Run action logic
             switch (entityPtr->state)
             {
+                case ENTITY_ACTIONING:
+                    entityPtr->animTick++;
+                    entityPtr->animFrame = entityPtr->animTick % 32U;
+                    entityPtr->animFrame /= 16U;
+                        entityPtr->animFrame += 9U;
                 case ENTITY_WAITING:
                     if (entityPtr->actionTimer == 0U)
                         entityPtr->state = ENTITY_IDLE;
@@ -991,7 +1013,7 @@ static void handleRoutines(void)
                     if (entityPtr->actionTimer == 0U)
                         entityPtr->state = ENTITY_IDLE;
 
-                    entityPtr->animTick++;
+                    entityPtr->animTick += m;
                     entityPtr->animFrame = entityPtr->animTick % 32U;
                     entityPtr->animFrame /= 8U;
                     if (entityPtr->animFrame == 3U)
@@ -1102,10 +1124,19 @@ static void handleRoutines(void)
                             entityPtr->dir = tempAction.direction;
 
                         if (entityPtr->dir == DIR_RIGHT)
-                            entityPtr->animFrame = (entityPtr->dir - 1U) * 3U;
+                            entityPtr->animFrame = (entityPtr->dir - 1U) * 3U + 1U;
                         else
-                            entityPtr->animFrame = entityPtr->dir * 3U;
+                            entityPtr->animFrame = entityPtr->dir * 3U + 1U;
                         break;
+                    case ACT_SPECIAL_ACTION:
+                        entityPtr->state = ENTITY_ACTIONING;
+                        entityPtr->actionTimer = tempAction.magnitude;
+                        if (tempAction.direction == DIR_RAND)
+                            entityPtr->dir = getRandUint8(4U);
+                        else
+                            entityPtr->dir = tempAction.direction;
+                        entityPtr->animFrame = 9U;
+                        break;                        
                     case ACT_TOGGLE_HIDING:
                         entityPtr->state = ENTITY_TOGGLING_HIDE;
                         entityPtr->dir = tempAction.direction;

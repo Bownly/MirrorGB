@@ -11,7 +11,7 @@
 #define NPCgirl_TILE_H 8
 #define NPCgirl_WIDTH 16
 #define NPCgirl_HEIGHT 16
-#define NPCgirl_TILE_COUNT 17
+#define NPCgirl_TILE_COUNT 26
 #define NPCgirl_PALETTE_COUNT 1
 #define NPCgirl_COLORS_PER_PALETTE 4
 #define NPCgirl_TOTAL_COLORS 4
@@ -23,8 +23,8 @@
 BANKREF_EXTERN(NPCgirl)
 
 extern const palette_color_t NPCgirl_palettes[4];
-extern const uint8_t NPCgirl_tiles[272];
+extern const uint8_t NPCgirl_tiles[416];
 
-extern const metasprite_t* const NPCgirl_metasprites[9];
+extern const metasprite_t* const NPCgirl_metasprites[12];
 
 #endif

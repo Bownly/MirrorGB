@@ -11,7 +11,7 @@
 #define NPCBoy_TILE_H 8
 #define NPCBoy_WIDTH 16
 #define NPCBoy_HEIGHT 16
-#define NPCBoy_TILE_COUNT 17
+#define NPCBoy_TILE_COUNT 24
 #define NPCBoy_PALETTE_COUNT 1
 #define NPCBoy_COLORS_PER_PALETTE 4
 #define NPCBoy_TOTAL_COLORS 4
@@ -23,8 +23,8 @@
 BANKREF_EXTERN(NPCBoy)
 
 extern const palette_color_t NPCBoy_palettes[4];
-extern const uint8_t NPCBoy_tiles[272];
+extern const uint8_t NPCBoy_tiles[384];
 
-extern const metasprite_t* const NPCBoy_metasprites[9];
+extern const metasprite_t* const NPCBoy_metasprites[12];
 
 #endif

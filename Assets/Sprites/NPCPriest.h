@@ -11,7 +11,7 @@
 #define NPCPriest_TILE_H 8
 #define NPCPriest_WIDTH 16
 #define NPCPriest_HEIGHT 16
-#define NPCPriest_TILE_COUNT 20
+#define NPCPriest_TILE_COUNT 25
 #define NPCPriest_PALETTE_COUNT 1
 #define NPCPriest_COLORS_PER_PALETTE 4
 #define NPCPriest_TOTAL_COLORS 4
@@ -23,8 +23,8 @@
 BANKREF_EXTERN(NPCPriest)
 
 extern const palette_color_t NPCPriest_palettes[4];
-extern const uint8_t NPCPriest_tiles[320];
+extern const uint8_t NPCPriest_tiles[400];
 
-extern const metasprite_t* const NPCPriest_metasprites[9];
+extern const metasprite_t* const NPCPriest_metasprites[12];
 
 #endif

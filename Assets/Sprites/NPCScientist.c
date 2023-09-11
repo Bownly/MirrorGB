@@ -13,7 +13,7 @@ const palette_color_t NPCScientist_palettes[4] = {
 	
 };
 
-const uint8_t NPCScientist_tiles[336] = {
+const uint8_t NPCScientist_tiles[384] = {
 	0x00,0x00,0x07,0x07,
 	0x0f,0x0f,0x1f,0x1f,
 	0x1f,0x1f,0x1f,0x1f,
@@ -117,7 +117,22 @@ const uint8_t NPCScientist_tiles[336] = {
 0x28,0xd8,0x88,0x78,
 	0xf0,0x10,0xf0,0xf0,
 	0xf0,0x10,0xf8,0xf8,
-	0xf0,0xf0,0xe0,0xe0
+	0xf0,0xf0,0xe0,0xe0,
+	
+0x07,0x07,0x0f,0x0f,
+	0x1f,0x1f,0x1f,0x1f,
+	0x1f,0x1f,0x1f,0x1f,
+	0x3f,0x3f,0x7f,0x57,
+	
+0x7f,0x53,0x3f,0x28,
+	0x1f,0x17,0x1f,0x18,
+	0x1f,0x10,0x1f,0x10,
+	0x11,0x1f,0x0e,0x0e,
+	
+0x3f,0x2b,0x3f,0x28,
+	0x3f,0x27,0x1f,0x18,
+	0x1f,0x10,0x1f,0x10,
+	0x11,0x1f,0x0e,0x0e
 	
 };
 
@@ -193,6 +208,30 @@ const metasprite_t NPCScientist_metasprite8[] = {
 	METASPR_TERM
 };
 
-const metasprite_t* const NPCScientist_metasprites[9] = {
-	NPCScientist_metasprite0, NPCScientist_metasprite1, NPCScientist_metasprite2, NPCScientist_metasprite3, NPCScientist_metasprite4, NPCScientist_metasprite5, NPCScientist_metasprite6, NPCScientist_metasprite7, NPCScientist_metasprite8
+const metasprite_t NPCScientist_metasprite9[] = {
+	METASPR_ITEM(-8, -8, 21, S_PAL(0)),
+	METASPR_ITEM(0, 8, 21, S_PAL(0) | S_FLIPX),
+	METASPR_ITEM(8, -8, 22, S_PAL(0)),
+	METASPR_ITEM(0, 8, 22, S_PAL(0) | S_FLIPX),
+	METASPR_TERM
+};
+
+const metasprite_t NPCScientist_metasprite10[] = {
+	METASPR_ITEM(-8, -8, 3, S_PAL(0)),
+	METASPR_ITEM(0, 8, 3, S_PAL(0) | S_FLIPX),
+	METASPR_ITEM(8, -8, 23, S_PAL(0)),
+	METASPR_ITEM(0, 8, 23, S_PAL(0) | S_FLIPX),
+	METASPR_TERM
+};
+
+const metasprite_t NPCScientist_metasprite11[] = {
+	METASPR_ITEM(-8, -8, 3, S_PAL(0)),
+	METASPR_ITEM(0, 8, 21, S_PAL(0) | S_FLIPX),
+	METASPR_ITEM(8, -8, 23, S_PAL(0)),
+	METASPR_ITEM(0, 8, 22, S_PAL(0) | S_FLIPX),
+	METASPR_TERM
+};
+
+const metasprite_t* const NPCScientist_metasprites[12] = {
+	NPCScientist_metasprite0, NPCScientist_metasprite1, NPCScientist_metasprite2, NPCScientist_metasprite3, NPCScientist_metasprite4, NPCScientist_metasprite5, NPCScientist_metasprite6, NPCScientist_metasprite7, NPCScientist_metasprite8, NPCScientist_metasprite9, NPCScientist_metasprite10, NPCScientist_metasprite11
 };

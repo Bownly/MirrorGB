@@ -20,7 +20,8 @@ typedef enum {
     SUB_KILL_PLAYER,
     SUB_MIRRORING,
     SUB_MIRROROUTING,
-    SUB_PAUSED
+    SUB_PAUSED,
+    SUB_TASTEFUL_PAUSE
 } SUBSTATE;
 
 typedef enum {
@@ -29,7 +30,8 @@ typedef enum {
     ENTITY_WALKING,
     ENTITY_FINISHING_WALK,
     ENTITY_DEAD,
-    ENTITY_TOGGLING_HIDE
+    ENTITY_TOGGLING_HIDE,
+    ENTITY_ACTIONING
 } ENTITYSTATE;
 
 typedef enum {
@@ -46,7 +48,8 @@ typedef enum {
     ACT_TURN,
     ACT_WAIT,
     ACT_TOGGLE_HIDING,
-    ACT_SWITCH_ROUTINE
+    ACT_SWITCH_ROUTINE,
+    ACT_SPECIAL_ACTION
 } ACTION;
 
 typedef enum {
