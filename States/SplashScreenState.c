@@ -110,8 +110,15 @@ static void phaseSplashScreenLoop(void)
             stopSong();
         }
         substate = SUB_INIT;
-
     }
+    else if (curJoypad & J_START && curJoypad & J_START)
+    {
+        p = 0xFF;
+        gamestate = STATE_TITLE;
+        substate = SUB_INIT;
+        stopSong();
+    }
+
 }
 
 /******************************** INPUT METHODS *********************************/

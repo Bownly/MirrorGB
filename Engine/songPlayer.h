@@ -4,6 +4,7 @@
 #include "hUGEDriver.h"
 
 // void playSong(const hUGESong_t *);
+void songPlayerVblFn();
 void playSfx(SFX);
 void playOutsideSong(SONGS);
 void stopSong();

@@ -164,9 +164,11 @@ static void phaseMirrorINg(void);
 static void phaseMirrorOUTing(void);
 static void phaseSpotted(void);
 static void phaseKillPlayer(void);
+static void phasePaused(void);
 
 /* INPUT METHODS */
 static void inputs(void);
+static void inputsPaused(void);
 
 /* HELPER METHODS */
 static void addChaseActionToChasers(UINT8);
@@ -216,6 +218,9 @@ void LevelStateMain(void)
             break;
         case SUB_KILL_PLAYER:
             phaseKillPlayer();
+            break;
+        case SUB_PAUSED:
+            phasePaused();
             break;
         default:  // Abort to title in the event of unexpected state
             gamestate = STATE_TITLE;
@@ -320,7 +325,7 @@ static void phaseLoop(void)
     //   return;
 
     // Need to recheck player.state because the previous fn might have changed it
-    if (substate == SUB_LOOP && player.state == ENTITY_IDLE)
+    if (substate == SUB_LOOP)
         inputs();
 
     animatePlayer();
@@ -548,6 +553,10 @@ static void phaseKillPlayer(void)
     ++animTick;
 }
 
+static void phasePaused(void)
+{
+    inputsPaused();
+}
 
 /******************************** INPUT METHODS *********************************/
 static void inputs(void)
@@ -710,6 +719,29 @@ static void inputs(void)
                 }
             }
         }
+    }
+    if (curJoypad & J_START && !(prevJoypad & J_START))
+    {
+        substate = SUB_PAUSED;
+        hUGE_mute_channel(0U, HT_CH_MUTE);
+        hUGE_mute_channel(1U, HT_CH_MUTE);
+        hUGE_mute_channel(2U, HT_CH_MUTE);
+        hUGE_mute_channel(3U, HT_CH_MUTE);
+        remove_VBL(songPlayerVblFn);
+    }
+}
+
+static void inputsPaused(void)
+{
+    if (curJoypad & J_START && !(prevJoypad & J_START))
+    {
+        substate = SUB_LOOP;
+        hUGE_mute_channel(0U, HT_CH_PLAY);
+        hUGE_mute_channel(1U, HT_CH_PLAY);
+        hUGE_mute_channel(2U, HT_CH_PLAY);
+        hUGE_mute_channel(3U, HT_CH_PLAY);
+
+        add_VBL(songPlayerVblFn);
     }
 }
 
