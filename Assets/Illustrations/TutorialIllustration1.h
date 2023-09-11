@@ -12,14 +12,14 @@
 #define TutorialIllustration1_WIDTH 160
 #define TutorialIllustration1_HEIGHT 72
 #define TutorialIllustration1_TILE_COUNT 65
-#define TutorialIllustration1_PALETTE_COUNT 3
+#define TutorialIllustration1_PALETTE_COUNT 1
 #define TutorialIllustration1_COLORS_PER_PALETTE 4
-#define TutorialIllustration1_TOTAL_COLORS 12
+#define TutorialIllustration1_TOTAL_COLORS 4
 #define TutorialIllustration1_MAP_ATTRIBUTES 0
 
 BANKREF_EXTERN(TutorialIllustration1)
 
-extern const palette_color_t TutorialIllustration1_palettes[12];
+extern const palette_color_t TutorialIllustration1_palettes[4];
 extern const uint8_t TutorialIllustration1_tiles[1040];
 
 extern const unsigned char TutorialIllustration1_map[180];

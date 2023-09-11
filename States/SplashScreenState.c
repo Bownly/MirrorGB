@@ -77,6 +77,7 @@ static void phaseSplashScreenInit(void)
     {
         set_bkg_data(0x00U, GBCompoIllustration_TILE_COUNT, GBCompoIllustration_tiles);
         set_bkg_tiles(0U, 0U, 20U, 18U, GBCompoIllustration_map);
+        // playOutsideSong(SONG_WIN);
     }
     else if (p == 1U)
     {
@@ -88,7 +89,6 @@ static void phaseSplashScreenInit(void)
     fadeInFromBlack();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    playOutsideSong(SONG_WIN);
 }
 
 static void phaseSplashScreenLoop(void)

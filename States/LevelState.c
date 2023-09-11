@@ -654,6 +654,7 @@ static void inputs(void)
                     {
                         new_camera_y -= 16;
                         player.state = ENTITY_WALKING;
+                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -680,6 +681,7 @@ static void inputs(void)
                     {
                         new_camera_y += 16;
                         player.state = ENTITY_WALKING;
+                        redraw = TRUE;
                     }
                     addChaseActionToChasers(player.dir);
                 }
@@ -706,6 +708,7 @@ static void inputs(void)
                     {
                         new_camera_x -= 16;
                         player.state = ENTITY_WALKING;
+                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -732,6 +735,7 @@ static void inputs(void)
                     {
                         new_camera_x += 16;
                         player.state = ENTITY_WALKING;
+                        redraw = TRUE;
                     }
 
                     addChaseActionToChasers(player.dir);
@@ -797,7 +801,6 @@ static UINT8 checkForEntityCollision(UINT8 x, UINT8 y)
 static void checkUnderfootTile(void)
 {
     player.state = ENTITY_IDLE;
-    redraw = TRUE;
 }
 
 static void commonInit(void)
