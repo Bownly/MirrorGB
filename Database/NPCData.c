@@ -22,9 +22,9 @@ const NPCObject npcDex[] =
         { .speciesId =  2U, .xTile = 15U, .yTile = 27U, .routineId = 11U },
         { .speciesId =  5U, .xTile =  6U, .yTile = 22U, .routineId = 12U },
         { .speciesId =  5U, .xTile = 28U, .yTile = 18U, .routineId = 13U },  // 10
-        { .speciesId =  5U, .xTile = 16U, .yTile =  7U, .routineId = 14U },
-        { .speciesId =  1U, .xTile = 18U, .yTile = 20U, .routineId = 16U },
-        { .speciesId =  3U, .xTile = 13U, .yTile = 16U, .routineId = 21U },
+        { .speciesId =  6U, .xTile = 16U, .yTile =  7U, .routineId = 14U },
+        { .speciesId =  2U, .xTile = 18U, .yTile = 20U, .routineId = 16U },
+        { .speciesId =  2U, .xTile = 13U, .yTile = 16U, .routineId = 21U },
         // School map
         { .speciesId =  3U, .xTile = 21U, .yTile = 18U, .routineId = 24U },
         { .speciesId =  1U, .xTile = 2U, .yTile = 15U, .routineId = 25U },

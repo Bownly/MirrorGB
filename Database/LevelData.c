@@ -21,7 +21,7 @@ const LevelObject levelDex[8U] = {
         .metatilesRId = 2U,
         .metatilesMId = 3U,
         .npcCount = 6U,
-        .npcSpecies = { 5U, 1U, 2U, 3U, 0xFFU, 0xFFU, 0xFFU, 0xFFU },
+        .npcSpecies = { 5U, 3U, 2U, 6U, 0xFFU, 0xFFU, 0xFFU, 0xFFU },
         .npcIds = { 8U, 9U, 10U, 11U, 12U, 13U, 0xFFU, 0xFFU }
     },
     // House level

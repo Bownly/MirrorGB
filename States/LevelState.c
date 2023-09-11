@@ -558,6 +558,7 @@ static void phasePaused(void)
     inputsPaused();
 }
 
+
 /******************************** INPUT METHODS *********************************/
 static void inputs(void)
 {
@@ -803,7 +804,7 @@ static void commonInit(void)
         default:
         case 0U: player.xTile =  3U; player.yTile = 12U; player.dir = DIR_UP;   break;
         // case 0U: player.xTile =  8U; player.yTile =  6U; player.dir = DIR_UP;   break;
-        case 1U: player.xTile =  5U; player.yTile =  5U; player.dir = DIR_DOWN; break;
+        case 1U: player.xTile = 16U; player.yTile = 30U; player.dir = DIR_DOWN; break;
         case 2U: player.xTile = 29U; player.yTile = 15U; player.dir = DIR_DOWN; break;
         case 3U: player.xTile = 15U; player.yTile = 24U; player.dir = DIR_DOWN; break;
     }

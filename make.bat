@@ -40,6 +40,7 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCBoy.png -pw 0 -ph 0 -b 5 -sw 16 -s
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCgirl.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCGuy.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCNun.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
+C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCPriest.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 C:\gbdk-4.2.0\bin\png2asset Assets/Sprites/NPCScientist.png -pw 0 -ph 0 -b 5 -sw 16 -sh 16 -spr8x8
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo3 -c -o o/TutorialRMap.o Assets/Maps/Levels/TutorialRMap.c

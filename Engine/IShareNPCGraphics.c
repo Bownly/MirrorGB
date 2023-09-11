@@ -9,6 +9,7 @@
 #include "../Assets/Sprites/NPCBoy.h"
 #include "../Assets/Sprites/NPCGuy.h"
 #include "../Assets/Sprites/NPCNun.h"
+#include "../Assets/Sprites/NPCPriest.h"
 
 
 #define DATA_BANK 5U
@@ -22,7 +23,8 @@ static const UINT8 tileCounts[] =
     NPCBald_TILE_COUNT,
     NPCBoy_TILE_COUNT,
     NPCGuy_TILE_COUNT,
-    NPCNun_TILE_COUNT
+    NPCNun_TILE_COUNT,
+    NPCPriest_TILE_COUNT
 };
 
 static const UINT8* tilePtrs[] = 
@@ -32,7 +34,8 @@ static const UINT8* tilePtrs[] =
     NPCBald_tiles,
     NPCBoy_tiles,
     NPCGuy_tiles,
-    NPCNun_tiles
+    NPCNun_tiles,
+    NPCPriest_tiles
 };
 
 static const metasprite_t** npcMetasprites[] = 
@@ -42,7 +45,8 @@ static const metasprite_t** npcMetasprites[] =
     NPCBald_metasprites,
     NPCBoy_metasprites,
     NPCGuy_metasprites,
-    NPCNun_metasprites
+    NPCNun_metasprites,
+    NPCPriest_metasprites
 };
 
 UINT8 loadNPCSpriteTiles(UINT8 speciesId, UINT8 spriteTileIndex)
