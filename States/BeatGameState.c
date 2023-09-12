@@ -7,7 +7,9 @@
 // #include "../Engine/ram.h"
 #include "../Engine/songPlayer.h"
 
-#include "../Assets/Illustrations/BeatGameIllustration.h"
+#include "../Assets/Illustrations/ending01.h"
+#include "../Assets/Illustrations/ending02.h"
+#include "../Assets/Illustrations/ending03.h"
 
 extern UINT8 curJoypad;
 extern UINT8 prevJoypad;
@@ -71,39 +73,48 @@ static void phaseBeatGameInit(void)
 
     move_bkg(0, 0U);
 
-    set_bkg_data(0x40U, BeatGameIllustration_TILE_COUNT, BeatGameIllustration_tiles);
-    set_bkg_tiles(0U, 0U, 20U, 18U, BeatGameIllustration_map);
+    if (p == 0U)
+    {
+        set_bkg_data(0x00U, ending01_TILE_COUNT, ending01_tiles);
+        set_bkg_tiles(0U, 0U, 20U, 18U, ending01_map);
+        playOutsideSong(SONG_WIN);
+    }
+    else if (p == 1U)
+    {
+        set_bkg_data(0x00U, ending02_TILE_COUNT, ending02_tiles);
+        set_bkg_tiles(0U, 0U, 20U, 18U, ending02_map);
+    }
+    else if (p == 2U)
+    {
+        set_bkg_data(0x00U, ending03_TILE_COUNT, ending03_tiles);
+        set_bkg_tiles(0U, 0U, 20U, 18U, ending03_map);
+    }
+
 
     substate = SUB_LOOP;
     fadeInFromBlack();
 
     // OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
-    playOutsideSong(SONG_WIN);
 }
 
 static void phaseBeatGameLoop(void)
 {
     ++animTick;
 
-    // if ((animTick % 64U) / 48U == 0U)
-    // {
-    //     printLine(5U, 13U, "PRESS START", FALSE);
-    // }
-    // else
-    // {
-    //     for (i = 5U; i != 16U; ++i)
-    //         set_bkg_tile_xy(i, 13U, 0xFFU);
-    // }
-    //
     if ((curJoypad & J_A && curJoypad & J_A) || (curJoypad & J_START && !(prevJoypad & J_START)))
     {
         fadeOutToBlack();
-        // initrand(DIV_REG);
-        // move_bkg(0U, 0U);
 
-        gamestate = STATE_TITLE;
+        ++p;
+        if (p != 3U)
+            gamestate = STATE_BEAT_GAME;
+        else
+        {
+            p = 0xFF;
+            gamestate = STATE_TITLE;
+        }
         substate = SUB_INIT;
-        stopSong();
+
     }
 }
 

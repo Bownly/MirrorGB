@@ -571,7 +571,10 @@ static void phaseTastefulPause(void)
     if (animTick++ == 36U)  // Arbitrary value
     {
         if (roomId / 2U == 3U)  // AKA, Level 4
+        {
             gamestate = STATE_BEAT_GAME;
+            p = 0U;
+        }
         else
             gamestate = STATE_BEAT_LEVEL;
         substate = SUB_INIT;

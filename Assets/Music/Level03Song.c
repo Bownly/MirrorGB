@@ -1,7 +1,7 @@
 #include "../../Engine/hUGEDriver.h"
 #include <stddef.h>
 
-static const unsigned char order_cnt = 28;
+static const unsigned char order_cnt = 24;
 
 static const unsigned char P0[] = {
     DN(___,0,0x000),
@@ -1074,10 +1074,10 @@ static const unsigned char itNoiseSP14[] = {
     DN(___,0,0x000),
     DN(___,1,0x000),
 };
-static const unsigned char* const order1[] = {P0,P0,P4,P4,P8,P8,P4,P4,P8,P8,P12,P12,P12,P12};
-static const unsigned char* const order2[] = {P0,P0,P0,P0,P9,P9,P0,P0,P9,P9,P0,P0,P0,P0};
-static const unsigned char* const order3[] = {P2,P2,P2,P2,P2,P2,P2,P2,P2,P2,P14,P14,P2,P2};
-static const unsigned char* const order4[] = {P0,P0,P0,P0,P11,P11,P0,P0,P11,P11,P15,P15,P0,P0};
+static const unsigned char* const order1[] = {P4,P4,P8,P8,P4,P4,P8,P8,P12,P12,P12,P12};
+static const unsigned char* const order2[] = {P0,P0,P9,P9,P0,P0,P9,P9,P0,P0,P0,P0};
+static const unsigned char* const order3[] = {P2,P2,P2,P2,P2,P2,P2,P2,P14,P14,P2,P2};
+static const unsigned char* const order4[] = {P0,P0,P11,P11,P0,P0,P11,P11,P15,P15,P0,P0};
 
 static const hUGEDutyInstr_t duty_instruments[] = {
     {0,64,246,0,128},

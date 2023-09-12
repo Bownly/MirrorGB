@@ -23,7 +23,10 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TutorialIllustration1.png -b 8 
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TutorialIllustration2.png -b 8 -map -tile_origin 65 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/TitleScreenIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GameOverIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 0 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatGameIllustration.png -spr8x8 -sw 8 -sh 8 -b 1 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending01.png -spr8x8 -sw 8 -sh 8 -b 11 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending02.png -spr8x8 -sw 8 -sh 8 -b 11 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending03.png -spr8x8 -sw 8 -sh 8 -b 11 -map -tile_origin 0 -noflip
+
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel1Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel2Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
@@ -80,13 +83,13 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/MetatilesData.o Database/MetatilesDa
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/NPCData.o Database/NPCData.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -Wf-bo4 -c -o o/RoutineData.o Database/RoutineData.c
 
-/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/BeatGameState.o States/BeatGameState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/GameOverState.o States/GameOverState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo1 -c -o o/TitleState.o States/TitleState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo2 -c -o o/LevelState.o States/LevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo7 -c -o o/IntroState.o States/IntroState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo9 -c -o o/BeatLevelState.o States/BeatLevelState.c
 /gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo10 -c -o o/SplashScreenState.o States/SplashScreenState.c
+/gbdk-4.2.0/bin/lcc -Wa-l -Wf-bo11 -c -o o/BeatGameState.o States/BeatGameState.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/cbtfx.o Engine/cbtfx.c
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/common.o Engine/common.c
@@ -106,7 +109,7 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 
 @REM ######## Bank info
 @REM #  0: main
-@REM #  1: title; game over; beat game
+@REM #  1: title; game over
 @REM #  2: level state
 @REM #  3: room data
 @REM #  4: level data; npc data; routine data; metatiles data
@@ -116,3 +119,4 @@ C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprite
 @REM #  8: intro continued
 @REM #  9: beat level 
 @REM # 10: splash screen state
+@REM # 11: beat game state

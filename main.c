@@ -126,7 +126,7 @@ void main(void)
                 BeatLevelStateMain();
                 break;
             case STATE_BEAT_GAME:
-                SWITCH_ROM(1U);
+                SWITCH_ROM(11U);
                 BeatGameStateMain();
                 break;
             case STATE_GAMEOVER:
