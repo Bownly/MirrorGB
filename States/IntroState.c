@@ -33,6 +33,8 @@ static UINT8 hideWinY2;
 static UINT8 showWinY1;
 static UINT8 showWinY2;
 
+#define SLIDE_COUNT 5U
+
 
 /* SUBSTATE METHODS */
 static void phaseIntroInit(void);
@@ -41,10 +43,11 @@ static void phaseIntroLoop(void);
 /* INPUT METHODS */
 
 /* HELPER METHODS */
+static void exitState(void);
 static void initSlide(void);
-static void parallaxMagic(void);
 
 /* DISPLAY METHODS */
+static void parallaxMagic(void);
 static void shakeScreen(void);
 
 
@@ -107,31 +110,29 @@ static void phaseIntroLoop(void)
         fadeOutToBlack();
         move_bkg(0U, 0U);
         ++slideNumber;
-
-        if (slideNumber == 5U)
+        
+        if (slideNumber == SLIDE_COUNT)
         {
-            CRITICAL {
-                remove_LCD(parallaxMagic);
-            }
-            gamestate = STATE_LEVEL;
-            substate = SUB_INIT;
-            stopSong();
+            // CRITICAL {
+            //     remove_LCD(parallaxMagic);
+            // }
+            // // set_interrupts(LCD_IFLAG); // additionally enable LCD interrupt 
+            // gamestate = STATE_LEVEL;
+            // substate = SUB_INIT;
+            // stopSong();
+            exitState();
             return;
         }
+        else
+            initSlide();
 
-        initSlide();
         // set_bkg_tile_xy(0,0,slideNumber);
     }
     else if (curJoypad & J_START && !(prevJoypad & J_START))
     {
         fadeOutToBlack();
         move_bkg(0U, 0U);
-        CRITICAL {
-            remove_LCD(parallaxMagic);
-        }
-        gamestate = STATE_LEVEL;
-        substate = SUB_INIT;
-        stopSong();
+        exitState();
         return;
     }
 }
@@ -140,6 +141,19 @@ static void phaseIntroLoop(void)
 
 
 /******************************** HELPER METHODS *********************************/
+static void exitState(void)
+{
+    // fadeOutToBlack();
+    // move_bkg(0U, 0U);
+    CRITICAL {
+        remove_LCD(parallaxMagic);
+    }
+    gamestate = STATE_LEVEL;
+    substate = SUB_INIT;
+    LYC_REG = 0U;
+    stopSong();
+}
+
 static void initSlide(void)
 {
     init_bkg(0x00U);
@@ -151,9 +165,12 @@ static void initSlide(void)
         remove_LCD(parallaxMagic);
     }
     loadIllustrationData(slideNumber);
-    CRITICAL{
-        add_LCD(parallaxMagic);
-    }
+    // if (slideNumber != SLIDE_COUNT)
+    // {
+        CRITICAL{
+            add_LCD(parallaxMagic);
+        }
+    // }
     LYC_REG = 0U;
     
     switch(slideNumber)
@@ -170,9 +187,9 @@ static void initSlide(void)
         case 4U:
             move_win(7U, 0U);
             break;
-        case 5U:
-            LYC_REG = 0U;
-            break;
+        // case SLIDE_COUNT:
+        //     LYC_REG = 0U;
+        //     break;
     }
 
     fadeInFromBlack();
@@ -232,10 +249,10 @@ static void parallaxMagic(void)
                     break;
             }
             break;
-        case 5U:
-            if (LYC_REG == 88U)
-                WX_REG = 7U;
-            break;
+        // case 5U:
+        //     if (LYC_REG == 88U)
+        //         WX_REG = 7U;
+        //     break;
     }
     // switch(LYC_REG)
     // {
@@ -277,9 +294,6 @@ static void shakeScreen(void)
                 break;
             case 20U:
                 scroll_bkg(0, -k);
-                break;
-            case 25U:
-                move_bkg(0, 0);
                 screenShakeTick = 0U;
                 break;
         }

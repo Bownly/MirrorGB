@@ -6,12 +6,12 @@
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
 
-#define BeatLevel3Illustration_TILE_ORIGIN 64
+#define BeatLevel3Illustration_TILE_ORIGIN 0
 #define BeatLevel3Illustration_TILE_W 8
 #define BeatLevel3Illustration_TILE_H 8
 #define BeatLevel3Illustration_WIDTH 8
 #define BeatLevel3Illustration_HEIGHT 8
-#define BeatLevel3Illustration_TILE_COUNT 196
+#define BeatLevel3Illustration_TILE_COUNT 198
 #define BeatLevel3Illustration_PALETTE_COUNT 1
 #define BeatLevel3Illustration_COLORS_PER_PALETTE 4
 #define BeatLevel3Illustration_TOTAL_COLORS 4
@@ -20,7 +20,7 @@
 BANKREF_EXTERN(BeatLevel3Illustration)
 
 extern const palette_color_t BeatLevel3Illustration_palettes[4];
-extern const uint8_t BeatLevel3Illustration_tiles[3136];
+extern const uint8_t BeatLevel3Illustration_tiles[3168];
 
 extern const unsigned char BeatLevel3Illustration_map[360];
 #define BeatLevel3Illustration_map_attributes BeatLevel3Illustration_map

@@ -6,7 +6,7 @@
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
 
-#define BeatLevel2Illustration_TILE_ORIGIN 64
+#define BeatLevel2Illustration_TILE_ORIGIN 0
 #define BeatLevel2Illustration_TILE_W 8
 #define BeatLevel2Illustration_TILE_H 8
 #define BeatLevel2Illustration_WIDTH 8

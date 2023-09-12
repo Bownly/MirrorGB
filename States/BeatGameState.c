@@ -71,7 +71,7 @@ static void phaseBeatGameInit(void)
     HIDE_WIN;
     HIDE_SPRITES;
 
-    move_bkg(0, 0U);
+    move_bkg(0U, 0U);
 
     if (p == 0U)
     {
@@ -114,7 +114,6 @@ static void phaseBeatGameLoop(void)
             gamestate = STATE_TITLE;
         }
         substate = SUB_INIT;
-
     }
 }
 

@@ -147,12 +147,12 @@ const ActionObject actionsPew2Up[] = {
 
 // House
 const ActionObject actionsBathroom[] = {
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 1000U },
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 900U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 1U },
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 1U },
-    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 120U },
+    { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 150U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 1U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 120U },
+    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 150U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 1U }
 };
 const ActionObject actionsCouchman[] = {

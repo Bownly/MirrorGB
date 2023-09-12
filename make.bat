@@ -27,10 +27,9 @@ C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending01.png -spr8x8 -sw 8 -sh 
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending02.png -spr8x8 -sw 8 -sh 8 -b 11 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/ending03.png -spr8x8 -sw 8 -sh 8 -b 11 -map -tile_origin 0 -noflip
 
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevelIllustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel1Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel2Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
-C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel3Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 64 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel1Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel2Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 0 -noflip
+C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/BeatLevel3Illustration.png -spr8x8 -sw 8 -sh 8 -b 9 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/GBCompoIllustration.png -spr8x8 -sw 8 -sh 8 -b 10 -map -tile_origin 0 -noflip
 C:\gbdk-4.2.0\bin\png2asset Assets/Illustrations/AttributionIllustration.png -spr8x8 -sw 8 -sh 8 -b 10 -map -tile_origin 0 -noflip
 
