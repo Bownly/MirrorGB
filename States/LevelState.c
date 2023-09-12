@@ -631,11 +631,11 @@ static void inputs(void)
             }
         }
 
-        if (curJoypad & J_B && !(prevJoypad & J_B))
-        {
-            headCount = 1U;
-            entityKill(0U);
-        }
+        // if (curJoypad & J_B && !(prevJoypad & J_B))
+        // {
+        //     headCount = 1U;
+        //     entityKill(0U);
+        // }
 
         if (curJoypad & J_UP)
         {
