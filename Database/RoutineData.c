@@ -197,19 +197,20 @@ const ActionObject actionsWentToGetMilk[] = {
     { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
     { .action = ACT_WAIT, .direction = DIR_UP, .magnitude = 300U },
+
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 1U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 4U },
-    { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 3U },
+    { .action = ACT_WALK, .direction = DIR_UP, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 2U },
     { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 9U },
     { .action = ACT_WALK, .direction = DIR_LEFT, .magnitude = 8U },
-    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 4U },
-    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 600U },
+    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 3U },
+    { .action = ACT_WAIT, .direction = DIR_DOWN, .magnitude = 300U },
     { .action = ACT_WALK, .direction = DIR_RIGHT, .magnitude = 2U },
-    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 7U }
+    { .action = ACT_WALK, .direction = DIR_DOWN, .magnitude = 8U }
 };
 const ActionObject actionsHiki[] = {
     { ACT_WALK, DIR_RIGHT, 3U },

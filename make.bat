@@ -103,7 +103,7 @@ C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/IShareRoutineData.o Engine/IShareRoutineData
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/songPlayer.o Engine/songPlayer.c
 
 C:\gbdk-4.2.0\bin\lcc -Wa-l -c -o o/main.o main.c
-C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished.gb o/*.o Assets/Sprites/*.c Assets/Illustrations/*.c Engine/hUGEDriver.obj.o
+C:\gbdk-4.2.0\bin\lcc -Wl-yt3 -Wl-yoA -Wl-ya4 -o Banished_jam.gb o/*.o Assets/Sprites/*.c Assets/Illustrations/*.c Engine/hUGEDriver.obj.o
 
 
 @REM ######## Bank info
